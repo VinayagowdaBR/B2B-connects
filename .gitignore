@@ -1,0 +1,34 @@
+# Python venv
+venv/
+ENV/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# FastAPI / Uvicorn files
+*.log
+
+# Local database files
+*.db
+*.sqlite3
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment variables
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Byte-compiled / packaged
+build/
+dist/
+*.egg-info/
