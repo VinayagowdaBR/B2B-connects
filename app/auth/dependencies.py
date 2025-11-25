@@ -15,11 +15,18 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    email: str = payload.get("sub")
-    if email is None:
+    
+    # Subject can be either email or phone number
+    subject: str = payload.get("sub")
+    if subject is None:
         raise HTTPException(status_code=401, detail="Invalid token")
     
-    user = db.query(User).filter(User.email == email).first()
+    # Try to find user by email or phone number
+    if "@" in subject:
+        user = db.query(User).filter(User.email == subject).first()
+    else:
+        user = db.query(User).filter(User.phone_number == subject).first()
+    
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user

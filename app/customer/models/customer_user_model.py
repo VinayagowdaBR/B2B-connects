@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from app.models.user_model import User
 
 class CustomerUser(User):
@@ -8,9 +9,11 @@ class CustomerUser(User):
     
     id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     
+    # Customer Type relationship
+    customer_type_id = Column(Integer, ForeignKey("customer_types.id"), nullable=True)
+    
     # Customer-specific fields
     full_name = Column(String, nullable=True)
-    phone_number = Column(String, nullable=True)
     address = Column(Text, nullable=True)
     city = Column(String, nullable=True)
     state = Column(String, nullable=True)
@@ -29,6 +32,9 @@ class CustomerUser(User):
     # Additional customer data fields
     notes = Column(Text, nullable=True)
     customer_status = Column(String, default="active")  # active, inactive, suspended
+    
+    # Relationship
+    customer_type = relationship("CustomerType", back_populates="customers")
     
     __mapper_args__ = {
         "polymorphic_identity": "customer",
