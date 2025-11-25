@@ -7,7 +7,10 @@ from app.admin.schemas.role_permission_schema import RoleCreate, RoleOut, Permis
 from app.admin.services.role_permission_service import RolePermissionService
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin - Role & Permission Management"]
+)
 service = RolePermissionService()
 
 @router.get("/roles", response_model=List[RoleOut])

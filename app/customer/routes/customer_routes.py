@@ -5,7 +5,10 @@ from app.customer.models.customer_user_model import CustomerUser
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/customer",
+    tags=["Customer - Profile"]
+)
 
 @router.get("/home")
 def customer_home(user: User = Depends(has_role("customer")), db: Session = Depends(get_db)):

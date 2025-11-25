@@ -5,7 +5,10 @@ from app.admin.models.admin_user_model import AdminUser
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin - Dashboard"]
+)
 
 @router.get("/dashboard")
 def admin_dashboard(user: User = Depends(has_role("admin")), db: Session = Depends(get_db)):

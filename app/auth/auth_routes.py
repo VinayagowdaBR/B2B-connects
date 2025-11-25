@@ -13,7 +13,10 @@ from app.models.role_model import Role
 from app.utils.validators import validate_phone_number
 from app.utils.email_service import email_service
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"]
+)
 
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):

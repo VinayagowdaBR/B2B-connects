@@ -7,7 +7,10 @@ from app.admin.schemas.customer_type_schema import CustomerTypeCreate, CustomerT
 from app.admin.services.customer_type_service import CustomerTypeService
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin/customer-type",
+    tags=["Admin - Customer Type"]
+)
 service = CustomerTypeService()
 
 @router.get("/", response_model=List[CustomerTypeResponse])

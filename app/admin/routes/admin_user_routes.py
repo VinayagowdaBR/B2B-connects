@@ -7,7 +7,10 @@ from app.admin.schemas.admin_user_schema import UserCreate, UserUpdate, UserOut,
 from app.admin.services.admin_user_service import AdminUserService
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin - User Management"]
+)
 service = AdminUserService()
 
 @router.get("/users", response_model=List[UserOut])

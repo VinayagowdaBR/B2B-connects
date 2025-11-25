@@ -7,7 +7,10 @@ from app.admin.schemas.state_schema import StateCreate, StateUpdate, StateOut, S
 from app.admin.services.state_service import StateService
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin/state",
+    tags=["Admin - State"]
+)
 service = StateService()
 
 @router.get("/", response_model=List[StateOutSimple])

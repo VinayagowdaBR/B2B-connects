@@ -7,7 +7,10 @@ from app.admin.schemas.district_schema import DistrictCreate, DistrictUpdate, Di
 from app.admin.services.district_service import DistrictService
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/admin/district",
+    tags=["Admin - District"]
+)
 service = DistrictService()
 
 @router.get("/", response_model=List[DistrictOut])
