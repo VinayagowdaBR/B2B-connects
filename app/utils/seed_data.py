@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user_model import User
 from app.admin.models.admin_user_model import AdminUser
+from app.admin.models.customer_type_model import CustomerType
 from app.models.role_model import Role
 from app.models.permission_model import Permission
 from app.core.security import get_password_hash
@@ -48,3 +49,50 @@ def seed_data(db: Session):
         print("Seeding complete: Admin user created in admin_users table.")
     else:
         print("Seeding complete: Admin user already exists.")
+
+    # Seed default customer type if not exists
+    default_customer_type = db.query(CustomerType).filter(CustomerType.is_default == True).first()
+    if not default_customer_type:
+        default_type = CustomerType(
+            name="Default Type",
+            description="Default customer type for new registrations",
+            is_default=True,
+            is_active=True
+        )
+        db.add(default_type)
+        db.commit()
+        print("Seeding complete: Default customer type created.")
+    else:
+        print("Seeding complete: Default customer type already exists.")
+    
+    # Seed default subscription plan if not exists
+    from app.subscriptions.models import SubscriptionPlan
+    
+    default_plan = db.query(SubscriptionPlan).filter(SubscriptionPlan.is_default == True).first()
+    if not default_plan:
+        default_features = {
+            "max_services": 10,
+            "max_products": 50,
+            "max_projects": 20,
+            "max_blog_posts": 100,
+            "max_team_members": 5,
+            "max_gallery_images": 100,
+            "modules": ["blog", "gallery", "testimonials", "services", "products", "projects"]
+        }
+        
+        free_plan = SubscriptionPlan(
+            name="Free Plan",
+            description="Perfect for getting started",
+            price=0.00,
+            currency="INR",
+            duration_days=30,
+            features=default_features,
+            is_default=True,
+            is_active=True,
+            trial_days=7
+        )
+        db.add(free_plan)
+        db.commit()
+        print("Seeding complete: Default subscription plan created.")
+    else:
+        print("Seeding complete: Default subscription plan already exists.")

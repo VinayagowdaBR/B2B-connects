@@ -23,7 +23,31 @@ class Settings(BaseSettings):
     # Frontend URL for reset link
     FRONTEND_URL: str = "http://localhost:3000"
     
+    # Payment Gateway Configuration
+    # Razorpay
+    RAZORPAY_KEY_ID: str = os.getenv("RAZORPAY_KEY_ID", "")
+    RAZORPAY_KEY_SECRET: str = os.getenv("RAZORPAY_KEY_SECRET", "")
+    
+    # Stripe
+    STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")
+    STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+    STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+    
+    # PhonePe
+    PHONEPE_MERCHANT_ID: str = os.getenv("PHONEPE_MERCHANT_ID", "")
+    PHONEPE_SALT_KEY: str = os.getenv("PHONEPE_SALT_KEY", "")
+    PHONEPE_SALT_INDEX: str = os.getenv("PHONEPE_SALT_INDEX", "1")
+    PHONEPE_BASE_URL: str = os.getenv("PHONEPE_BASE_URL", "https://api-preprod.phonepe.com/apis/hermes")  # UAT
+    
+    # Backend URL for webhooks
+    BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")
+    
+    # Subscription Settings
+    DEFAULT_SUBSCRIPTION_DAYS: int = 30
+    TRIAL_PERIOD_DAYS: int = 7
+    
     class Config:
         env_file = ".env"
 
 settings = Settings()
+

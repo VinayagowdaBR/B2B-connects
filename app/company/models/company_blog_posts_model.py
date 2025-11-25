@@ -1,28 +1,33 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
 
 class CompanyBlogPost(Base):
+    """Blog posts with tenant isolation"""
     __tablename__ = "company_blog_posts"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # TENANT ISOLATION
+    tenant_id = Column(Integer, ForeignKey("customer_users.id"), nullable=False, index=True)
 
-    title = Column(String, nullable=False)
-    slug = Column(String, nullable=False, index=True)
-    content = Column(Text, nullable=True) # LONGTEXT in MySQL, Text in generic SQLAlchemy
+    title = Column(String(255), nullable=False)
+    slug = Column(String(255), nullable=False, unique=True, index=True)
+    excerpt = Column(Text, nullable=True)
+    content = Column(Text, nullable=False)
 
-    author = Column(String, nullable=True)
-    tags = Column(JSON, nullable=True)
-
-    thumbnail_url = Column(String, nullable=True)
+    featured_image_url = Column(String(500), nullable=True)
+    author = Column(String(255), nullable=True)
+    
+    category = Column(String(100), nullable=True)
+    tags = Column(String(500), nullable=True)  # Comma-separated
 
     published_at = Column(DateTime(timezone=True), nullable=True)
-    status = Column(String, default="draft") # draft/published
+    status = Column(String(20), default="draft")  # draft/published
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationship
-    customer = relationship("User", backref="company_blog_posts")
+    customer = relationship("CustomerUser", backref="company_blog_posts")

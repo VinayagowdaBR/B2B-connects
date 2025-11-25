@@ -4,41 +4,54 @@ from sqlalchemy.sql import func
 from app.database.base import Base
 
 class CompanyInfo(Base):
+    """
+    Stores ALL business information for a customer/tenant.
+    This is where company details belong.
+    
+    tenant_id = customer_id (one-to-one relationship)
+    """
     __tablename__ = "company_info"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    
+    # TENANT ISOLATION: This is the customer/tenant who owns this company info
+    tenant_id = Column(Integer, ForeignKey("customer_users.id"), nullable=False, unique=True, index=True)
 
-    company_name = Column(String, nullable=False)
-    tagline = Column(String, nullable=True)
+    # Business details
+    company_name = Column(String(255), nullable=False)
+    address = Column(Text, nullable=True)
+    city = Column(String(100), nullable=True)
+    state = Column(String(100), nullable=True)
+    country = Column(String(100), nullable=True)
+    postal_code = Column(String(20), nullable=True)
+    
+    # Company profile fields
+    tagline = Column(String(255), nullable=True)
     about = Column(Text, nullable=True)
     mission = Column(Text, nullable=True)
     vision = Column(Text, nullable=True)
     values = Column(Text, nullable=True)
-
     founding_year = Column(Integer, nullable=True)
 
-    logo_url = Column(String, nullable=True)
-    hero_image_url = Column(String, nullable=True)
+    # Media
+    logo_url = Column(String(500), nullable=True)
+    hero_image_url = Column(String(500), nullable=True)
 
-    address = Column(Text, nullable=True)
-    city = Column(String, nullable=True)
-    state = Column(String, nullable=True)
-    country = Column(String, nullable=True)
-    postal_code = Column(String, nullable=True)
+    # Contact
+    email = Column(String(255), nullable=True)
+    phone = Column(String(20), nullable=True)
+    whatsapp = Column(String(20), nullable=True)
 
-    email = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    whatsapp = Column(String, nullable=True)
+    # Social media
+    website_url = Column(String(500), nullable=True)
+    linkedin_url = Column(String(500), nullable=True)
+    instagram_url = Column(String(500), nullable=True)
+    facebook_url = Column(String(500), nullable=True)
+    youtube_url = Column(String(500), nullable=True)
 
-    website_url = Column(String, nullable=True)
-    linkedin_url = Column(String, nullable=True)
-    instagram_url = Column(String, nullable=True)
-    facebook_url = Column(String, nullable=True)
-    youtube_url = Column(String, nullable=True)
-
+    # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relationship
-    customer = relationship("User", backref="company_info")
+    # Relationships
+    customer = relationship("CustomerUser", back_populates="company_info")

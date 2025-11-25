@@ -60,9 +60,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.post("/register")
 def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
     """
-    Register with email and/or phone number
-    - At least one of email or phone_number must be provided
-    - Both can be provided
+    Register new customer with automatic subscription assignment.
+    
+    Steps:
+    1. Create CustomerUser (minimal fields)
+    2. Assign default subscription
+    3. Create CompanyInfo entry (for business data)
     """
     # Check for duplicate email
     if user_data.email and db.query(User).filter(User.email == user_data.email).first():
@@ -90,29 +93,64 @@ def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
             detail="Default customer type is not configured. Please contact administrator."
         )
     
-    # Create customer user with dedicated table and default customer type
+    # 1. Create customer user (minimal fields only)
     new_user = CustomerUser(
-        email=user_data.email, 
+        email=user_data.email,
         phone_number=normalized_phone,
         hashed_password=hashed_pw,
         user_type="customer",
+        full_name=user_data.full_name if hasattr(user_data, 'full_name') else None,
         customer_type_id=default_customer_type.id
     )
     
     customer_role = db.query(Role).filter(Role.name == "customer").first()
     if customer_role:
         new_user.roles.append(customer_role)
-        
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     
+    # 2. Assign default subscription
+    from app.subscriptions.service import SubscriptionService
+    subscription_service = SubscriptionService(db)
+    
+    try:
+        subscription = subscription_service.assign_default_subscription(new_user.id)
+    except ValueError as e:
+        # Rollback user creation if subscription fails
+        db.delete(new_user)
+        db.commit()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to assign subscription: {str(e)}"
+        )
+    
+    # 3. Create CompanyInfo entry (business data goes here)
+    from app.company.models.company_info_model import CompanyInfo
+    company_info = CompanyInfo(
+        tenant_id=new_user.id,
+        company_name=user_data.company_name if hasattr(user_data, 'company_name') and user_data.company_name else f"Company {new_user.id}"
+    )
+    db.add(company_info)
+    db.commit()
+    
     return {
         "message": "User created successfully",
-        "customer_type": default_customer_type.name,
-        "email": new_user.email,
-        "phone_number": new_user.phone_number
+        "customer": {
+            "id": new_user.id,
+            "email": new_user.email,
+            "full_name": new_user.full_name,
+            "customer_type": default_customer_type.name,
+            "subscription": {
+                "plan_name": subscription.plan.name,
+                "status": subscription.status,
+                "end_date": subscription.end_date.isoformat(),
+                "trial_days": subscription.plan.trial_days
+            }
+        }
     }
+
 
 @router.post("/forgot-password", response_model=MessageResponse)
 def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db)):

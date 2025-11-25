@@ -1,40 +1,34 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.models.user_model import User
 
 class CustomerUser(User):
-    """Customer-specific user table with additional fields for large-scale data"""
+    """
+    Customer user with ONLY identity fields.
+    Business data (address, company_name, etc.) moved to CompanyInfo.
+    
+    Rule: Keep this table minimal - only authentication and identity.
+    """
     __tablename__ = "customer_users"
     
     id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     
-    # Customer Type relationship
+    # Identity fields only
+    full_name = Column(String(255), nullable=True)
+    
+    # Customer classification (for categorization, NOT access control)
     customer_type_id = Column(Integer, ForeignKey("customer_types.id"), nullable=True)
     
-    # Customer-specific fields
-    full_name = Column(String, nullable=True)
-    address = Column(Text, nullable=True)
-    city = Column(String, nullable=True)
-    state = Column(String, nullable=True)
-    country = Column(String, nullable=True)
-    postal_code = Column(String, nullable=True)
-    
-    # Business fields
-    company_name = Column(String, nullable=True)
-    tax_id = Column(String, nullable=True)
-    
-    # Metadata
+    # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     last_login = Column(DateTime(timezone=True), nullable=True)
     
-    # Additional customer data fields
-    notes = Column(Text, nullable=True)
-    customer_status = Column(String, default="active")  # active, inactive, suspended
-    
-    # Relationship
+    # Relationships
     customer_type = relationship("CustomerType", back_populates="customers")
+    subscription = relationship("CustomerSubscription", back_populates="customer", uselist=False)
+    company_info = relationship("CompanyInfo", back_populates="customer", uselist=False)
     
     __mapper_args__ = {
         "polymorphic_identity": "customer",
