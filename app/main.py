@@ -10,6 +10,8 @@ from app.admin.routes.role_permission_routes import router as role_permission_ro
 from app.admin.routes.state_routes import router as state_router
 from app.admin.routes.district_routes import router as district_router
 from app.admin.routes.customer_type_routes import router as customer_type_router
+from app.admin.routes.membership_routes import router as membership_router
+from app.customer.routes.membership_customer_routes import router as membership_customer_router
 from app.utils.seed_data import seed_data
 
 # Company Routes
@@ -48,6 +50,9 @@ from app.company.models.company_careers_model import CompanyCareer
 from app.company.models.company_inquiries_model import CompanyInquiry
 from app.company.models.company_gallery_images_model import CompanyGalleryImage
 
+# Membership Models
+from app.admin.models.membership_model import MembershipPlan, CustomerMembership, MembershipPaymentHistory
+
 # Create tables
 Base.metadata.create_all(bind=engine)
 
@@ -59,6 +64,7 @@ tags_metadata = [
     {"name": "Admin - State", "description": "Manage States"},
     {"name": "Admin - District", "description": "Manage Districts"},
     {"name": "Admin - Customer Type", "description": "Manage Customer Types"},
+    {"name": "Admin - Membership Management", "description": "Manage Membership Plans and Assignments"},
     {"name": "Admin - Company Info", "description": "Manage Company Info"},
     {"name": "Admin - Company Services", "description": "Manage Company Services"},
     {"name": "Admin - Company Products", "description": "Manage Company Products"},
@@ -70,6 +76,7 @@ tags_metadata = [
     {"name": "Admin - Company Inquiries", "description": "Manage Company Inquiries"},
     {"name": "Admin - Company Gallery Images", "description": "Manage Company Gallery Images"},
     {"name": "Customer - Profile", "description": "Customer Profile"},
+    {"name": "Customer - Membership", "description": "View Membership Status"},
     {"name": "Customer - Company Info", "description": "Manage Company Info"},
     {"name": "Customer - Company Services", "description": "Manage Company Services"},
     {"name": "Customer - Company Products", "description": "Manage Company Products"},
@@ -97,6 +104,8 @@ app.include_router(role_permission_router)
 app.include_router(state_router)
 app.include_router(district_router)
 app.include_router(customer_type_router)
+app.include_router(membership_router)
+app.include_router(membership_customer_router)
 
 # Company Routes - Customer
 app.include_router(company_info_routes.customer_router)
