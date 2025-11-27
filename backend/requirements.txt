@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pydantic-settings
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==3.2.0
+email-validator
+psycopg2-binary
+razorpay
+stripe
+requests
