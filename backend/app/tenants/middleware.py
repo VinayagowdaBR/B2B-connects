@@ -18,7 +18,7 @@ class TenantMiddleware(BaseHTTPMiddleware):
         
         # Skip tenant injection for public routes
         public_routes = ["/auth/login", "/auth/register", "/auth/forgot-password", "/auth/reset-password", 
-                        "/docs", "/openapi.json", "/redoc", "/", "/payments/webhook"]
+                        "/docs", "/openapi.json", "/redoc", "/", "/payments/webhook", "/public"]
         
         if any(request.url.path.startswith(route) for route in public_routes):
             response = await call_next(request)

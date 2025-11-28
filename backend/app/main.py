@@ -158,6 +158,10 @@ app.include_router(auth_router)
 # Payment Webhooks
 app.include_router(payment_webhook_router)
 
+# Public Routes
+from app.routes.public_routes import router as public_router
+app.include_router(public_router)
+
 # Admin Routes
 app.include_router(admin_dashboard_router)
 app.include_router(admin_user_router)

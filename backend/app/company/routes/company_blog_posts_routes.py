@@ -31,7 +31,7 @@ def get_my_blog_posts(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyBlogPostService(db)
-    return service.get_by_customer(current_user.id, skip, limit)
+    return service.get_by_tenant(current_user.id, skip, limit)
 
 @customer_router.get("/{id}", response_model=CompanyBlogPostResponse)
 def get_my_blog_post(
@@ -40,7 +40,7 @@ def get_my_blog_post(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyBlogPostService(db)
-    item = service.get_by_id_and_customer(id, current_user.id)
+    item = service.get_by_id_and_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Blog post not found")
     return item
@@ -53,7 +53,7 @@ def update_my_blog_post(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyBlogPostService(db)
-    item = service.update_by_customer(id, current_user.id, blog_post_in)
+    item = service.update_by_tenant(id, current_user.id, blog_post_in)
     if not item:
         raise HTTPException(status_code=404, detail="Blog post not found")
     return item
@@ -65,7 +65,7 @@ def delete_my_blog_post(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyBlogPostService(db)
-    item = service.delete_by_customer(id, current_user.id)
+    item = service.delete_by_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Blog post not found")
     return item

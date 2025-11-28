@@ -56,6 +56,8 @@ class RegisterRequest(BaseModel):
     email: Optional[str] = Field(None, description="Email address")
     phone_number: Optional[str] = Field(None, description="Phone number (min 10 digits)")
     password: str
+    full_name: Optional[str] = Field(None, description="Full name of the user")
+    company_name: Optional[str] = Field(None, description="Company name for the tenant")
     
     @field_validator('phone_number')
     @classmethod

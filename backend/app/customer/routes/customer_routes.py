@@ -23,6 +23,5 @@ def customer_home(user: User = Depends(has_role("customer")), db: Session = Depe
             "roles": [r.name for r in user.roles],
             "full_name": customer.full_name if customer else None,
             "phone_number": customer.phone_number if customer else None,
-            "customer_status": customer.customer_status if customer else None,
         }
     }

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON, Float
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON, Float, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -28,6 +28,7 @@ class CompanyProduct(Base):
     gallery_images = Column(JSON, nullable=True)
 
     stock_status = Column(String(20), default="in_stock") # in_stock/out_of_stock
+    publish_to_portfolio = Column(Boolean, default=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

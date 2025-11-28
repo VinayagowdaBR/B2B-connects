@@ -10,8 +10,10 @@ class CompanyGalleryImageBase(BaseModel):
 class CompanyGalleryImageCreate(CompanyGalleryImageBase):
     pass
 
-class CompanyGalleryImageUpdate(CompanyGalleryImageBase):
-    pass
+class CompanyGalleryImageUpdate(BaseModel):
+    image_title: Optional[str] = None
+    image_url: Optional[str] = None
+    category: Optional[str] = None
 
 class CompanyGalleryImageResponse(CompanyGalleryImageBase):
     id: int

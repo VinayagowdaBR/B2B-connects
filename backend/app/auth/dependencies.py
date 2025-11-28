@@ -22,10 +22,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=401, detail="Invalid token")
     
     # Try to find user by email or phone number
+    from sqlalchemy.orm import joinedload
     if "@" in subject:
-        user = db.query(User).filter(User.email == subject).first()
+        user = db.query(User).options(joinedload(User.roles)).filter(User.email == subject).first()
     else:
-        user = db.query(User).filter(User.phone_number == subject).first()
+        user = db.query(User).options(joinedload(User.roles)).filter(User.phone_number == subject).first()
     
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
@@ -34,7 +35,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 def has_role(role_name: str):
     def role_checker(user: User = Depends(get_current_user)):
         role_names = [r.name for r in user.roles]
+        print(f"DEBUG: User {user.email} has roles: {role_names}")
         if role_name not in role_names:
+             print(f"DEBUG: Required role {role_name} not found in {role_names}")
              raise HTTPException(status_code=403, detail=f"Role {role_name} required")
         return user
     return role_checker

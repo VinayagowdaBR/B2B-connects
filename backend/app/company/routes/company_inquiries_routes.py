@@ -31,7 +31,7 @@ def get_my_inquiries(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyInquiryService(db)
-    return service.get_by_customer(current_user.id, skip, limit)
+    return service.get_by_tenant(current_user.id, skip, limit)
 
 @customer_router.get("/{id}", response_model=CompanyInquiryResponse)
 def get_my_inquiry(
@@ -40,7 +40,7 @@ def get_my_inquiry(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyInquiryService(db)
-    item = service.get_by_id_and_customer(id, current_user.id)
+    item = service.get_by_id_and_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Inquiry not found")
     return item
@@ -53,7 +53,7 @@ def update_my_inquiry(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyInquiryService(db)
-    item = service.update_by_customer(id, current_user.id, inquiry_in)
+    item = service.update_by_tenant(id, current_user.id, inquiry_in)
     if not item:
         raise HTTPException(status_code=404, detail="Inquiry not found")
     return item
@@ -65,7 +65,7 @@ def delete_my_inquiry(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyInquiryService(db)
-    item = service.delete_by_customer(id, current_user.id)
+    item = service.delete_by_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Inquiry not found")
     return item

@@ -9,12 +9,19 @@ class CompanyTestimonialBase(BaseModel):
     message: Optional[str] = None
     rating: Optional[int] = None
     client_photo_url: Optional[str] = None
+    publish_to_portfolio: Optional[bool] = False
 
 class CompanyTestimonialCreate(CompanyTestimonialBase):
     pass
 
-class CompanyTestimonialUpdate(CompanyTestimonialBase):
-    pass
+class CompanyTestimonialUpdate(BaseModel):
+    client_name: Optional[str] = None
+    client_designation: Optional[str] = None
+    company: Optional[str] = None
+    message: Optional[str] = None
+    rating: Optional[int] = None
+    client_photo_url: Optional[str] = None
+    publish_to_portfolio: Optional[bool] = None
 
 class CompanyTestimonialResponse(CompanyTestimonialBase):
     id: int

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, JSON, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -31,6 +31,7 @@ class CompanyProject(Base):
     end_date = Column(DateTime(timezone=True), nullable=True)
 
     status = Column(String(20), default="completed")  # ongoing/completed
+    publish_to_portfolio = Column(Boolean, default=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

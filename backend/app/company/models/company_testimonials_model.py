@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -21,6 +21,7 @@ class CompanyTestimonial(Base):
     rating = Column(Integer, nullable=True)  # 1-5 stars
 
     is_featured = Column(Integer, default=0)  # 0 or 1
+    publish_to_portfolio = Column(Boolean, default=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

@@ -14,12 +14,24 @@ class CompanyProjectBase(BaseModel):
     cover_image_url: Optional[str] = None
     gallery: Optional[List[str]] = None
     testimonials_id: Optional[int] = None
+    publish_to_portfolio: Optional[bool] = False
 
 class CompanyProjectCreate(CompanyProjectBase):
     pass
 
-class CompanyProjectUpdate(CompanyProjectBase):
-    pass
+class CompanyProjectUpdate(BaseModel):
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    client_name: Optional[str] = None
+    industry: Optional[str] = None
+    challenge: Optional[str] = None
+    solution: Optional[str] = None
+    results: Optional[str] = None
+    project_date: Optional[date] = None
+    cover_image_url: Optional[str] = None
+    gallery: Optional[List[str]] = None
+    testimonials_id: Optional[int] = None
+    publish_to_portfolio: Optional[bool] = None
 
 class CompanyProjectResponse(CompanyProjectBase):
     id: int

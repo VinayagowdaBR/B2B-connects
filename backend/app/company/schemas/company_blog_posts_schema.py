@@ -15,8 +15,15 @@ class CompanyBlogPostBase(BaseModel):
 class CompanyBlogPostCreate(CompanyBlogPostBase):
     pass
 
-class CompanyBlogPostUpdate(CompanyBlogPostBase):
-    pass
+class CompanyBlogPostUpdate(BaseModel):
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    content: Optional[str] = None
+    author: Optional[str] = None
+    tags: Optional[List[str]] = None
+    thumbnail_url: Optional[str] = None
+    published_at: Optional[datetime] = None
+    status: Optional[str] = None
 
 class CompanyBlogPostResponse(CompanyBlogPostBase):
     id: int

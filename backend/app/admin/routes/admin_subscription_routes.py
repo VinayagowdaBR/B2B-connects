@@ -170,7 +170,7 @@ def get_all_customer_subscriptions(
     from datetime import datetime, timezone
     for sub in subscriptions:
         if sub.status in ["ACTIVE", "TRIAL"]:
-            days_left = (sub.end_date - datetime.now(timezone.utc)).days
+            days_left = (sub.end_date.replace(tzinfo=timezone.utc) - datetime.now(timezone.utc)).days
             sub.days_remaining = max(0, days_left)
         else:
             sub.days_remaining = 0
@@ -205,7 +205,7 @@ def assign_subscription_to_customer(
         
         # Calculate days remaining
         from datetime import datetime, timezone
-        days_left = (subscription.end_date - datetime.now(timezone.utc)).days
+        days_left = (subscription.end_date.replace(tzinfo=timezone.utc) - datetime.now(timezone.utc)).days
         subscription.days_remaining = max(0, days_left)
         
         return subscription
@@ -243,7 +243,7 @@ def renew_subscription(
         
         # Calculate days remaining
         from datetime import datetime, timezone
-        days_left = (subscription.end_date - datetime.now(timezone.utc)).days
+        days_left = (subscription.end_date.replace(tzinfo=timezone.utc) - datetime.now(timezone.utc)).days
         subscription.days_remaining = max(0, days_left)
         
         return subscription

@@ -31,7 +31,7 @@ def get_my_projects(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyProjectService(db)
-    return service.get_by_customer(current_user.id, skip, limit)
+    return service.get_by_tenant(current_user.id, skip, limit)
 
 @customer_router.get("/{id}", response_model=CompanyProjectResponse)
 def get_my_project(
@@ -40,7 +40,7 @@ def get_my_project(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyProjectService(db)
-    item = service.get_by_id_and_customer(id, current_user.id)
+    item = service.get_by_id_and_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Project not found")
     return item
@@ -53,7 +53,7 @@ def update_my_project(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyProjectService(db)
-    item = service.update_by_customer(id, current_user.id, project_in)
+    item = service.update_by_tenant(id, current_user.id, project_in)
     if not item:
         raise HTTPException(status_code=404, detail="Project not found")
     return item
@@ -65,7 +65,7 @@ def delete_my_project(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyProjectService(db)
-    item = service.delete_by_customer(id, current_user.id)
+    item = service.delete_by_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Project not found")
     return item

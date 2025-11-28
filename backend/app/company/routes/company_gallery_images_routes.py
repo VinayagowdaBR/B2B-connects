@@ -31,7 +31,7 @@ def get_my_gallery_images(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyGalleryImageService(db)
-    return service.get_by_customer(current_user.id, skip, limit)
+    return service.get_by_tenant(current_user.id, skip, limit)
 
 @customer_router.get("/{id}", response_model=CompanyGalleryImageResponse)
 def get_my_gallery_image(
@@ -40,7 +40,7 @@ def get_my_gallery_image(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyGalleryImageService(db)
-    item = service.get_by_id_and_customer(id, current_user.id)
+    item = service.get_by_id_and_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Gallery image not found")
     return item
@@ -53,7 +53,7 @@ def update_my_gallery_image(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyGalleryImageService(db)
-    item = service.update_by_customer(id, current_user.id, gallery_image_in)
+    item = service.update_by_tenant(id, current_user.id, gallery_image_in)
     if not item:
         raise HTTPException(status_code=404, detail="Gallery image not found")
     return item
@@ -65,7 +65,7 @@ def delete_my_gallery_image(
     current_user: User = Depends(has_role("customer"))
 ):
     service = CompanyGalleryImageService(db)
-    item = service.delete_by_customer(id, current_user.id)
+    item = service.delete_by_tenant(id, current_user.id)
     if not item:
         raise HTTPException(status_code=404, detail="Gallery image not found")
     return item
