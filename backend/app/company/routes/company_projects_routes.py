@@ -14,7 +14,7 @@ customer_router = APIRouter(
     tags=["Customer - Company Projects"]
 )
 
-@customer_router.post("/", response_model=CompanyProjectResponse)
+@customer_router.post("/", response_model=CompanyProjectResponse, status_code=status.HTTP_201_CREATED)
 def create_project(
     project_in: CompanyProjectCreate,
     db: Session = Depends(get_db),

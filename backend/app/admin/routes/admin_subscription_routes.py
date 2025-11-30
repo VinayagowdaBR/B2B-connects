@@ -212,7 +212,7 @@ def assign_subscription_to_customer(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/subscriptions/{subscription_id}/cancel")
+@router.post("/{subscription_id}/cancel")
 def cancel_subscription(
     subscription_id: int,
     db: Session = Depends(get_db),
@@ -230,7 +230,7 @@ def cancel_subscription(
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-@router.post("/subscriptions/{subscription_id}/renew", response_model=CustomerSubscriptionResponse)
+@router.post("/{subscription_id}/renew", response_model=CustomerSubscriptionResponse)
 def renew_subscription(
     subscription_id: int,
     db: Session = Depends(get_db),

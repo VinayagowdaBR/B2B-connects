@@ -14,7 +14,7 @@ customer_router = APIRouter(
     tags=["Customer - Company Services"]
 )
 
-@customer_router.post("/", response_model=CompanyServiceResponse)
+@customer_router.post("/", response_model=CompanyServiceResponse, status_code=status.HTTP_201_CREATED)
 def create_service(
     service_in: CompanyServiceCreate,
     db: Session = Depends(get_db),
