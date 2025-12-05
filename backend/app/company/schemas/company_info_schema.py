@@ -29,8 +29,29 @@ class CompanyInfoBase(BaseModel):
 class CompanyInfoCreate(CompanyInfoBase):
     pass
 
-class CompanyInfoUpdate(CompanyInfoBase):
-    pass
+class CompanyInfoUpdate(BaseModel):
+    company_name: Optional[str] = None
+    tagline: Optional[str] = None
+    about: Optional[str] = None
+    mission: Optional[str] = None
+    vision: Optional[str] = None
+    values: Optional[str] = None
+    founding_year: Optional[int] = None
+    logo_url: Optional[str] = None
+    hero_image_url: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    postal_code: Optional[str] = None
+    email: Optional[str] = None  # Changed from EmailStr to allow empty strings
+    phone: Optional[str] = None
+    whatsapp: Optional[str] = None
+    website_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    facebook_url: Optional[str] = None
+    youtube_url: Optional[str] = None
 
 class CompanyInfoResponse(CompanyInfoBase):
     id: int

@@ -45,7 +45,7 @@ const AdminSidebar = () => {
     { name: 'Roles & Permissions', icon: Shield, path: '/admin/roles' },
     { name: 'States & Districts', icon: MapPin, path: '/admin/locations' },
     { name: 'Customer Types', icon: UserCog, path: '/admin/customer-types' },
-    { name: 'Company Info', icon: Building2, path: '/admin/company-info' },
+    { name: 'Company Info', icon: Building2, path: '/admin/companies' },
     { name: 'Services', icon: Package, path: '/admin/services' },
     { name: 'Products', icon: Package, path: '/admin/products' },
     { name: 'Projects', icon: Briefcase, path: '/admin/projects' },

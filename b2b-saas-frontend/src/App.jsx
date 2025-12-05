@@ -7,12 +7,17 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
+import SubscriptionManagement from '@/pages/admin/SubscriptionManagement';
+
 
 // Admin Pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import UserManagement from '@/pages/admin/UserManagement';
 import RolesPermissions from '@/pages/admin/RolesPermissions';
 import LocationsManagement from '@/pages/admin/LocationsManagement';
+import CustomerTypesManagement from '@/pages/admin/CustomerTypesManagement';
+import CompanyInfoManagement from '@/pages/admin/CompanyInfoManagement';
+
 
 // Customer Pages
 import CustomerDashboard from '@/pages/customer/CustomerDashboard';
@@ -66,7 +71,17 @@ function App() {
             }
           />
 
-          
+          {/* Subscription Routes */}
+          <Route
+              path="/admin/subscriptions"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <SubscriptionManagement />
+                </ProtectedRoute>
+              }
+            />
+
+
           <Route
            path="/admin/locations"
             element={
@@ -75,6 +90,27 @@ function App() {
               </ProtectedRoute>
             }
           />
+  
+          <Route
+          path="/admin/companies"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <CompanyInfoManagement />
+            </ProtectedRoute>
+          }
+        />
+
+
+            {/* customer Type routes */}
+          <Route
+            path="/admin/customer-types"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CustomerTypesManagement />
+              </ProtectedRoute>
+            }
+          />
+
 
           {/* Catch all - redirect to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
