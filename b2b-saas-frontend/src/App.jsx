@@ -8,6 +8,16 @@ import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
 import SubscriptionManagement from '@/pages/admin/SubscriptionManagement';
+import CompanyServicesManagement from '@/pages/admin/CompanyServicesManagement';
+import CompanyProductsManagement from '@/pages/admin/CompanyProductsManagement';
+import CompanyProjectsManagement from '@/pages/admin/CompanyProjectsManagement';
+import CompanyTestimonialsManagement from '@/pages/admin/CompanyTestimonialsManagement';
+import CompanyBlogPostsManagement from '@/pages/admin/CompanyBlogPostsManagement';
+import CompanyTeamMembersManagement from '@/pages/admin/CompanyTeamMembersManagement';
+import CompanyCareersManagement from '@/pages/admin/CompanyCareersManagement';
+import CompanyInquiriesManagement from '@/pages/admin/CompanyInquiriesManagement';
+import CompanyGalleryManagement from '@/pages/admin/CompanyGalleryManagement';
+
 
 
 // Admin Pages
@@ -99,6 +109,95 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+            path="/admin/services"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyServicesManagement />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyProductsManagement />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
+              path="/admin/projects"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <CompanyProjectsManagement />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/testimonials"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <CompanyTestimonialsManagement />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* Blog Posts Route */}
+              <Route
+                path="/admin/blog-posts"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <CompanyBlogPostsManagement />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Team Members Route */}
+              <Route
+                path="/admin/team-members"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <CompanyTeamMembersManagement />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                  path="/admin/careers"
+                  element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                      <CompanyCareersManagement />
+                    </ProtectedRoute>
+                  }
+                />
+
+
+                <Route
+                    path="/admin/inquiries"
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <CompanyInquiriesManagement />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                <Route
+                  path="/admin/gallery"
+                  element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                      <CompanyGalleryManagement />
+                    </ProtectedRoute>
+                  }
+                />
+
+
 
 
             {/* customer Type routes */}

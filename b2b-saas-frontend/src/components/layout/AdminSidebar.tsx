@@ -15,12 +15,20 @@ import {
   UserCog,
   Package,
   FileText,
-  Image,
   Briefcase,
   MessageSquare,
   Star,
   Menu,
   X,
+  ShoppingBag,
+  FolderOpen,
+  MessageCircle,
+  UserCheck,
+  Newspaper,
+  UserCircle,
+  Images,
+  Mail,
+  Tag,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -28,6 +36,7 @@ interface MenuItem {
   icon: any;
   path: string;
   badge?: string;
+  category?: string;
 }
 
 const AdminSidebar = () => {
@@ -38,24 +47,33 @@ const AdminSidebar = () => {
   const { logout, user } = useAuth();
 
   const menuItems: MenuItem[] = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-    { name: 'User Management', icon: Users, path: '/admin/users' },
-    { name: 'Customers', icon: Building2, path: '/admin/customers' },
-    { name: 'Subscriptions', icon: CreditCard, path: '/admin/subscriptions' },
-    { name: 'Roles & Permissions', icon: Shield, path: '/admin/roles' },
-    { name: 'States & Districts', icon: MapPin, path: '/admin/locations' },
-    { name: 'Customer Types', icon: UserCog, path: '/admin/customer-types' },
-    { name: 'Company Info', icon: Building2, path: '/admin/companies' },
-    { name: 'Services', icon: Package, path: '/admin/services' },
-    { name: 'Products', icon: Package, path: '/admin/products' },
-    { name: 'Projects', icon: Briefcase, path: '/admin/projects' },
-    { name: 'Testimonials', icon: Star, path: '/admin/testimonials' },
-    { name: 'Team Members', icon: Users, path: '/admin/team-members' },
-    { name: 'Blog Posts', icon: FileText, path: '/admin/blog-posts' },
-    { name: 'Careers', icon: Briefcase, path: '/admin/careers' },
-    { name: 'Inquiries', icon: MessageSquare, path: '/admin/inquiries' },
-    { name: 'Gallery', icon: Image, path: '/admin/gallery' },
-    { name: 'Settings', icon: Settings, path: '/admin/settings' },
+    // Core Admin
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard', category: 'Core' },
+    { name: 'User Management', icon: Users, path: '/admin/users', category: 'Core' },
+    { name: 'Customers', icon: Building2, path: '/admin/customers', category: 'Core' },
+    { name: 'Subscriptions', icon: CreditCard, path: '/admin/subscriptions', category: 'Core' },
+    
+    // System Management
+    { name: 'Roles & Permissions', icon: Shield, path: '/admin/roles', category: 'System' },
+    { name: 'States & Districts', icon: MapPin, path: '/admin/locations', category: 'System' },
+    { name: 'Customer Types', icon: UserCog, path: '/admin/customer-types', category: 'System' },
+    
+    // Company Content
+    { name: 'Company Info', icon: Building2, path: '/admin/companies', category: 'Content' },
+    { name: 'Services', icon: Tag, path: '/admin/services', category: 'Content' },
+    { name: 'Products', icon: ShoppingBag, path: '/admin/products', category: 'Content' },
+    { name: 'Projects', icon: FolderOpen, path: '/admin/projects', category: 'Content' },
+    { name: 'Testimonials', icon: MessageCircle, path: '/admin/testimonials', category: 'Content' },
+    { name: 'Team Members', icon: UserCheck, path: '/admin/team-members', category: 'Content' },
+    { name: 'Blog Posts', icon: Newspaper, path: '/admin/blog-posts', category: 'Content' },
+    { name: 'Careers', icon: Briefcase, path: '/admin/careers', category: 'Content' },
+    
+    // Communication
+    { name: 'Inquiries', icon: Mail, path: '/admin/inquiries', category: 'Communication' },
+    { name: 'Gallery', icon: Images, path: '/admin/gallery', category: 'Content' },
+    
+    // Settings
+    { name: 'Settings', icon: Settings, path: '/admin/settings', category: 'System' },
   ];
 
   const handleLogout = () => {
@@ -64,6 +82,18 @@ const AdminSidebar = () => {
   };
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Group menu items by category
+  const groupedMenuItems = menuItems.reduce((acc, item) => {
+    const category = item.category || 'Other';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(item);
+    return acc;
+  }, {} as Record<string, MenuItem[]>);
+
+  const categoryOrder = ['Core', 'System', 'Content', 'Communication'];
 
   return (
     <>
@@ -79,13 +109,13 @@ const AdminSidebar = () => {
       <aside
         className={`
           fixed top-0 left-0 h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-purple-800 
-          text-white transition-all duration-300 z-40 shadow-2xl
+          text-white transition-all duration-300 z-40 shadow-2xl flex flex-col
           ${isCollapsed ? 'w-20' : 'w-64'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
+        {/* Header - Fixed at top */}
+        <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-white/10">
           {!isCollapsed && (
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center">
@@ -109,8 +139,8 @@ const AdminSidebar = () => {
           </button>
         </div>
 
-        {/* User Info */}
-        <div className="p-4 border-b border-white/10">
+        {/* User Info - Fixed below header */}
+        <div className="flex-shrink-0 p-4 border-b border-white/10">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center font-semibold">
               {user?.email?.charAt(0).toUpperCase() || 'A'}
@@ -124,39 +154,58 @@ const AdminSidebar = () => {
           </div>
         </div>
 
-        {/* Menu Items */}
-        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`
-                flex items-center space-x-3 px-3 py-3 rounded-lg transition-all
-                ${isActive(item.path)
-                  ? 'bg-white/20 text-white shadow-lg'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
-                }
-                ${isCollapsed ? 'justify-center' : ''}
-              `}
-              title={isCollapsed ? item.name : ''}
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {!isCollapsed && (
-                <>
-                  <span className="flex-1 text-sm font-medium">{item.name}</span>
-                  {item.badge && (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
-                      {item.badge}
-                    </span>
-                  )}
-                </>
-              )}
-            </Link>
-          ))}
+        {/* Menu Items - Scrollable area */}
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30">
+          {categoryOrder.map((category) => {
+            const items = groupedMenuItems[category];
+            if (!items || items.length === 0) return null;
+
+            return (
+              <div key={category}>
+                {!isCollapsed && (
+                  <div className="px-3 mb-2">
+                    <p className="text-xs font-semibold text-white/40 uppercase tracking-wider">
+                      {category}
+                    </p>
+                  </div>
+                )}
+                <div className="space-y-1">
+                  {items.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMobileOpen(false)}
+                      className={`
+                        flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all
+                        ${isActive(item.path)
+                          ? 'bg-white/20 text-white shadow-lg'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
+                        }
+                        ${isCollapsed ? 'justify-center' : ''}
+                      `}
+                      title={isCollapsed ? item.name : ''}
+                    >
+                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      {!isCollapsed && (
+                        <>
+                          <span className="flex-1 text-sm font-medium">{item.name}</span>
+                          {item.badge && (
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
+                              {item.badge}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </nav>
 
-        {/* Logout Button */}
-        <div className="p-4 border-t border-white/10">
+        {/* Logout Button - Fixed at bottom */}
+        <div className="flex-shrink-0 p-4 border-t border-white/10">
           <button
             onClick={handleLogout}
             className={`

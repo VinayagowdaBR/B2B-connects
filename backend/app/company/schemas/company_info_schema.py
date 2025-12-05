@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, field_validator
 from typing import Optional
 from datetime import datetime
 
@@ -17,7 +17,7 @@ class CompanyInfoBase(BaseModel):
     state: Optional[str] = None
     country: Optional[str] = None
     postal_code: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None  # Changed from EmailStr to allow empty strings from DB
     phone: Optional[str] = None
     whatsapp: Optional[str] = None
     website_url: Optional[str] = None
@@ -25,6 +25,14 @@ class CompanyInfoBase(BaseModel):
     instagram_url: Optional[str] = None
     facebook_url: Optional[str] = None
     youtube_url: Optional[str] = None
+    
+    @field_validator('email', mode='before')
+    @classmethod
+    def empty_string_to_none(cls, v):
+        """Convert empty strings to None for optional email field."""
+        if v == '':
+            return None
+        return v
 
 class CompanyInfoCreate(CompanyInfoBase):
     pass
