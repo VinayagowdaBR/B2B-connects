@@ -124,32 +124,30 @@ const CompanyProductsManagement = () => {
 
       <main className="flex-1 lg:ml-64 transition-all duration-300">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Company Products</h1>
-              <p className="text-sm text-gray-500">Manage all customers' product catalog</p>
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between pl-12 lg:pl-0">
+            <div className="flex-1 min-w-0 mr-4">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Company Products</h1>
+              <p className="text-xs sm:text-sm text-gray-500">Manage all customers' product catalog</p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               {/* View Toggle */}
-              <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <div className="hidden sm:flex items-center bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('table')}
-                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'table'
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'table'
                       ? 'bg-white text-indigo-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   Table
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'grid'
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'grid'
                       ? 'bg-white text-indigo-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   Grid
                 </button>
@@ -159,10 +157,10 @@ const CompanyProductsManagement = () => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Products</p>
@@ -311,8 +309,8 @@ const CompanyProductsManagement = () => {
               {/* Table View */}
               {viewMode === 'table' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
+                  <div className="overflow-x-auto -mx-px">
+                    <table className="w-full min-w-[900px]">
                       <thead className="bg-gray-50">
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -407,26 +405,24 @@ const CompanyProductsManagement = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
-                                className={`px-2 py-1 text-xs font-medium rounded ${
-                                  product.stock_status === 'in_stock'
+                                className={`px-2 py-1 text-xs font-medium rounded ${product.stock_status === 'in_stock'
                                     ? 'bg-green-100 text-green-800'
                                     : product.stock_status === 'out_of_stock'
-                                    ? 'bg-red-100 text-red-800'
-                                    : product.stock_status === 'on_backorder'
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}
+                                      ? 'bg-red-100 text-red-800'
+                                      : product.stock_status === 'on_backorder'
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : 'bg-gray-100 text-gray-800'
+                                  }`}
                               >
                                 {product.stock_status?.replace('_', ' ') || 'Unknown'}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
-                                className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full ${
-                                  product.is_active
+                                className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full ${product.is_active
                                     ? 'bg-green-100 text-green-800'
                                     : 'bg-red-100 text-red-800'
-                                }`}
+                                  }`}
                               >
                                 {product.is_active ? (
                                   <>
@@ -472,7 +468,7 @@ const CompanyProductsManagement = () => {
 
               {/* Grid View */}
               {viewMode === 'grid' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {filteredProducts.map((product) => (
                     <div
                       key={product.id}
@@ -491,7 +487,7 @@ const CompanyProductsManagement = () => {
                             <Package className="w-16 h-16 text-gray-300" />
                           </div>
                         )}
-                        
+
                         {/* Badges */}
                         <div className="absolute top-2 left-2 flex flex-col gap-2">
                           <span className="px-2 py-1 bg-indigo-600 text-white rounded text-xs font-medium">
@@ -508,13 +504,12 @@ const CompanyProductsManagement = () => {
                         {/* Stock Status Badge */}
                         <div className="absolute top-2 right-2">
                           <span
-                            className={`px-2 py-1 text-xs font-medium rounded ${
-                              product.stock_status === 'in_stock'
+                            className={`px-2 py-1 text-xs font-medium rounded ${product.stock_status === 'in_stock'
                                 ? 'bg-green-500 text-white'
                                 : product.stock_status === 'out_of_stock'
-                                ? 'bg-red-500 text-white'
-                                : 'bg-yellow-500 text-white'
-                            }`}
+                                  ? 'bg-red-500 text-white'
+                                  : 'bg-yellow-500 text-white'
+                              }`}
                           >
                             {product.stock_status?.replace('_', ' ')}
                           </span>
@@ -568,13 +563,12 @@ const CompanyProductsManagement = () => {
                           ) : (
                             <div className="text-sm text-gray-400">No price</div>
                           )}
-                          
+
                           <span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                              product.is_active
+                            className={`px-2 py-1 text-xs font-semibold rounded-full ${product.is_active
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-red-100 text-red-800'
-                            }`}
+                              }`}
                           >
                             {product.is_active ? 'Active' : 'Inactive'}
                           </span>

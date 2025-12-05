@@ -100,29 +100,30 @@ const CustomerTypesManagement = () => {
 
       <main className="flex-1 lg:ml-64 transition-all duration-300">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Customer Types</h1>
-              <p className="text-sm text-gray-500">Manage customer categories and classifications</p>
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between pl-12 lg:pl-0">
+            <div className="flex-1 min-w-0 mr-4">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Customer Types</h1>
+              <p className="text-xs sm:text-sm text-gray-500">Manage customer categories and classifications</p>
             </div>
             <button
               onClick={() => {
                 setSelectedType(null);
                 setIsModalOpen(true);
               }}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center space-x-2 font-medium shadow-lg"
+              className="px-3 sm:px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center space-x-1 sm:space-x-2 font-medium shadow-lg text-sm sm:text-base whitespace-nowrap"
             >
-              <Plus className="w-5 h-5" />
-              <span>Add Customer Type</span>
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Add Customer Type</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -187,7 +188,7 @@ const CustomerTypesManagement = () => {
               <p className="text-gray-500">No customer types found</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredTypes.map((type) => (
                 <div
                   key={type.id}
@@ -215,11 +216,10 @@ const CustomerTypesManagement = () => {
                     {/* Status Badge */}
                     <div className="flex items-center space-x-2">
                       <span
-                        className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
-                          type.is_active
+                        className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${type.is_active
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
-                        }`}
+                          }`}
                       >
                         {type.is_active ? (
                           <>

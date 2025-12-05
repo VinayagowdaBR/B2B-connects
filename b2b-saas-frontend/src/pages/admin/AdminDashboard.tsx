@@ -63,13 +63,13 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 transition-all duration-300">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between">
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between pl-12 lg:pl-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-sm text-gray-500">Welcome back, Admin!</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-xs sm:text-sm text-gray-500">Welcome back, Admin!</p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-4">
               <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
                 Generate Report
               </button>
@@ -78,9 +78,9 @@ const AdminDashboard = () => {
         </div>
 
         {/* Dashboard Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {stats.map((stat, index) => (
               <div
                 key={index}
@@ -97,9 +97,8 @@ const AdminDashboard = () => {
                         <ArrowDown className="w-4 h-4 text-red-500" />
                       )}
                       <span
-                        className={`text-sm font-medium ml-1 ${
-                          stat.isPositive ? 'text-green-600' : 'text-red-600'
-                        }`}
+                        className={`text-sm font-medium ml-1 ${stat.isPositive ? 'text-green-600' : 'text-red-600'
+                          }`}
                       >
                         {stat.change}
                       </span>
@@ -165,11 +164,11 @@ const AdminDashboard = () => {
 
           {/* Recent Customers Table */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Customers</h2>
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">Recent Customers</h2>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-px">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -214,13 +213,13 @@ const AdminDashboard = () => {
                     },
                   ].map((customer, index) => (
                     <tr key={index} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm sm:text-base">
                             {customer.name.charAt(0)}
                           </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                          <div className="ml-2 sm:ml-4">
+                            <div className="text-xs sm:text-sm font-medium text-gray-900">{customer.name}</div>
                           </div>
                         </div>
                       </td>
@@ -234,11 +233,10 @@ const AdminDashboard = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            customer.status === 'Active'
+                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${customer.status === 'Active'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-yellow-100 text-yellow-800'
-                          }`}
+                            }`}
                         >
                           {customer.status}
                         </span>

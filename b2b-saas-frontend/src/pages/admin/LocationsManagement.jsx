@@ -21,15 +21,15 @@ const LocationsManagement = () => {
   const [districts, setDistricts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('states'); // 'states' or 'districts'
-  
+
   // State Modal
   const [isStateModalOpen, setIsStateModalOpen] = useState(false);
   const [selectedState, setSelectedState] = useState(null);
-  
+
   // District Modal
   const [isDistrictModalOpen, setIsDistrictModalOpen] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  
+
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStateId, setFilterStateId] = useState(null);
@@ -57,7 +57,7 @@ const LocationsManagement = () => {
   };
 
   // ============ STATE HANDLERS ============
-  
+
   const handleCreateState = async (stateData) => {
     try {
       await locationsApi.createState(stateData);
@@ -96,7 +96,7 @@ const LocationsManagement = () => {
   };
 
   // ============ DISTRICT HANDLERS ============
-  
+
   const handleCreateDistrict = async (districtData) => {
     try {
       await locationsApi.createDistrict(districtData);
@@ -170,71 +170,70 @@ const LocationsManagement = () => {
 
       <main className="flex-1 lg:ml-64 transition-all duration-300">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">States & Districts</h1>
-              <p className="text-sm text-gray-500">Manage geographical locations</p>
+        <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between pl-12 lg:pl-0">
+            <div className="flex-1 min-w-0 mr-4">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">States & Districts</h1>
+              <p className="text-xs sm:text-sm text-gray-500">Manage geographical locations</p>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex space-x-2 sm:space-x-3">
               <button
                 onClick={() => {
                   setSelectedState(null);
                   setIsStateModalOpen(true);
                 }}
-                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center space-x-2 font-medium shadow-lg"
+                className="px-3 sm:px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center space-x-1 sm:space-x-2 font-medium shadow-lg text-sm whitespace-nowrap"
               >
-                <Plus className="w-5 h-5" />
-                <span>Add State</span>
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Add State</span>
+                <span className="sm:hidden">State</span>
               </button>
               <button
                 onClick={() => {
                   setSelectedDistrict(null);
                   setIsDistrictModalOpen(true);
                 }}
-                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all flex items-center space-x-2 font-medium shadow-lg"
+                className="px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all flex items-center space-x-1 sm:space-x-2 font-medium shadow-lg text-sm whitespace-nowrap"
               >
-                <Plus className="w-5 h-5" />
-                <span>Add District</span>
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Add District</span>
+                <span className="sm:hidden">District</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Tabs */}
-          <div className="mb-6 border-b border-gray-200">
-            <div className="flex space-x-6">
+          <div className="mb-6 border-b border-gray-200 overflow-x-auto">
+            <div className="flex space-x-4 sm:space-x-6 min-w-max">
               <button
                 onClick={() => setActiveTab('states')}
-                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${
-                  activeTab === 'states'
-                    ? 'border-indigo-600 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${activeTab === 'states'
+                  ? 'border-indigo-600 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 <MapPin className="w-4 h-4 inline mr-2" />
                 States ({states.length})
               </button>
               <button
                 onClick={() => setActiveTab('districts')}
-                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${
-                  activeTab === 'districts'
-                    ? 'border-indigo-600 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${activeTab === 'districts'
+                  ? 'border-indigo-600 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 <Map className="w-4 h-4 inline mr-2" />
                 Districts ({districts.length})
               </button>
               <button
                 onClick={() => setActiveTab('hierarchy')}
-                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${
-                  activeTab === 'hierarchy'
-                    ? 'border-indigo-600 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`pb-3 px-1 font-medium text-sm transition-colors border-b-2 ${activeTab === 'hierarchy'
+                  ? 'border-indigo-600 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 Hierarchical View
               </button>
@@ -282,160 +281,162 @@ const LocationsManagement = () => {
               {/* States Tab */}
               {activeTab === 'states' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          State Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Prefix Code
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Districts
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Status
-                        </th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredStates.map((state) => (
-                        <tr key={state.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center">
-                              <MapPin className="w-5 h-5 text-indigo-500 mr-3" />
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">{state.name}</div>
-                                <div className="text-xs text-gray-500">ID: {state.id}</div>
+                  <div className="overflow-x-auto -mx-px">
+                    <table className="w-full min-w-[600px]">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            State Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Prefix Code
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Districts
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredStates.map((state) => (
+                          <tr key={state.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                <MapPin className="w-5 h-5 text-indigo-500 mr-3" />
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{state.name}</div>
+                                  <div className="text-xs text-gray-500">ID: {state.id}</div>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                              {state.prefix_code}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
-                            {getDistrictsByState(state.id).length} districts
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
-                                state.is_active
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
+                                {state.prefix_code}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-500">
+                              {getDistrictsByState(state.id).length} districts
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${state.is_active
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-red-100 text-red-800'
-                              }`}
-                            >
-                              {state.is_active ? 'Active' : 'Inactive'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end space-x-2">
-                              <button
-                                onClick={() => {
-                                  setSelectedState(state);
-                                  setIsStateModalOpen(true);
-                                }}
-                                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
+                                  }`}
                               >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteState(state.id)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                {state.is_active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex items-center justify-end space-x-2">
+                                <button
+                                  onClick={() => {
+                                    setSelectedState(state);
+                                    setIsStateModalOpen(true);
+                                  }}
+                                  className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteState(state.id)}
+                                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 
               {/* Districts Tab */}
               {activeTab === 'districts' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          District Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Prefix Code
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          State
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Status
-                        </th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredDistricts.map((district) => (
-                        <tr key={district.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center">
-                              <Map className="w-5 h-5 text-purple-500 mr-3" />
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">{district.name}</div>
-                                <div className="text-xs text-gray-500">ID: {district.id}</div>
+                  <div className="overflow-x-auto -mx-px">
+                    <table className="w-full min-w-[600px]">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            District Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Prefix Code
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            State
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredDistricts.map((district) => (
+                          <tr key={district.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                <Map className="w-5 h-5 text-purple-500 mr-3" />
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{district.name}</div>
+                                  <div className="text-xs text-gray-500">ID: {district.id}</div>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                              {district.prefix_code}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-700">
-                            {district.state?.name || 'N/A'} ({district.state?.prefix_code})
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
-                                district.is_active
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                                {district.prefix_code}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-700">
+                              {district.state?.name || 'N/A'} ({district.state?.prefix_code})
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${district.is_active
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-red-100 text-red-800'
-                              }`}
-                            >
-                              {district.is_active ? 'Active' : 'Inactive'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end space-x-2">
-                              <button
-                                onClick={() => {
-                                  setSelectedDistrict(district);
-                                  setIsDistrictModalOpen(true);
-                                }}
-                                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
+                                  }`}
                               >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteDistrict(district.id)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                {district.is_active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex items-center justify-end space-x-2">
+                                <button
+                                  onClick={() => {
+                                    setSelectedDistrict(district);
+                                    setIsDistrictModalOpen(true);
+                                  }}
+                                  className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteDistrict(district.id)}
+                                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 
@@ -469,9 +470,8 @@ const LocationsManagement = () => {
                           </div>
                           <div className="flex items-center space-x-2">
                             <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                                state.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                              }`}
+                              className={`px-3 py-1 text-xs font-semibold rounded-full ${state.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                }`}
                             >
                               {state.is_active ? 'Active' : 'Inactive'}
                             </span>

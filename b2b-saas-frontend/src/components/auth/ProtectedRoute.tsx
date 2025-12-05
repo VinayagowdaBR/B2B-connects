@@ -8,7 +8,8 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-    const { isAuthenticated, isLoading, user } = useAuth();
+    // Call all hooks at the top level to comply with React's Rules of Hooks
+    const { isAuthenticated, isLoading, user, isAdmin, isCustomer } = useAuth();
 
     // Show loading spinner while checking authentication
     if (isLoading) {
@@ -29,8 +30,6 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
 
     // Check if user has required role
     if (allowedRoles) {
-        const { isAdmin, isCustomer } = useAuth();
-
         const hasRequiredRole = allowedRoles.some(role => {
             if (role === 'admin') return isAdmin;
             if (role === 'customer') return isCustomer;
