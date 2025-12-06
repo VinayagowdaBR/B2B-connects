@@ -32,6 +32,19 @@ import CompanyInfoManagement from '@/pages/admin/CompanyInfoManagement';
 
 // Customer Pages
 import CustomerDashboard from '@/pages/customer/CustomerDashboard';
+import CustomerProfile from '@/pages/customer/CustomerProfile';
+import CustomerSubscription from '@/pages/customer/CustomerSubscription';
+import CustomerCompanyInfo from '@/pages/customer/CustomerCompanyInfo';
+import CustomerServices from '@/pages/customer/CustomerServices';
+import CustomerProducts from '@/pages/customer/CustomerProducts';
+import CustomerProjects from '@/pages/customer/CustomerProjects';
+import CustomerTestimonials from '@/pages/customer/CustomerTestimonials';
+import CustomerTeamMembers from '@/pages/customer/CustomerTeamMembers';
+import CustomerBlogPosts from '@/pages/customer/CustomerBlogPosts';
+import CustomerCareers from '@/pages/customer/CustomerCareers';
+import CustomerInquiries from '@/pages/customer/CustomerInquiries';
+import CustomerGallery from '@/pages/customer/CustomerGallery';
+import CustomerSettings from '@/pages/customer/CustomerSettings';
 
 function App() {
   return (
@@ -78,6 +91,110 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['customer']}>
                 <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/profile"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/subscription"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerSubscription />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/company-info"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerCompanyInfo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/services"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerServices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/products"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerProducts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/projects"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerProjects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/testimonials"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerTestimonials />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/team"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerTeamMembers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/blog"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerBlogPosts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/careers"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerCareers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/inquiries"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerInquiries />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/gallery"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerGallery />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/settings"
+            element={
+              <ProtectedRoute allowedRoles={['customer']}>
+                <CustomerSettings />
               </ProtectedRoute>
             }
           />

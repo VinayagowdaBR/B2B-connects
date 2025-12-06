@@ -1,0 +1,249 @@
+import { useState, useEffect } from 'react';
+import { X, Package, Save, Image as ImageIcon } from 'lucide-react';
+
+const ServiceModal = ({ isOpen, onClose, onSubmit, service }) => {
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        category: '',
+        pricing: '',
+        image_url: '',
+        icon: '',
+        is_active: true,
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (service) {
+            setFormData({
+                title: service.title || '',
+                description: service.description || '',
+                category: service.category || '',
+                pricing: service.pricing || '',
+                image_url: service.image_url || '',
+                icon: service.icon || '',
+                is_active: service.is_active ?? true,
+            });
+        } else {
+            setFormData({
+                title: '',
+                description: '',
+                category: '',
+                pricing: '',
+                image_url: '',
+                icon: '',
+                is_active: true,
+            });
+        }
+    }, [service, isOpen]);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setIsSubmitting(true);
+            await onSubmit(formData);
+        } catch (error) {
+            // Error handled by parent
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+                {/* Backdrop */}
+                <div
+                    className="fixed inset-0 bg-black/50 transition-opacity"
+                    onClick={onClose}
+                />
+
+                {/* Modal */}
+                <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl transform transition-all">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                        <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center mr-3">
+                                <Package className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-gray-900">
+                                    {service ? 'Edit Service' : 'Add New Service'}
+                                </h2>
+                                <p className="text-sm text-gray-500">
+                                    {service ? 'Update service details' : 'Create a new service listing'}
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        {/* Title */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Service Title *
+                            </label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                placeholder="e.g., Web Development"
+                            />
+                        </div>
+
+                        {/* Description */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                rows={3}
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                                placeholder="Describe your service..."
+                            />
+                        </div>
+
+                        {/* Category & Pricing */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Category
+                                </label>
+                                <select
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Consulting">Consulting</option>
+                                    <option value="Support">Support</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Pricing
+                                </label>
+                                <input
+                                    type="text"
+                                    name="pricing"
+                                    value={formData.pricing}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                    placeholder="e.g., ₹5,000/month"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Image URL */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <ImageIcon className="w-4 h-4 inline mr-1" />
+                                Image URL
+                            </label>
+                            <input
+                                type="url"
+                                name="image_url"
+                                value={formData.image_url}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                placeholder="https://example.com/image.jpg"
+                            />
+                            {formData.image_url && (
+                                <div className="mt-2">
+                                    <img
+                                        src={formData.image_url}
+                                        alt="Preview"
+                                        className="h-20 w-32 object-cover rounded-lg border"
+                                        onError={(e) => (e.target.style.display = 'none')}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Icon */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Icon Name (optional)
+                            </label>
+                            <input
+                                type="text"
+                                name="icon"
+                                value={formData.icon}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                                placeholder="e.g., code, design, chart"
+                            />
+                        </div>
+
+                        {/* Active Toggle */}
+                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p className="font-medium text-gray-900">Active Status</p>
+                                <p className="text-sm text-gray-500">Show this service on your portfolio</p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="is_active"
+                                    checked={formData.is_active}
+                                    onChange={handleChange}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                            </label>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-medium rounded-lg hover:from-teal-600 hover:to-cyan-600 transition-all disabled:opacity-50"
+                            >
+                                <Save className="w-4 h-4 mr-2" />
+                                {isSubmitting ? 'Saving...' : service ? 'Update Service' : 'Create Service'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ServiceModal;
