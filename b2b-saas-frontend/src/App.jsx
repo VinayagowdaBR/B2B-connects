@@ -28,6 +28,7 @@ import LocationsManagement from '@/pages/admin/LocationsManagement';
 import CustomerTypesManagement from '@/pages/admin/CustomerTypesManagement';
 import CustomersManagement from '@/pages/admin/CustomersManagement';
 import CompanyInfoManagement from '@/pages/admin/CompanyInfoManagement';
+import AdminSettings from '@/pages/admin/AdminSettings';
 
 
 // Customer Pages
@@ -338,6 +339,16 @@ function App() {
             }
           />
 
+
+          {/* Admin Settings Route */}
+          <Route
+            path="/admin/settings"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminSettings />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Catch all - redirect to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
