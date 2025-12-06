@@ -26,6 +26,7 @@ import UserManagement from '@/pages/admin/UserManagement';
 import RolesPermissions from '@/pages/admin/RolesPermissions';
 import LocationsManagement from '@/pages/admin/LocationsManagement';
 import CustomerTypesManagement from '@/pages/admin/CustomerTypesManagement';
+import CustomersManagement from '@/pages/admin/CustomersManagement';
 import CompanyInfoManagement from '@/pages/admin/CompanyInfoManagement';
 
 
@@ -83,34 +84,34 @@ function App() {
 
           {/* Subscription Routes */}
           <Route
-              path="/admin/subscriptions"
-              element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <SubscriptionManagement />
-                </ProtectedRoute>
-              }
-            />
+            path="/admin/subscriptions"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <SubscriptionManagement />
+              </ProtectedRoute>
+            }
+          />
 
 
           <Route
-           path="/admin/locations"
+            path="/admin/locations"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <LocationsManagement />
               </ProtectedRoute>
             }
           />
-  
-          <Route
-          path="/admin/companies"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <CompanyInfoManagement />
-            </ProtectedRoute>
-          }
-        />
 
-        <Route
+          <Route
+            path="/admin/companies"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyInfoManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/admin/services"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
@@ -131,76 +132,86 @@ function App() {
 
 
           <Route
-              path="/admin/projects"
-              element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <CompanyProjectsManagement />
-                </ProtectedRoute>
-              }
-            />
+            path="/admin/projects"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyProjectsManagement />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/admin/testimonials"
-              element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <CompanyTestimonialsManagement />
-                </ProtectedRoute>
-              }
-            />
-
-
-            {/* Blog Posts Route */}
-              <Route
-                path="/admin/blog-posts"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <CompanyBlogPostsManagement />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Team Members Route */}
-              <Route
-                path="/admin/team-members"
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <CompanyTeamMembersManagement />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                  path="/admin/careers"
-                  element={
-                    <ProtectedRoute allowedRoles={['admin']}>
-                      <CompanyCareersManagement />
-                    </ProtectedRoute>
-                  }
-                />
+          <Route
+            path="/admin/testimonials"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyTestimonialsManagement />
+              </ProtectedRoute>
+            }
+          />
 
 
-                <Route
-                    path="/admin/inquiries"
-                    element={
-                      <ProtectedRoute allowedRoles={['admin']}>
-                        <CompanyInquiriesManagement />
-                      </ProtectedRoute>
-                    }
-                  />
+          {/* Blog Posts Route */}
+          <Route
+            path="/admin/blog-posts"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyBlogPostsManagement />
+              </ProtectedRoute>
+            }
+          />
 
-                <Route
-                  path="/admin/gallery"
-                  element={
-                    <ProtectedRoute allowedRoles={['admin']}>
-                      <CompanyGalleryManagement />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Team Members Route */}
+          <Route
+            path="/admin/team-members"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyTeamMembersManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/careers"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyCareersManagement />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
+            path="/admin/inquiries"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyInquiriesManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/gallery"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CompanyGalleryManagement />
+              </ProtectedRoute>
+            }
+          />
 
 
 
 
-            {/* customer Type routes */}
+          {/* Customer Management routes */}
+          <Route
+            path="/admin/customers"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CustomersManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* customer Type routes */}
           <Route
             path="/admin/customer-types"
             element={
