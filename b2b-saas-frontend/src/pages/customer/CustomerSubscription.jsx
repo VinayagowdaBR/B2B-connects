@@ -56,9 +56,18 @@ const CustomerSubscription = () => {
 
     const handleUpgrade = async (planId) => {
         try {
-            await customerSubscriptionApi.upgradePlan({ plan_id: planId });
-            toast.success('Plan upgrade initiated! You will be redirected to payment.');
-            fetchSubscriptionData();
+            const result = await customerSubscriptionApi.upgradePlan({
+                plan_id: planId,
+                payment_gateway: 'phonepe' // Using PhonePe sandbox
+            });
+
+            // If we get a payment URL, redirect to it
+            if (result.payment_url) {
+                window.location.href = result.payment_url;
+            } else {
+                toast.success('Plan upgrade initiated!');
+                fetchSubscriptionData();
+            }
         } catch (error) {
             toast.error(error.response?.data?.detail || 'Failed to upgrade plan');
         }

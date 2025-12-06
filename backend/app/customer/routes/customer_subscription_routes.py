@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.database.connection import get_db
 from app.auth.dependencies import has_role
@@ -42,7 +42,7 @@ def get_my_subscription(
     
     # Calculate days remaining
     if subscription.status in ["ACTIVE", "TRIAL"]:
-        days_left = (subscription.end_date - datetime.utcnow()).days
+        days_left = (subscription.end_date - datetime.now(timezone.utc)).days
         subscription.days_remaining = max(0, days_left)
     else:
         subscription.days_remaining = 0

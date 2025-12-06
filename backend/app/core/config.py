@@ -34,11 +34,18 @@ class Settings(BaseSettings):
     STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
     
     # PhonePe
-    PHONEPE_MERCHANT_ID: str = os.getenv("PHONEPE_MERCHANT_ID", "")
-    PHONEPE_SALT_KEY: str = os.getenv("PHONEPE_SALT_KEY", "")
-    PHONEPE_SALT_INDEX: str = os.getenv("PHONEPE_SALT_INDEX", "1")
-    PHONEPE_BASE_URL: str = os.getenv("PHONEPE_BASE_URL", "https://api-preprod.phonepe.com/apis/hermes")  # UAT
+    # PHONEPE_MERCHANT_ID: str = os.getenv("PHONEPE_MERCHANT_ID", "")
+    # PHONEPE_SALT_KEY: str = os.getenv("PHONEPE_SALT_KEY", "")
+    # PHONEPE_SALT_INDEX: str = os.getenv("PHONEPE_SALT_INDEX", "1")
+    # PHONEPE_BASE_URL: str = os.getenv("PHONEPE_BASE_URL", "https://api-preprod.phonepe.com/apis/hermes")  # UAT
     
+    # PhonePe Sandbox (UAT) DEMO
+    PHONEPE_MERCHANT_ID = "PGTESTPAYUAT"
+    PHONEPE_SALT_KEY = "a8361f66-xxxx-xxxx-xxxx-6a3xxxxxxx9d"
+    PHONEPE_SALT_INDEX = "1"
+    PHONEPE_BASE_URL = "https://api-preprod.phonepe.com/apis/hermes"
+
+
     # Backend URL for webhooks
     BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")
     
