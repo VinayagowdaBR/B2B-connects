@@ -1,9 +1,16 @@
-import CustomerSidebar from './CustomerSidebar';
+import AdminSidebar from './AdminSidebar';
 
-const CustomerLayout = ({ children, title, subtitle, headerActions }) => {
+interface AdminLayoutProps {
+    children: React.ReactNode;
+    title?: string;
+    subtitle?: string;
+    headerActions?: React.ReactNode;
+}
+
+const AdminLayout = ({ children, title, subtitle, headerActions }: AdminLayoutProps) => {
     return (
         <div className="flex min-h-screen bg-gray-50">
-            <CustomerSidebar />
+            <AdminSidebar />
 
             <main className="flex-1 lg:ml-64 transition-all duration-300">
                 {/* Top Bar */}
@@ -32,4 +39,4 @@ const CustomerLayout = ({ children, title, subtitle, headerActions }) => {
     );
 };
 
-export default CustomerLayout;
+export default AdminLayout;

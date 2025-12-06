@@ -155,8 +155,8 @@ const CustomerSubscription = () => {
                     <button
                         onClick={() => setActiveTab('plans')}
                         className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${activeTab === 'plans'
-                                ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
-                                : 'text-gray-500 hover:text-gray-700'
+                            ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
+                            : 'text-gray-500 hover:text-gray-700'
                             }`}
                     >
                         <Star className="w-4 h-4 inline mr-2" />
@@ -165,8 +165,8 @@ const CustomerSubscription = () => {
                     <button
                         onClick={() => setActiveTab('history')}
                         className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${activeTab === 'history'
-                                ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
-                                : 'text-gray-500 hover:text-gray-700'
+                            ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
+                            : 'text-gray-500 hover:text-gray-700'
                             }`}
                     >
                         <Clock className="w-4 h-4 inline mr-2" />
@@ -209,7 +209,10 @@ const CustomerSubscription = () => {
                             </div>
 
                             <ul className="space-y-3 mb-6">
-                                {plan.features.map((feature, index) => (
+                                {(Array.isArray(plan.features)
+                                    ? plan.features
+                                    : plan.features?.description_list || []
+                                ).map((feature, index) => (
                                     <li key={index} className="flex items-center text-sm text-gray-700">
                                         <Check className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
                                         {feature}
@@ -221,10 +224,10 @@ const CustomerSubscription = () => {
                                 onClick={() => !plan.is_current && handleUpgrade(plan.id)}
                                 disabled={plan.is_current}
                                 className={`w-full py-3 rounded-lg font-semibold transition-all flex items-center justify-center ${plan.is_current
-                                        ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                                        : plan.is_popular
-                                            ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:from-teal-600 hover:to-cyan-600'
-                                            : 'bg-gray-900 text-white hover:bg-gray-800'
+                                    ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                    : plan.is_popular
+                                        ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:from-teal-600 hover:to-cyan-600'
+                                        : 'bg-gray-900 text-white hover:bg-gray-800'
                                     }`}
                             >
                                 {plan.is_current ? (
@@ -294,10 +297,10 @@ const CustomerSubscription = () => {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
                                                     className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${payment.status === 'success'
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : payment.status === 'pending'
-                                                                ? 'bg-yellow-100 text-yellow-800'
-                                                                : 'bg-red-100 text-red-800'
+                                                        ? 'bg-green-100 text-green-800'
+                                                        : payment.status === 'pending'
+                                                            ? 'bg-yellow-100 text-yellow-800'
+                                                            : 'bg-red-100 text-red-800'
                                                         }`}
                                                 >
                                                     {payment.status}
