@@ -20,9 +20,22 @@ const CustomerProjects = () => {
         try {
             setIsLoading(true);
             const data = await customerProjectsApi.getMyProjects();
-            setProjects(data || []);
+            // Map backend fields to frontend model
+            const mappedProjects = (data || []).map(project => ({
+                ...project,
+                description: project.short_description || project.full_description || '',
+                image_url: project.featured_image_url || '',
+                is_active: project.publish_to_portfolio ?? true,
+                is_featured: project.is_featured ?? false,
+                technologies: JSON.stringify(project.technologies || []).replace(/[\[\]"]/g, '').replace(/,/g, ', ') // simple display format
+            }));
+            // Note: technologies from backend is list, frontend expects string in form. 
+            // Better to handle parsing in modal or here. Let's keep it simple string for input.
+
+            setProjects(mappedProjects);
         } catch (error) {
             console.error('Error:', error);
+            toast.error('Failed to load projects');
         } finally {
             setIsLoading(false);
         }
@@ -30,18 +43,35 @@ const CustomerProjects = () => {
 
     const handleSubmit = async (data) => {
         try {
+            // Map frontend data to backend schema
+            const payload = {
+                title: data.title,
+                short_description: data.description,
+                full_description: data.description,
+                client_name: data.client_name,
+                category: data.category,
+                technologies: data.technologies ? data.technologies.split(',').map(t => t.trim()) : [],
+                featured_image_url: data.image_url,
+                start_date: data.start_date || null,
+                end_date: data.end_date || null,
+                project_url: data.project_url,
+                is_featured: data.is_featured,
+                publish_to_portfolio: data.is_active
+            };
+
             if (selectedProject) {
-                await customerProjectsApi.updateProject(selectedProject.id, data);
+                await customerProjectsApi.updateProject(selectedProject.id, payload);
                 toast.success('Project updated!');
             } else {
-                await customerProjectsApi.createProject(data);
+                await customerProjectsApi.createProject(payload);
                 toast.success('Project created!');
             }
             setIsModalOpen(false);
             fetchProjects();
         } catch (error) {
+            console.error(error);
             toast.error('Failed to save project');
-            throw error;
+            // throw error;
         }
     };
 

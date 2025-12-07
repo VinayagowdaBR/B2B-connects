@@ -21,6 +21,7 @@ class CompanyBlogPost(Base):
     author = Column(String(255), nullable=True)
     
     category = Column(String(100), nullable=True)
+    meta_description = Column(String(500), nullable=True)
     tags = Column(String(500), nullable=True)  # Comma-separated
 
     published_at = Column(DateTime(timezone=True), nullable=True)
@@ -31,3 +32,7 @@ class CompanyBlogPost(Base):
 
     # Relationship
     customer = relationship("CustomerUser", backref="company_blog_posts")
+
+    @property
+    def is_published(self):
+        return self.status == 'published'

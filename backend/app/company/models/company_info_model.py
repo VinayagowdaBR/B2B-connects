@@ -32,6 +32,10 @@ class CompanyInfo(Base):
     vision = Column(Text, nullable=True)
     values = Column(Text, nullable=True)
     founding_year = Column(Integer, nullable=True)
+    
+    # Additional Details
+    industry = Column(String(100), nullable=True)
+    company_size = Column(String(50), nullable=True)
 
     # Media
     logo_url = Column(String(500), nullable=True)

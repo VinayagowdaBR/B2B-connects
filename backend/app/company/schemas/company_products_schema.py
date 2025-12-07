@@ -4,9 +4,10 @@ from datetime import datetime
 
 class CompanyProductBase(BaseModel):
     name: str
-    slug: str
+    slug: Optional[str] = None
     price: Optional[float] = None
     sku: Optional[str] = None
+    stock_quantity: Optional[int] = None
     short_description: Optional[str] = None
     full_description: Optional[str] = None
     category: Optional[str] = None
@@ -25,6 +26,7 @@ class CompanyProductUpdate(BaseModel):
     slug: Optional[str] = None
     price: Optional[float] = None
     sku: Optional[str] = None
+    stock_quantity: Optional[int] = None
     short_description: Optional[str] = None
     full_description: Optional[str] = None
     category: Optional[str] = None

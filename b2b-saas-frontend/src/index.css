@@ -79,7 +79,7 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
@@ -94,6 +94,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -106,6 +107,7 @@
     opacity: 0;
     transform: translateY(30px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -118,6 +120,7 @@
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -126,42 +129,56 @@
 
 /* Floating animation for background orbs */
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(10px, -20px) scale(1.02);
   }
+
   50% {
     transform: translate(-5px, 10px) scale(0.98);
   }
+
   75% {
     transform: translate(-15px, -10px) scale(1.01);
   }
 }
 
 @keyframes floatReverse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(-15px, 15px) scale(1.03);
   }
+
   50% {
     transform: translate(10px, -10px) scale(0.97);
   }
+
   75% {
     transform: translate(5px, 20px) scale(1.02);
   }
 }
 
 @keyframes floatSlow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
+
   33% {
     transform: translate(20px, -30px) rotate(5deg);
   }
+
   66% {
     transform: translate(-20px, 15px) rotate(-5deg);
   }
@@ -172,9 +189,11 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -182,9 +201,12 @@
 
 /* Pulse glow */
 @keyframes pulseGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
   }
@@ -195,6 +217,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -205,6 +228,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -212,9 +236,12 @@
 
 /* Scale bounce */
 @keyframes scaleBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
@@ -257,7 +284,7 @@
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
@@ -292,7 +319,7 @@
 
 .btn-premium:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 10px 40px -10px rgba(139, 92, 246, 0.5),
     0 0 20px rgba(139, 92, 246, 0.3);
 }
@@ -308,7 +335,7 @@
 
 .btn-white-glow:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px -15px rgba(0, 0, 0, 0.3),
     0 0 30px rgba(255, 255, 255, 0.3);
 }
@@ -325,7 +352,7 @@
 .input-premium:focus {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(139, 92, 246, 0.2),
     0 0 20px rgba(139, 92, 246, 0.15);
 }
@@ -340,7 +367,7 @@
 }
 
 .input-light:focus {
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(99, 102, 241, 0.15),
     0 0 15px rgba(99, 102, 241, 0.1);
 }
@@ -373,7 +400,7 @@
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 20px 40px -15px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(0, 0, 0, 0.05);
 }
@@ -382,24 +409,22 @@
    Gradient Backgrounds
    ================================ */
 .bg-gradient-premium {
-  background: linear-gradient(135deg, 
-    #4f46e5 0%, 
-    #7c3aed 25%, 
-    #8b5cf6 50%, 
-    #a855f7 75%, 
-    #7c3aed 100%
-  );
+  background: linear-gradient(135deg,
+      #4f46e5 0%,
+      #7c3aed 25%,
+      #8b5cf6 50%,
+      #a855f7 75%,
+      #7c3aed 100%);
   background-size: 200% 200%;
 }
 
 .bg-gradient-auth {
-  background: linear-gradient(135deg, 
-    #312e81 0%, 
-    #4c1d95 30%, 
-    #5b21b6 50%, 
-    #6d28d9 70%, 
-    #4c1d95 100%
-  );
+  background: linear-gradient(135deg,
+      #312e81 0%,
+      #4c1d95 30%,
+      #5b21b6 50%,
+      #6d28d9 70%,
+      #4c1d95 100%);
 }
 
 /* ================================
@@ -463,11 +488,25 @@
 /* ================================
    Menu Item Animation Delay Classes
    ================================ */
-.menu-item-delay-1 { animation-delay: 0.05s; }
-.menu-item-delay-2 { animation-delay: 0.1s; }
-.menu-item-delay-3 { animation-delay: 0.15s; }
-.menu-item-delay-4 { animation-delay: 0.2s; }
-.menu-item-delay-5 { animation-delay: 0.25s; }
+.menu-item-delay-1 {
+  animation-delay: 0.05s;
+}
+
+.menu-item-delay-2 {
+  animation-delay: 0.1s;
+}
+
+.menu-item-delay-3 {
+  animation-delay: 0.15s;
+}
+
+.menu-item-delay-4 {
+  animation-delay: 0.2s;
+}
+
+.menu-item-delay-5 {
+  animation-delay: 0.25s;
+}
 
 /* ================================
    Focus Visible Styles
@@ -485,17 +524,17 @@
     filter: blur(40px);
     opacity: 0.4;
   }
-  
+
   .orb-1 {
     width: 250px;
     height: 250px;
   }
-  
+
   .orb-2 {
     width: 200px;
     height: 200px;
   }
-  
+
   .orb-3 {
     width: 180px;
     height: 180px;

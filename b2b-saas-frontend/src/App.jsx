@@ -46,6 +46,7 @@ import CustomerCareers from '@/pages/customer/CustomerCareers';
 import CustomerInquiries from '@/pages/customer/CustomerInquiries';
 import CustomerGallery from '@/pages/customer/CustomerGallery';
 import CustomerSettings from '@/pages/customer/CustomerSettings';
+import DemoPaymentPage from '@/pages/customer/DemoPaymentPage';
 
 function App() {
   return (
@@ -152,7 +153,7 @@ function App() {
             }
           />
           <Route
-            path="/customer/team"
+            path="/customer/team-members"
             element={
               <ProtectedRoute allowedRoles={['customer']}>
                 <CustomerTeamMembers />
@@ -160,7 +161,7 @@ function App() {
             }
           />
           <Route
-            path="/customer/blog"
+            path="/customer/blog-posts"
             element={
               <ProtectedRoute allowedRoles={['customer']}>
                 <CustomerBlogPosts />
@@ -198,6 +199,12 @@ function App() {
                 <CustomerSettings />
               </ProtectedRoute>
             }
+          />
+
+          {/* Demo Payment Route - for testing without real payment gateway */}
+          <Route
+            path="/subscription/demo-payment"
+            element={<DemoPaymentPage />}
           />
 
           {/* Subscription Routes */}

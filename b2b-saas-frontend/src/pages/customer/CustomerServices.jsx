@@ -35,7 +35,15 @@ const CustomerServices = () => {
         try {
             setIsLoading(true);
             const data = await customerServicesApi.getMyServices();
-            setServices(data || []);
+            // Map backend fields to frontend model
+            const mappedServices = (data || []).map(service => ({
+                ...service,
+                description: service.short_description || service.full_description || '', // Map description
+                image_url: service.banner_image_url || service.icon_url || '', // Map image
+                icon: service.icon_url || '', // Map icon
+                is_active: service.status === 'active' // Map status
+            }));
+            setServices(mappedServices);
         } catch (error) {
             console.error('Error fetching services:', error);
             toast.error('Failed to load services');
@@ -68,19 +76,35 @@ const CustomerServices = () => {
 
     const handleSubmit = async (data) => {
         try {
+            // Map frontend fields back to backend schema
+            const payload = {
+                title: data.title,
+                short_description: data.description, // Map description to short_description
+                full_description: data.description, // Also set full_description just in case
+                category: data.category,
+                pricing: data.pricing,
+                banner_image_url: data.image_url, // Map image
+                icon_url: data.icon || data.image_url, // Map icon (fallback to image if icon missing, or use specific icon field if separate)
+                // Actually, if 'icon' in modal is a class name, sending it as URL might vary, but let's stick to Schema which expects string.
+                // Re-verifying schema: icon_url is String(500).
+                status: data.is_active ? 'active' : 'inactive', // Map status
+                publish_to_portfolio: data.is_active
+            };
+
             if (selectedService) {
-                await customerServicesApi.updateService(selectedService.id, data);
+                await customerServicesApi.updateService(selectedService.id, payload);
                 toast.success('Service updated successfully!');
             } else {
-                await customerServicesApi.createService(data);
+                await customerServicesApi.createService(payload);
                 toast.success('Service created successfully!');
             }
             setIsModalOpen(false);
             setSelectedService(null);
             fetchServices();
         } catch (error) {
+            console.error('Save error:', error);
             toast.error(error.response?.data?.detail || 'Failed to save service');
-            throw error;
+            // throw error; // Don't throw to avoid unhandled rejections if parent doesn't catch
         }
     };
 
@@ -249,8 +273,8 @@ const CustomerServices = () => {
                                 <div className="absolute top-3 right-3">
                                     <span
                                         className={`px-2 py-1 text-xs font-medium rounded-full ${service.is_active
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-gray-100 text-gray-800'
                                             }`}
                                     >
                                         {service.is_active ? 'Active' : 'Inactive'}
@@ -363,8 +387,8 @@ const CustomerServices = () => {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${service.is_active
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-gray-100 text-gray-800'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-gray-100 text-gray-800'
                                                     }`}
                                             >
                                                 {service.is_active ? (

@@ -16,7 +16,10 @@ class BaseRepository(Generic[ModelType]):
         return self.db.query(self.model).offset(skip).limit(limit).all()
 
     def create(self, obj_in: Any, tenant_id: int) -> ModelType:
-        obj_data = obj_in.dict()
+        if isinstance(obj_in, dict):
+            obj_data = obj_in
+        else:
+            obj_data = obj_in.dict()
         db_obj = self.model(**obj_data, tenant_id=tenant_id)
         self.db.add(db_obj)
         self.db.commit()
@@ -24,7 +27,10 @@ class BaseRepository(Generic[ModelType]):
         return db_obj
 
     def update(self, db_obj: ModelType, obj_in: Any) -> ModelType:
-        obj_data = obj_in.dict(exclude_unset=True)
+        if isinstance(obj_in, dict):
+            obj_data = obj_in
+        else:
+            obj_data = obj_in.dict(exclude_unset=True)
         for field, value in obj_data.items():
             setattr(db_obj, field, value)
         self.db.add(db_obj)

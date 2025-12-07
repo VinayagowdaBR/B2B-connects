@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: str = "info@seniorchamberinternational.net.in"
     SMTP_FROM_NAME: str = "Senior Chamber International" 
     
-    # Frontend URL for reset link
-    FRONTEND_URL: str = "http://localhost:3000"
+    # Frontend URL for reset link (Vite dev server runs on 5173)
+    FRONTEND_URL: str = "http://localhost:5173"
     
     # Payment Gateway Configuration
     # Razorpay
@@ -33,18 +33,11 @@ class Settings(BaseSettings):
     STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
     STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
     
-    # PhonePe
-    # PHONEPE_MERCHANT_ID: str = os.getenv("PHONEPE_MERCHANT_ID", "")
-    # PHONEPE_SALT_KEY: str = os.getenv("PHONEPE_SALT_KEY", "")
-    # PHONEPE_SALT_INDEX: str = os.getenv("PHONEPE_SALT_INDEX", "1")
-    # PHONEPE_BASE_URL: str = os.getenv("PHONEPE_BASE_URL", "https://api-preprod.phonepe.com/apis/hermes")  # UAT
-    
-    # PhonePe Sandbox (UAT) DEMO
-    PHONEPE_MERCHANT_ID = "PGTESTPAYUAT"
-    PHONEPE_SALT_KEY = "a8361f66-xxxx-xxxx-xxxx-6a3xxxxxxx9d"
-    PHONEPE_SALT_INDEX = "1"
-    PHONEPE_BASE_URL = "https://api-preprod.phonepe.com/apis/hermes"
-
+    # PhonePe Sandbox (UAT) DEMO - with type annotations for Pydantic
+    PHONEPE_MERCHANT_ID: str = "PGTESTPAYUAT"
+    PHONEPE_SALT_KEY: str = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"  # PhonePe UAT salt key
+    PHONEPE_SALT_INDEX: str = "1"
+    PHONEPE_BASE_URL: str = "https://api-preprod.phonepe.com/apis/pg-sandbox"
 
     # Backend URL for webhooks
     BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")

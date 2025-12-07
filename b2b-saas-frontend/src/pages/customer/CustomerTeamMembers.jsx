@@ -15,15 +15,51 @@ const CustomerTeamMembers = () => {
     useEffect(() => { fetchMembers(); }, []);
 
     const fetchMembers = async () => {
-        try { setIsLoading(true); const data = await customerTeamMembersApi.getMyTeamMembers(); setMembers(data || []); } catch (e) { console.error(e); } finally { setIsLoading(false); }
+        try {
+            setIsLoading(true);
+            const data = await customerTeamMembersApi.getMyTeamMembers();
+            // Map backend fields to frontend
+            const mapped = (data || []).map(m => ({
+                ...m,
+                is_active: m.publish_to_portfolio ?? true, // "Show on portfolio" checkbox
+            }));
+            setMembers(mapped);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSubmit = async (data) => {
         try {
-            if (selectedMember) { await customerTeamMembersApi.updateTeamMember(selectedMember.id, data); toast.success('Updated!'); }
-            else { await customerTeamMembersApi.createTeamMember(data); toast.success('Added!'); }
-            setIsModalOpen(false); fetchMembers();
-        } catch (e) { toast.error('Failed'); throw e; }
+            // Map frontend to backend & sanitize
+            const payload = {
+                ...data,
+                email: data.email || null, // Fix validate_email error if empty
+                phone: data.phone || null,
+                linkedin_url: data.linkedin_url || null,
+                twitter_url: data.twitter_url || null,
+                image_url: data.image_url || null,
+                bio: data.bio || null,
+                publish_to_portfolio: data.is_active,
+                is_active: true // Default to true for the separate backend flag if needed
+            };
+
+            if (selectedMember) {
+                await customerTeamMembersApi.updateTeamMember(selectedMember.id, payload);
+                toast.success('Updated!');
+            } else {
+                await customerTeamMembersApi.createTeamMember(payload);
+                toast.success('Added!');
+            }
+            setIsModalOpen(false);
+            fetchMembers();
+        } catch (e) {
+            console.error(e);
+            toast.error('Failed');
+            // throw e; 
+        }
     };
 
     const handleDelete = async (id) => {

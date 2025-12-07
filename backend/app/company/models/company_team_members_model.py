@@ -22,7 +22,7 @@ class CompanyTeamMember(Base):
     phone = Column(String(50), nullable=True)
 
     # Social URLs
-    photo_url = Column(String(500), nullable=True)
+    image_url = Column(String(500), nullable=True)
     linkedin_url = Column(String(500), nullable=True)
     twitter_url = Column(String(500), nullable=True)
     github_url = Column(String(500), nullable=True)

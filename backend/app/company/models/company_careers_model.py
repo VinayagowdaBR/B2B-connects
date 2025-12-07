@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, ARRAY
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, ARRAY, Boolean, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -18,10 +18,12 @@ class CompanyCareer(Base):
     job_type = Column(String(50), nullable=True)  # Full-time, Part-time, Contract, Freelance, Internship
 
     description = Column(Text, nullable=False)
-    requirements = Column(ARRAY(String), nullable=True)  # Array of requirement strings
-    responsibilities = Column(ARRAY(String), nullable=True)  # Array of responsibility strings
+    requirements = Column(JSON, nullable=True)  # JSON array of strings
+    responsibilities = Column(JSON, nullable=True)  # JSON array of strings
 
     salary_range = Column(String(100), nullable=True)
+    experience_level = Column(String(100), nullable=True)
+    is_active = Column(Boolean, default=True)
     
     # Date fields
     posted_date = Column(Date, nullable=True)
@@ -32,3 +34,15 @@ class CompanyCareer(Base):
 
     # Relationship
     customer = relationship("CustomerUser", backref="company_careers")
+
+    @property
+    def title(self):
+        return self.job_title
+    
+    @property
+    def employment_type(self):
+        return self.job_type
+    
+    @property
+    def application_deadline(self):
+        return self.closing_date

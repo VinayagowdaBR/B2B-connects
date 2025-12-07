@@ -16,6 +16,7 @@ class CompanyProduct(Base):
     slug = Column(String(255), nullable=False, index=True)
     price = Column(Float, nullable=True)
     sku = Column(String(100), nullable=True)
+    stock_quantity = Column(Integer, nullable=True)
 
     short_description = Column(Text, nullable=True)
     full_description = Column(Text, nullable=True)

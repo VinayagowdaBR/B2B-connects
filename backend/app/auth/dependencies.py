@@ -8,8 +8,10 @@ from app.models.user_model import User
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    # print(f"DEBUG: get_current_user token: {token[:10]}...")
     payload = decode_access_token(token)
     if not payload:
+        print("DEBUG: Payload decode failed")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -18,7 +20,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     
     # Subject can be either email or phone number
     subject: str = payload.get("sub")
+    # print(f"DEBUG: Token subject: {subject}")
     if subject is None:
+        print("DEBUG: Subject is None")
         raise HTTPException(status_code=401, detail="Invalid token")
     
     # Try to find user by email or phone number
@@ -29,6 +33,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         user = db.query(User).options(joinedload(User.roles)).filter(User.phone_number == subject).first()
     
     if user is None:
+        print(f"DEBUG: User not found for subject {subject}")
         raise HTTPException(status_code=401, detail="User not found")
     return user
 

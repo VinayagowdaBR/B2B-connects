@@ -10,6 +10,7 @@ class PortfolioItemType(str, enum.Enum):
     PROJECT = "project"
     TESTIMONIAL = "testimonial"
     TEAM_MEMBER = "team_member"
+    BLOG_POST = "blog_post"
 
 class PublicPortfolio(Base):
     """

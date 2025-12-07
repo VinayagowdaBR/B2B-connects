@@ -7,7 +7,6 @@ import {
     Check,
     Crown,
     Zap,
-    Calendar,
     Clock,
     ArrowRight,
     Download,
@@ -23,7 +22,7 @@ const CustomerSubscription = () => {
     const [currentPlan, setCurrentPlan] = useState(null);
     const [availablePlans, setAvailablePlans] = useState([]);
     const [paymentHistory, setPaymentHistory] = useState([]);
-    const [activeTab, setActiveTab] = useState('plans');
+    const [activeTab, setActiveTab] = useState('history'); // Default to history to check payments
 
     useEffect(() => {
         fetchSubscriptionData();
@@ -73,7 +72,88 @@ const CustomerSubscription = () => {
         }
     };
 
-    // Mock data for demo
+    const handleDownloadInvoice = (payment) => {
+        const invoiceContent = `
+            <html>
+                <head>
+                    <title>Invoice #${payment.transaction_id || payment.id}</title>
+                    <style>
+                        body { font-family: 'Helvetica', sans-serif; padding: 40px; color: #333; }
+                        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+                        .logo { font-size: 24px; font-weight: bold; color: #0f766e; }
+                        .details { margin-bottom: 30px; }
+                        .row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+                        .label { font-weight: bold; color: #666; }
+                        .status { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; background: #dcfce7; color: #166534; }
+                        .total { font-size: 18px; font-weight: bold; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; }
+                        .footer { text-align: center; margin-top: 50px; font-size: 12px; color: #888; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">B2B SaaS Platform</div>
+                        <p>Payment Invoice</p>
+                    </div>
+                    
+                    <div class="details">
+                        <div class="row">
+                            <span class="label">Invoice ID:</span>
+                            <span>#${payment.transaction_id || `INV-${payment.id}`}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">Date:</span>
+                            <span>${payment.created_at || payment.payment_date ? format(new Date(payment.created_at || payment.payment_date), 'PPP') : 'N/A'}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">Status:</span>
+                            <span class="status">${payment.payment_status || payment.status || 'Success'}</span>
+                        </div>
+                        <div class="row">
+                            <span class="label">Payment Method:</span>
+                            <span>${payment.payment_gateway || 'Online'}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #f8fafc; text-align: left;">
+                                    <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Description</th>
+                                    <th style="padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: right;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${payment.notes || 'Subscription Payment'}</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${payment.amount}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="total row">
+                        <span>Total Paid</span>
+                        <span>₹${payment.amount}</span>
+                    </div>
+
+                    <div class="footer">
+                        <p>Thank you for your business!</p>
+                        <p>This is a computer-generated invoice.</p>
+                    </div>
+
+                    <script>
+                        window.onload = function() { window.print(); }
+                    </script>
+                </body>
+            </html>
+        `;
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(invoiceContent);
+        printWindow.document.close();
+    };
+
+    // Mock data for demo fallback
     const mockPlans = [
         {
             id: 1,
@@ -81,13 +161,7 @@ const CustomerSubscription = () => {
             price: 0,
             period: 'month',
             description: 'Perfect for getting started',
-            features: [
-                '5 Services',
-                '10 Products',
-                '5 Projects',
-                'Basic Portfolio',
-                'Email Support',
-            ],
+            features: ['5 Services', '10 Products', '5 Projects', 'Basic Portfolio', 'Email Support'],
             is_current: true,
         },
         {
@@ -96,15 +170,7 @@ const CustomerSubscription = () => {
             price: 999,
             period: 'month',
             description: 'For growing businesses',
-            features: [
-                '25 Services',
-                '50 Products',
-                '25 Projects',
-                'Premium Portfolio',
-                'Priority Support',
-                'Custom Domain',
-                'Analytics Dashboard',
-            ],
+            features: ['25 Services', '50 Products', '25 Projects', 'Premium Portfolio', 'Priority Support', 'Custom Domain', 'Analytics Dashboard'],
             is_popular: true,
         },
         {
@@ -113,17 +179,7 @@ const CustomerSubscription = () => {
             price: 2499,
             period: 'month',
             description: 'For large organizations',
-            features: [
-                'Unlimited Services',
-                'Unlimited Products',
-                'Unlimited Projects',
-                'White-label Portfolio',
-                '24/7 Phone Support',
-                'Custom Domain',
-                'Advanced Analytics',
-                'API Access',
-                'Dedicated Account Manager',
-            ],
+            features: ['Unlimited Services', 'Unlimited Products', 'Unlimited Projects', 'White-label Portfolio', '24/7 Phone Support', 'Custom Domain', 'Advanced Analytics', 'API Access', 'Dedicated Account Manager'],
         },
     ];
 
@@ -295,28 +351,34 @@ const CustomerSubscription = () => {
                                     {paymentHistory.map((payment, index) => (
                                         <tr key={index} className="hover:bg-gray-50">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {format(new Date(payment.created_at), 'MMM dd, yyyy')}
+                                                {payment.created_at || payment.payment_date
+                                                    ? format(new Date(payment.created_at || payment.payment_date), 'MMM dd, yyyy')
+                                                    : 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-700">
-                                                {payment.description}
+                                                {payment.notes || payment.description || 'Plan Upgrade'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 ₹{payment.amount}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${payment.status === 'success'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : payment.status === 'pending'
-                                                            ? 'bg-yellow-100 text-yellow-800'
-                                                            : 'bg-red-100 text-red-800'
+                                                    className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${(payment.payment_status || payment.status || '').toLowerCase() === 'success'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : (payment.payment_status || payment.status || '').toLowerCase() === 'pending'
+                                                                ? 'bg-yellow-100 text-yellow-800'
+                                                                : 'bg-red-100 text-red-800'
                                                         }`}
                                                 >
-                                                    {payment.status}
+                                                    {payment.payment_status || payment.status || 'Unknown'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
-                                                <button className="text-teal-600 hover:text-teal-800 transition-colors">
+                                                <button
+                                                    onClick={() => handleDownloadInvoice(payment)}
+                                                    className="text-teal-600 hover:text-teal-800 transition-colors"
+                                                    title="Download Invoice"
+                                                >
                                                     <Download className="w-4 h-4" />
                                                 </button>
                                             </td>

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -17,7 +17,9 @@ class CompanyGalleryImage(Base):
     image_url = Column(String(500), nullable=False)
     
     category = Column(String(100), nullable=True)
+    alt_text = Column(String(255), nullable=True)
     display_order = Column(Integer, default=0)
+    is_active = Column(Boolean, default=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

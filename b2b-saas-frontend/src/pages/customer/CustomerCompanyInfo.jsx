@@ -28,16 +28,16 @@ const CustomerCompanyInfo = () => {
     const [companyData, setCompanyData] = useState({
         company_name: '',
         tagline: '',
-        description: '',
+        about: '', // Mapped to backend 'about'
         logo_url: '',
-        website: '',
+        website_url: '', // Mapped to backend 'website_url'
         email: '',
         phone: '',
         address: '',
         city: '',
         state: '',
         country: '',
-        zip_code: '',
+        postal_code: '', // Mapped to backend 'postal_code'
         facebook_url: '',
         twitter_url: '',
         linkedin_url: '',
@@ -57,7 +57,19 @@ const CustomerCompanyInfo = () => {
             setIsLoading(true);
             const data = await customerCompanyInfoApi.getMyCompanyInfo();
             if (data) {
-                setCompanyData((prev) => ({ ...prev, ...data }));
+                // Ensure all fields are mapped correctly from backend response
+                setCompanyData((prev) => ({
+                    ...prev,
+                    ...data,
+                    // Semantic mapping adjustments
+                    about: data.about || '',
+                    website_url: data.website_url || '',
+                    postal_code: data.postal_code || '',
+                    industry: data.industry || '',
+                    company_size: data.company_size || '',
+                    // Ensure integer fields are converted to string for inputs if necessary, or kept as is
+                    founding_year: data.founding_year || '',
+                }));
             }
         } catch (error) {
             if (error.response?.status !== 404) {
@@ -77,14 +89,26 @@ const CustomerCompanyInfo = () => {
         e.preventDefault();
         try {
             setIsSaving(true);
+
+            // Prepare payload - ensure types match backend expectations
+            const payload = {
+                ...companyData,
+                founding_year: companyData.founding_year ? parseInt(companyData.founding_year) : null,
+                // Pydantic v2 usually handles empty strings for Optionals if configured, 
+                // but explicit None is safer if the backend validator requires it.
+                // Our backend schema has a validator for email="" -> None, assuming others might need it too?
+                // For now, let's send empty strings if the backend accepts them or relies on defaults.
+            };
+
             if (companyData.id) {
-                await customerCompanyInfoApi.updateMyCompanyInfo(companyData);
+                await customerCompanyInfoApi.updateMyCompanyInfo(payload);
             } else {
-                await customerCompanyInfoApi.createCompanyInfo(companyData);
+                await customerCompanyInfoApi.createCompanyInfo(payload);
             }
             toast.success('Company information saved successfully!');
             fetchCompanyInfo();
         } catch (error) {
+            console.error(error);
             toast.error(error.response?.data?.detail || 'Failed to save company information');
         } finally {
             setIsSaving(false);
@@ -202,8 +226,8 @@ const CustomerCompanyInfo = () => {
                                         Description
                                     </label>
                                     <textarea
-                                        name="description"
-                                        value={companyData.description}
+                                        name="about"
+                                        value={companyData.about}
                                         onChange={handleChange}
                                         rows={4}
                                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
@@ -284,8 +308,8 @@ const CustomerCompanyInfo = () => {
                                     </label>
                                     <input
                                         type="url"
-                                        name="website"
-                                        value={companyData.website}
+                                        name="website_url"
+                                        value={companyData.website_url}
                                         onChange={handleChange}
                                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                                         placeholder="https://yourcompany.com"
@@ -387,8 +411,8 @@ const CustomerCompanyInfo = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        name="zip_code"
-                                        value={companyData.zip_code}
+                                        name="postal_code"
+                                        value={companyData.postal_code}
                                         onChange={handleChange}
                                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                                         placeholder="400001"

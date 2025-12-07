@@ -35,7 +35,79 @@ const TeamMemberModal = ({ isOpen, onClose, onSubmit, member }) => {
                             <div><label className="block text-sm font-medium mb-1"><Mail className="w-4 h-4 inline mr-1" />Email</label><input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2.5 border rounded-lg" placeholder="john@company.com" /></div>
                             <div><label className="block text-sm font-medium mb-1">Phone</label><input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2.5 border rounded-lg" placeholder="+91..." /></div>
                         </div>
-                        <div><label className="block text-sm font-medium mb-1">Photo URL</label><input type="url" name="image_url" value={formData.image_url} onChange={handleChange} className="w-full px-4 py-2.5 border rounded-lg" placeholder="https://..." /></div>
+                        {/* Image Upload */}
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Photo</label>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={async (e) => {
+                                            const file = e.target.files[0];
+                                            if (!file) return;
+
+                                            try {
+                                                setIsSubmitting(true);
+                                                const formData = new FormData();
+                                                formData.append('file', file);
+
+                                                const response = await fetch('http://localhost:8000/upload/', {
+                                                    method: 'POST',
+                                                    body: formData,
+                                                });
+
+                                                if (!response.ok) throw new Error('Upload failed');
+
+                                                const data = await response.json();
+                                                handleChange({ target: { name: 'image_url', value: data.url } });
+                                            } catch (error) {
+                                                console.error("Upload error:", error);
+                                                alert("Image upload failed");
+                                            } finally {
+                                                setIsSubmitting(false);
+                                            }
+                                        }}
+                                        className="block w-full text-sm text-gray-500
+                                            file:mr-4 file:py-2 file:px-4
+                                            file:rounded-full file:border-0
+                                            file:text-sm file:font-semibold
+                                            file:bg-teal-50 file:text-teal-700
+                                            hover:file:bg-teal-100
+                                        "
+                                    />
+                                </div>
+
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div className="relative flex justify-center">
+                                        <span className="px-2 bg-white text-sm text-gray-500">Or use URL</span>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="url"
+                                    name="image_url"
+                                    value={formData.image_url}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 border rounded-lg"
+                                    placeholder="https://..."
+                                />
+                            </div>
+
+                            {formData.image_url && (
+                                <div className="mt-2">
+                                    <img
+                                        src={formData.image_url}
+                                        alt="Preview"
+                                        className="h-20 w-20 object-cover rounded-full border"
+                                        onError={(e) => (e.target.style.display = 'none')}
+                                    />
+                                </div>
+                            )}
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div><label className="block text-sm font-medium mb-1"><Linkedin className="w-4 h-4 inline mr-1" />LinkedIn</label><input type="url" name="linkedin_url" value={formData.linkedin_url} onChange={handleChange} className="w-full px-4 py-2.5 border rounded-lg" placeholder="https://linkedin.com/in/..." /></div>
                             <div><label className="block text-sm font-medium mb-1"><Twitter className="w-4 h-4 inline mr-1" />Twitter</label><input type="url" name="twitter_url" value={formData.twitter_url} onChange={handleChange} className="w-full px-4 py-2.5 border rounded-lg" placeholder="https://twitter.com/..." /></div>

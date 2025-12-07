@@ -9,7 +9,7 @@ class CompanyTeamMemberBase(BaseModel):
     bio: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
-    photo_url: Optional[str] = None
+    image_url: Optional[str] = None
     linkedin_url: Optional[str] = None
     twitter_url: Optional[str] = None
     github_url: Optional[str] = None
@@ -28,7 +28,7 @@ class CompanyTeamMemberUpdate(BaseModel):
     bio: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
-    photo_url: Optional[str] = None
+    image_url: Optional[str] = None
     linkedin_url: Optional[str] = None
     twitter_url: Optional[str] = None
     github_url: Optional[str] = None

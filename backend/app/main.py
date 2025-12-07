@@ -158,6 +158,16 @@ app.include_router(auth_router)
 # Payment Webhooks
 app.include_router(payment_webhook_router)
 
+# Upload Routes
+from app.routes.upload_routes import router as upload_router
+app.include_router(upload_router)
+
+# Mount Static Files
+from fastapi.staticfiles import StaticFiles
+import os
+os.makedirs("backend/static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="backend/static"), name="static")
+
 # Public Routes
 from app.routes.public_routes import router as public_router
 app.include_router(public_router)

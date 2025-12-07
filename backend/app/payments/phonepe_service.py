@@ -37,6 +37,20 @@ class PhonePeService:
         import time
         transaction_id = f"TXN_{customer_id}_{plan_id}_{int(time.time())}"
         
+        # DEMO MODE: For testing without real PhonePe credentials
+        # If merchant_id is test/demo, use mock payment flow
+        if self.merchant_id in ["PGTESTPAYUAT", "DEMO", "TEST", ""]:
+            # Create a demo payment URL that redirects to success
+            demo_payment_url = f"{settings.FRONTEND_URL}/subscription/demo-payment?txn={transaction_id}&amount={amount}&plan={plan_id}"
+            
+            return {
+                "payment_url": demo_payment_url,
+                "transaction_id": transaction_id,
+                "amount": amount,
+                "currency": "INR",
+                "mode": "demo"  # Flag indicating demo mode
+            }
+        
         # Create payment payload
         payload = {
             "merchantId": self.merchant_id,

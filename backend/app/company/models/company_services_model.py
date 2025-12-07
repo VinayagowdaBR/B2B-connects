@@ -28,6 +28,7 @@ class CompanyService(Base):
     # Categorization
     category = Column(String(100), nullable=True)
     features = Column(JSON, nullable=True)
+    pricing = Column(String(100), nullable=True)  # Added pricing column
     
     # Status
     status = Column(String(20), default="active")  # active/inactive

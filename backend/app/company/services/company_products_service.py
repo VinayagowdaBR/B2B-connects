@@ -9,6 +9,16 @@ class CompanyProductService(BaseService[CompanyProduct, CompanyProductRepository
         super().__init__(repository)
 
     def create(self, obj_in, tenant_id: int):
+        if not obj_in.slug and obj_in.name:
+            import re
+            import unicodedata
+            
+            # Simple slugify implementation
+            value = str(obj_in.name)
+            value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+            value = re.sub(r'[^\w\s-]', '', value.lower())
+            obj_in.slug = re.sub(r'[-\s]+', '-', value).strip('-')
+
         obj = super().create(obj_in, tenant_id)
         from app.services.portfolio_sync_service import sync_item_to_portfolio
         from app.models.public_portfolio_model import PortfolioItemType

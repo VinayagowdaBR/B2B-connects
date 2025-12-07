@@ -34,9 +34,17 @@ const CustomerProducts = () => {
         try {
             setIsLoading(true);
             const data = await customerProductsApi.getMyProducts();
-            setProducts(data || []);
+            // Map backend fields to frontend model
+            const mappedProducts = (data || []).map(product => ({
+                ...product,
+                description: product.short_description || product.full_description || '', // Map description
+                image_url: product.main_image_url || '', // Map image
+                is_active: product.publish_to_portfolio ?? product.stock_status === 'in_stock' // Map status (fallback to stock status if needed)
+            }));
+            setProducts(mappedProducts);
         } catch (error) {
             console.error('Error fetching products:', error);
+            toast.error('Failed to load products');
         } finally {
             setIsLoading(false);
         }
@@ -65,18 +73,33 @@ const CustomerProducts = () => {
 
     const handleSubmit = async (data) => {
         try {
+            // Map data to backend schema
+            const payload = {
+                name: data.name,
+                price: data.price ? parseFloat(data.price) : null,
+                sku: data.sku,
+                stock_quantity: data.stock_quantity ? parseInt(data.stock_quantity) : null,
+                category: data.category,
+                short_description: data.description, // Map description
+                full_description: data.description,
+                main_image_url: data.image_url, // Map image
+                publish_to_portfolio: data.is_active, // Map active status
+                stock_status: data.is_active ? 'in_stock' : 'out_of_stock' // Also update stock status based on active
+            };
+
             if (selectedProduct) {
-                await customerProductsApi.updateProduct(selectedProduct.id, data);
+                await customerProductsApi.updateProduct(selectedProduct.id, payload);
                 toast.success('Product updated successfully!');
             } else {
-                await customerProductsApi.createProduct(data);
+                await customerProductsApi.createProduct(payload);
                 toast.success('Product created successfully!');
             }
             setIsModalOpen(false);
             fetchProducts();
         } catch (error) {
+            console.error(error);
             toast.error('Failed to save product');
-            throw error;
+            // throw error;
         }
     };
 

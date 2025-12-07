@@ -10,6 +10,8 @@ class CompanyInfoBase(BaseModel):
     vision: Optional[str] = None
     values: Optional[str] = None
     founding_year: Optional[int] = None
+    industry: Optional[str] = None
+    company_size: Optional[str] = None
     logo_url: Optional[str] = None
     hero_image_url: Optional[str] = None
     address: Optional[str] = None
@@ -45,6 +47,8 @@ class CompanyInfoUpdate(BaseModel):
     vision: Optional[str] = None
     values: Optional[str] = None
     founding_year: Optional[int] = None
+    industry: Optional[str] = None
+    company_size: Optional[str] = None
     logo_url: Optional[str] = None
     hero_image_url: Optional[str] = None
     address: Optional[str] = None

@@ -3,17 +3,25 @@ from typing import Optional
 from datetime import datetime
 
 class CompanyGalleryImageBase(BaseModel):
-    image_title: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
     image_url: str
     category: Optional[str] = None
+    alt_text: Optional[str] = None
+    display_order: Optional[int] = 0
+    is_active: Optional[bool] = True
 
 class CompanyGalleryImageCreate(CompanyGalleryImageBase):
     pass
 
 class CompanyGalleryImageUpdate(BaseModel):
-    image_title: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
     image_url: Optional[str] = None
     category: Optional[str] = None
+    alt_text: Optional[str] = None
+    display_order: Optional[int] = None
+    is_active: Optional[bool] = None
 
 class CompanyGalleryImageResponse(CompanyGalleryImageBase):
     id: int

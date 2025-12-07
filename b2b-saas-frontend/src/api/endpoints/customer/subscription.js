@@ -30,4 +30,12 @@ export const customerSubscriptionApi = {
         const response = await apiClient.get(`/customer/subscription/check-access/${moduleName}`);
         return response.data;
     },
+
+    // Confirm demo payment (for testing)
+    confirmDemoPayment: async (transactionId, planId, amount) => {
+        const response = await apiClient.post(
+            `/customer/subscription/confirm-demo-payment?transaction_id=${transactionId}&plan_id=${planId}&amount=${amount}`
+        );
+        return response.data;
+    },
 };

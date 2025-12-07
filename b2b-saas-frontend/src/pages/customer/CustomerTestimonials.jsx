@@ -15,15 +15,58 @@ const CustomerTestimonials = () => {
     useEffect(() => { fetchTestimonials(); }, []);
 
     const fetchTestimonials = async () => {
-        try { setIsLoading(true); const data = await customerTestimonialsApi.getMyTestimonials(); setTestimonials(data || []); } catch (e) { console.error(e); } finally { setIsLoading(false); }
+        try {
+            setIsLoading(true);
+            const data = await customerTestimonialsApi.getMyTestimonials();
+            // Map backend fields
+            const mapped = (data || []).map(t => ({
+                ...t,
+                client_name: t.client_name,
+                client_company: t.client_company,
+                client_designation: t.client_designation,
+                content: t.content,
+                rating: t.rating,
+                client_image_url: t.client_image_url,
+                is_active: t.publish_to_portfolio ?? true,
+                is_featured: t.is_featured ?? false
+            }));
+            setTestimonials(mapped);
+        } catch (e) {
+            console.error(e);
+            toast.error('Failed to load testimonials');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSubmit = async (data) => {
         try {
-            if (selectedTestimonial) { await customerTestimonialsApi.updateTestimonial(selectedTestimonial.id, data); toast.success('Updated!'); }
-            else { await customerTestimonialsApi.createTestimonial(data); toast.success('Created!'); }
-            setIsModalOpen(false); fetchTestimonials();
-        } catch (e) { toast.error('Failed to save'); throw e; }
+            // Map frontend to backend
+            const payload = {
+                client_name: data.client_name,
+                client_designation: data.client_designation,
+                client_company: data.client_company,
+                content: data.content,
+                rating: data.rating,
+                client_image_url: data.client_image_url,
+                is_featured: data.is_featured,
+                publish_to_portfolio: data.is_active
+            };
+
+            if (selectedTestimonial) {
+                await customerTestimonialsApi.updateTestimonial(selectedTestimonial.id, payload);
+                toast.success('Updated!');
+            } else {
+                await customerTestimonialsApi.createTestimonial(payload);
+                toast.success('Created!');
+            }
+            setIsModalOpen(false);
+            fetchTestimonials();
+        } catch (e) {
+            console.error(e);
+            toast.error('Failed to save');
+            // throw e; 
+        }
     };
 
     const handleDelete = async (id) => {

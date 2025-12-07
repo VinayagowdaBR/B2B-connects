@@ -201,3 +201,87 @@ def check_module_access(
         "module": module_name,
         "reason": "Plan does not include this module" if not has_access else None
     }
+
+
+@router.post("/confirm-demo-payment")
+def confirm_demo_payment(
+    transaction_id: str,
+    plan_id: int,
+    amount: float,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(has_role("customer"))
+):
+    """
+    Confirm a demo payment and record it in the database.
+    This is for testing purposes only.
+    """
+    from app.subscriptions.models import CustomerSubscription
+    from datetime import timedelta
+    
+    # Get the plan
+    plan = db.query(SubscriptionPlan).filter(SubscriptionPlan.id == plan_id).first()
+    if not plan:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Plan not found"
+        )
+    
+    # Get customer's current subscription
+    subscription = db.query(CustomerSubscription).filter(
+        CustomerSubscription.tenant_id == current_user.id
+    ).first()
+    
+    if not subscription:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No subscription found"
+        )
+    
+    # Update subscription with new plan
+    subscription.plan_id = plan_id
+    subscription.status = "ACTIVE"
+    subscription.start_date = datetime.now(timezone.utc)
+    subscription.end_date = datetime.now(timezone.utc) + timedelta(days=plan.duration_days or 30)
+    
+    # Use raw SQL to insert payment - bypasses ORM field constraints
+    from sqlalchemy import text
+    payment_date = datetime.now(timezone.utc)
+    
+    try:
+        db.execute(
+            text("""
+                INSERT INTO payment_history 
+                (subscription_id, amount, currency, payment_gateway, transaction_id, 
+                 payment_status, payment_date, notes, paid_amount, membership_id, created_at)
+                VALUES 
+                (:subscription_id, :amount, :currency, :payment_gateway, :transaction_id,
+                 :payment_status, :payment_date, :notes, :paid_amount, NULL, :created_at)
+            """),
+            {
+                "subscription_id": subscription.id,
+                "amount": amount,
+                "currency": "INR",  # Always use INR
+                "payment_gateway": "demo",
+                "transaction_id": transaction_id,
+                "payment_status": "SUCCESS",
+                "payment_date": payment_date,
+                "notes": "Demo payment for subscription upgrade",
+                "paid_amount": amount,  # Set paid_amount same as amount
+                "created_at": payment_date  # Add created_at for frontend
+            }
+        )
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Payment recording failed: {str(e)}"
+        )
+    
+    return {
+        "success": True,
+        "message": "Demo payment confirmed successfully",
+        "transaction_id": transaction_id,
+        "plan_name": plan.name,
+        "new_end_date": subscription.end_date.isoformat()
+    }

@@ -4,16 +4,18 @@ from datetime import datetime, date
 
 class CompanyProjectBase(BaseModel):
     title: str
-    slug: str
+    slug: Optional[str] = None
     client_name: Optional[str] = None
-    industry: Optional[str] = None
-    challenge: Optional[str] = None
-    solution: Optional[str] = None
-    results: Optional[str] = None
-    project_date: Optional[date] = None
-    cover_image_url: Optional[str] = None
-    gallery: Optional[List[str]] = None
-    testimonials_id: Optional[int] = None
+    project_url: Optional[str] = None
+    short_description: Optional[str] = None
+    full_description: Optional[str] = None
+    category: Optional[str] = None
+    technologies: Optional[List[str]] = None
+    featured_image_url: Optional[str] = None
+    gallery_images: Optional[List[str]] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_featured: Optional[bool] = False
     publish_to_portfolio: Optional[bool] = False
 
 class CompanyProjectCreate(CompanyProjectBase):
@@ -23,14 +25,16 @@ class CompanyProjectUpdate(BaseModel):
     title: Optional[str] = None
     slug: Optional[str] = None
     client_name: Optional[str] = None
-    industry: Optional[str] = None
-    challenge: Optional[str] = None
-    solution: Optional[str] = None
-    results: Optional[str] = None
-    project_date: Optional[date] = None
-    cover_image_url: Optional[str] = None
-    gallery: Optional[List[str]] = None
-    testimonials_id: Optional[int] = None
+    project_url: Optional[str] = None
+    short_description: Optional[str] = None
+    full_description: Optional[str] = None
+    category: Optional[str] = None
+    technologies: Optional[List[str]] = None
+    featured_image_url: Optional[str] = None
+    gallery_images: Optional[List[str]] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_featured: Optional[bool] = None
     publish_to_portfolio: Optional[bool] = None
 
 class CompanyProjectResponse(CompanyProjectBase):
