@@ -3,6 +3,11 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
+// Public Pages
+import LandingPage from '@/pages/public/LandingPage';
+import BusinessPortfolio from '@/pages/public/BusinessPortfolio';
+import SearchResults from '@/pages/public/SearchResults';
+
 // Auth Pages
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
@@ -53,8 +58,10 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Default redirect to login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* Public Landing Page */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/business/:slug" element={<BusinessPortfolio />} />
 
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />

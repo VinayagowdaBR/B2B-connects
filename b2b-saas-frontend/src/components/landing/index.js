@@ -1,0 +1,9 @@
+export { default as Navbar } from './Navbar';
+export { default as HeroSearch } from './HeroSearch';
+export { default as CategoryGrid } from './CategoryGrid';
+export { default as FeaturedBusinesses } from './FeaturedBusinesses';
+export { default as ProductsGrid } from './ProductsGrid';
+export { default as StatsCounter } from './StatsCounter';
+export { default as HowItWorks } from './HowItWorks';
+export { default as CTABanner } from './CTABanner';
+export { default as Footer } from './Footer';
