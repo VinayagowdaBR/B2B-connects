@@ -7,6 +7,8 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LandingPage from '@/pages/public/LandingPage';
 import BusinessPortfolio from '@/pages/public/BusinessPortfolio';
 import SearchResults from '@/pages/public/SearchResults';
+import ProductDetail from '@/pages/public/ProductDetail';
+import ServiceDetail from '@/pages/public/ServiceDetail';
 
 // Auth Pages
 import LoginPage from '@/pages/auth/LoginPage';
@@ -33,6 +35,7 @@ import LocationsManagement from '@/pages/admin/LocationsManagement';
 import CustomerTypesManagement from '@/pages/admin/CustomerTypesManagement';
 import CustomersManagement from '@/pages/admin/CustomersManagement';
 import CompanyInfoManagement from '@/pages/admin/CompanyInfoManagement';
+import CategoriesManagement from '@/pages/admin/CategoriesManagement';
 import AdminSettings from '@/pages/admin/AdminSettings';
 
 
@@ -62,6 +65,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/business/:slug" element={<BusinessPortfolio />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/service/:id" element={<ServiceDetail />} />
 
           {/* Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
@@ -349,6 +354,16 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <CustomerTypesManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Categories routes */}
+          <Route
+            path="/admin/categories"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <CategoriesManagement />
               </ProtectedRoute>
             }
           />

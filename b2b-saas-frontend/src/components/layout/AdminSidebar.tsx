@@ -58,6 +58,7 @@ const AdminSidebar = () => {
     { name: 'Roles & Permissions', icon: Shield, path: '/admin/roles', category: 'System' },
     { name: 'States & Districts', icon: MapPin, path: '/admin/locations', category: 'System' },
     { name: 'Customer Types', icon: UserCog, path: '/admin/customer-types', category: 'System' },
+    { name: 'Categories', icon: FolderOpen, path: '/admin/categories', category: 'System' },
 
     // Company Content
     { name: 'Company Info', icon: Building2, path: '/admin/companies', category: 'Content' },

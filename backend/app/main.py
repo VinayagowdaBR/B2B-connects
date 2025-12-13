@@ -23,6 +23,7 @@ from app.admin.routes.district_routes import router as district_router
 from app.admin.routes.customer_type_routes import router as customer_type_router
 from app.admin.routes.admin_subscription_routes import router as admin_subscription_router
 from app.admin.routes.admin_customer_routes import router as admin_customer_router
+from app.admin.routes.category_routes import router as category_router
 
 # Payment Routes
 from app.payments.routes import router as payment_webhook_router
@@ -58,6 +59,7 @@ from app.admin.models.admin_user_model import AdminUser
 from app.admin.models.state_model import State
 from app.admin.models.district_model import District
 from app.admin.models.customer_type_model import CustomerType
+from app.admin.models.category_model import Category
 
 # Subscription Models (NEW)
 from app.subscriptions.models import SubscriptionPlan, CustomerSubscription
@@ -181,6 +183,7 @@ app.include_router(district_router)
 app.include_router(customer_type_router)
 app.include_router(admin_subscription_router)
 app.include_router(admin_customer_router)
+app.include_router(category_router)
 
 # Customer Routes
 app.include_router(customer_router)
