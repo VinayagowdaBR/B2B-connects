@@ -1,39 +1,40 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Users, Building2, Package, ShoppingCart, TrendingUp, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { publicApi } from '@/api/endpoints/publicApi';
 
 const StatsCounter = () => {
-  const [apiStats, setApiStats] = useState(null);
+  const [siteSettings, setSiteSettings] = useState(null);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchSettings = async () => {
       try {
-        const data = await publicApi.getStats();
+        const data = await publicApi.getSiteSettings();
         if (data) {
-          setApiStats(data);
+          setSiteSettings(data);
         }
       } catch (err) {
-        console.error('Error fetching stats:', err);
+        console.error('Error fetching site settings:', err);
       }
     };
-    fetchStats();
+    fetchSettings();
   }, []);
 
-  const currentStats = apiStats || {
-    buyers: 50000,
-    verified_sellers: 10000,
-    total_listings: 100000,
-    daily_inquiries: 25000
+  // Use dynamic stats from settings, fallback to defaults
+  const statsData = {
+    buyers: siteSettings?.stats_buyers || 50000,
+    sellers: siteSettings?.stats_sellers || 10000,
+    products: siteSettings?.stats_products || 100000,
+    inquiries: siteSettings?.stats_inquiries || 25000
   };
 
   const stats = [
-    { icon: Users, value: Math.max(currentStats.buyers || 0, 50000), suffix: '+', label: 'Registered Buyers', description: 'Active business buyers', gradient: 'from-blue-500 to-cyan-500', bgLight: 'bg-blue-500/10' },
-    { icon: Building2, value: Math.max(currentStats.verified_sellers || 0, 10000), suffix: '+', label: 'Verified Sellers', description: 'Trusted suppliers', gradient: 'from-green-500 to-emerald-500', bgLight: 'bg-green-500/10' },
-    { icon: Package, value: Math.max(currentStats.total_listings || 0, 100000), suffix: '+', label: 'Products Listed', description: 'Across categories', gradient: 'from-purple-500 to-violet-500', bgLight: 'bg-purple-500/10' },
-    { icon: ShoppingCart, value: Math.max(currentStats.daily_inquiries || 0, 25000), suffix: '+', label: 'Daily Inquiries', description: 'Business connections', gradient: 'from-orange-500 to-amber-500', bgLight: 'bg-orange-500/10' },
+    { icon: Users, value: statsData.buyers, suffix: '+', label: 'Registered Buyers', description: 'Active business buyers', gradient: 'from-blue-500 to-cyan-500', bgLight: 'bg-blue-500/10' },
+    { icon: Building2, value: statsData.sellers, suffix: '+', label: 'Verified Sellers', description: 'Trusted suppliers', gradient: 'from-green-500 to-emerald-500', bgLight: 'bg-green-500/10' },
+    { icon: Package, value: statsData.products, suffix: '+', label: 'Products Listed', description: 'Across categories', gradient: 'from-purple-500 to-violet-500', bgLight: 'bg-purple-500/10' },
+    { icon: ShoppingCart, value: statsData.inquiries, suffix: '+', label: 'Daily Inquiries', description: 'Business connections', gradient: 'from-orange-500 to-amber-500', bgLight: 'bg-orange-500/10' },
   ];
 
   const AnimatedCounter = ({ value, suffix, isVisible }) => {
@@ -128,7 +129,7 @@ const StatsCounter = () => {
               >
                 {/* Glow effect on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
-                
+
                 {/* Card */}
                 <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 hover:bg-white/15 transition-all duration-300">
                   {/* Icon */}

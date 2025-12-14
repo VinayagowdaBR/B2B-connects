@@ -24,6 +24,7 @@ from app.admin.routes.customer_type_routes import router as customer_type_router
 from app.admin.routes.admin_subscription_routes import router as admin_subscription_router
 from app.admin.routes.admin_customer_routes import router as admin_customer_router
 from app.admin.routes.category_routes import router as category_router
+from app.admin.routes.site_settings_routes import router as site_settings_router
 
 # Payment Routes
 from app.payments.routes import router as payment_webhook_router
@@ -76,6 +77,7 @@ from app.company.models.company_blog_posts_model import CompanyBlogPost
 from app.company.models.company_careers_model import CompanyCareer
 from app.company.models.company_inquiries_model import CompanyInquiry
 from app.company.models.company_gallery_images_model import CompanyGalleryImage
+from app.models.site_settings_model import SiteSettings
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -184,6 +186,7 @@ app.include_router(customer_type_router)
 app.include_router(admin_subscription_router)
 app.include_router(admin_customer_router)
 app.include_router(category_router)
+app.include_router(site_settings_router)
 
 # Customer Routes
 app.include_router(customer_router)

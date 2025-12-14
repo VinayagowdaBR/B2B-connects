@@ -1,18 +1,34 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Youtube, ArrowRight, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { publicApi } from '@/api/endpoints/publicApi';
 
 const Footer = () => {
-  const categories = [
-    'Building & Construction',
-    'Electronics & Electrical',
-    'Healthcare & Medical',
-    'Food & Agriculture',
-    'Industrial Machinery',
-    'Apparel & Garments',
-  ];
+  const [settings, setSettings] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-  const quickLinks = [
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [settingsData, categoriesData] = await Promise.all([
+          publicApi.getSiteSettings(),
+          publicApi.getCategories()
+        ]);
+        setSettings(settingsData);
+        setCategories(categoriesData?.slice(0, 6) || []);
+      } catch (err) {
+        console.error('Error fetching footer data:', err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Use settings or defaults
+  const contactEmail = settings?.contact_email || 'support@b2bconnect.com';
+  const contactPhone = settings?.contact_phone || '+91 123 456 7890';
+  const contactAddress = settings?.contact_address || 'Mumbai, Maharashtra, India';
+  const quickLinks = settings?.quick_links || [
     { name: 'About Us', href: '/about' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'How It Works', href: '/how-it-works' },
@@ -20,8 +36,7 @@ const Footer = () => {
     { name: 'Blog', href: '/blog' },
     { name: 'Careers', href: '/careers' },
   ];
-
-  const support = [
+  const supportLinks = settings?.support_links || [
     { name: 'Help Center', href: '/help' },
     { name: 'FAQs', href: '/faq' },
     { name: 'Terms of Service', href: '/terms' },
@@ -30,12 +45,12 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook', color: 'hover:text-blue-500' },
-    { icon: Twitter, href: '#', label: 'Twitter', color: 'hover:text-sky-500' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'hover:text-blue-600' },
-    { icon: Instagram, href: '#', label: 'Instagram', color: 'hover:text-pink-500' },
-    { icon: Youtube, href: '#', label: 'YouTube', color: 'hover:text-red-500' },
-  ];
+    { icon: Facebook, href: settings?.facebook_url, label: 'Facebook', color: 'hover:text-blue-500' },
+    { icon: Twitter, href: settings?.twitter_url, label: 'Twitter', color: 'hover:text-sky-500' },
+    { icon: Linkedin, href: settings?.linkedin_url, label: 'LinkedIn', color: 'hover:text-blue-600' },
+    { icon: Instagram, href: settings?.instagram_url, label: 'Instagram', color: 'hover:text-pink-500' },
+    { icon: Youtube, href: settings?.youtube_url, label: 'YouTube', color: 'hover:text-red-500' },
+  ].filter(s => s.href);
 
   return (
     <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 pt-20 pb-10 overflow-hidden">
@@ -69,39 +84,39 @@ const Footer = () => {
                 <span className="text-[10px] text-gray-400 -mt-1">Trusted Business Network</span>
               </div>
             </Link>
-            
+
             <p className="text-gray-400 mb-6 leading-relaxed">
               India's most trusted B2B marketplace connecting verified suppliers with genuine buyers across all industries.
             </p>
 
-            {/* Contact Info */}
+            {/* Contact Info - Dynamic */}
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 <div className="p-2 bg-indigo-500/10 rounded-lg">
                   <Mail className="w-4 h-4 text-indigo-400" />
                 </div>
-                <a href="mailto:support@b2bconnect.com" className="hover:text-white transition-colors">
-                  support@b2bconnect.com
+                <a href={`mailto:${contactEmail}`} className="hover:text-white transition-colors">
+                  {contactEmail}
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <div className="p-2 bg-indigo-500/10 rounded-lg">
                   <Phone className="w-4 h-4 text-indigo-400" />
                 </div>
-                <a href="tel:+911234567890" className="hover:text-white transition-colors">
-                  +91 123 456 7890
+                <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="hover:text-white transition-colors">
+                  {contactPhone}
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <div className="p-2 bg-indigo-500/10 rounded-lg">
                   <MapPin className="w-4 h-4 text-indigo-400" />
                 </div>
-                <span>Mumbai, Maharashtra, India</span>
+                <span>{contactAddress}</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Dynamic */}
           <div>
             <h3 className="text-white font-bold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-3">
@@ -123,32 +138,40 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Categories - Dynamic from API */}
           <div>
             <h3 className="text-white font-bold text-lg mb-6">Categories</h3>
             <ul className="space-y-3">
-              {categories.slice(0, 6).map((category, index) => (
+              {categories.length > 0 ? categories.map((category, index) => (
                 <motion.li
-                  key={index}
+                  key={category.id || index}
                   whileHover={{ x: 5 }}
                   transition={{ duration: 0.2 }}
                 >
                   <Link
-                    to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                    to={`/category/${category.slug || category.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="text-gray-400 hover:text-white transition-colors text-sm"
                   >
-                    {category}
+                    {category.name}
                   </Link>
                 </motion.li>
-              ))}
+              )) : (
+                ['Building & Construction', 'Electronics & Electrical', 'Healthcare & Medical', 'Food & Agriculture', 'Industrial Machinery', 'Apparel & Garments'].map((cat, index) => (
+                  <motion.li key={index} whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+                    <Link to={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`} className="text-gray-400 hover:text-white transition-colors text-sm">
+                      {cat}
+                    </Link>
+                  </motion.li>
+                ))
+              )}
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Support - Dynamic */}
           <div>
             <h3 className="text-white font-bold text-lg mb-6">Support</h3>
             <ul className="space-y-3">
-              {support.map((link, index) => (
+              {supportLinks.map((link, index) => (
                 <motion.li
                   key={index}
                   whileHover={{ x: 5 }}
@@ -198,14 +221,16 @@ const Footer = () => {
               © {new Date().getFullYear()} B2BConnect. Made with <Heart className="inline w-4 h-4 text-red-500 fill-red-500" /> in India. All rights reserved.
             </p>
 
-            {/* Social Links */}
+            {/* Social Links - Dynamic */}
             <div className="flex items-center gap-4">
-              {socialLinks.map((social, index) => {
+              {socialLinks.length > 0 ? socialLinks.map((social, index) => {
                 const IconComponent = social.icon;
                 return (
                   <motion.a
                     key={index}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.2, y: -3 }}
                     whileTap={{ scale: 0.9 }}
                     className={`p-2 bg-gray-800 rounded-lg text-gray-400 ${social.color} transition-colors`}
@@ -214,7 +239,19 @@ const Footer = () => {
                     <IconComponent className="w-5 h-5" />
                   </motion.a>
                 );
-              })}
+              }) : (
+                [Facebook, Twitter, Linkedin, Instagram, Youtube].map((IconComponent, index) => (
+                  <motion.a
+                    key={index}
+                    href="#"
+                    whileHover={{ scale: 1.2, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
+                  >
+                    <IconComponent className="w-5 h-5" />
+                  </motion.a>
+                ))
+              )}
             </div>
           </div>
         </div>

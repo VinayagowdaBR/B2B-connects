@@ -20,6 +20,7 @@ from app.company.models.company_gallery_images_model import CompanyGalleryImage
 from app.company.models.company_inquiries_model import CompanyInquiry
 from app.customer.models.customer_user_model import CustomerUser
 from app.admin.models.category_model import Category
+from app.models.site_settings_model import SiteSettings
 
 router = APIRouter(
     prefix="/public",
@@ -894,4 +895,63 @@ def get_service_detail(service_id: int, db: Session = Depends(get_db)):
             "phone": company.phone if company else None,
             "email": company.email if company else None
         }
+    }
+
+
+# ============ SITE SETTINGS (PUBLIC) ============
+
+@router.get("/site-settings")
+def get_public_site_settings(db: Session = Depends(get_db)):
+    """
+    Get site settings for Stats Counter and Footer components.
+    """
+    settings = db.query(SiteSettings).first()
+    
+    # Default values if no settings exist
+    if not settings:
+        return {
+            "contact_email": "support@b2bconnect.com",
+            "contact_phone": "+91 123 456 7890",
+            "contact_address": "Mumbai, Maharashtra, India",
+            "facebook_url": None,
+            "twitter_url": None,
+            "linkedin_url": None,
+            "instagram_url": None,
+            "youtube_url": None,
+            "stats_buyers": 50000,
+            "stats_sellers": 10000,
+            "stats_products": 100000,
+            "stats_inquiries": 25000,
+            "quick_links": [
+                {"name": "About Us", "href": "/about"},
+                {"name": "Contact Us", "href": "/contact"},
+                {"name": "How It Works", "href": "/how-it-works"},
+                {"name": "Pricing", "href": "/pricing"},
+                {"name": "Blog", "href": "/blog"},
+                {"name": "Careers", "href": "/careers"}
+            ],
+            "support_links": [
+                {"name": "Help Center", "href": "/help"},
+                {"name": "FAQs", "href": "/faq"},
+                {"name": "Terms of Service", "href": "/terms"},
+                {"name": "Privacy Policy", "href": "/privacy"},
+                {"name": "Refund Policy", "href": "/refund-policy"}
+            ]
+        }
+    
+    return {
+        "contact_email": settings.contact_email,
+        "contact_phone": settings.contact_phone,
+        "contact_address": settings.contact_address,
+        "facebook_url": settings.facebook_url,
+        "twitter_url": settings.twitter_url,
+        "linkedin_url": settings.linkedin_url,
+        "instagram_url": settings.instagram_url,
+        "youtube_url": settings.youtube_url,
+        "stats_buyers": settings.stats_buyers,
+        "stats_sellers": settings.stats_sellers,
+        "stats_products": settings.stats_products,
+        "stats_inquiries": settings.stats_inquiries,
+        "quick_links": settings.quick_links or [],
+        "support_links": settings.support_links or []
     }

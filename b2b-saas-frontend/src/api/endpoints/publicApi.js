@@ -143,6 +143,12 @@ export const publicApi = {
         if (filters.jobType) params.append('job_type', filters.jobType);
         const response = await apiClient.get(`/public/careers?${params}`);
         return response.data;
+    },
+
+    // Get site settings for Stats Counter and Footer
+    getSiteSettings: async () => {
+        const response = await apiClient.get('/public/site-settings');
+        return response.data;
     }
 };
 

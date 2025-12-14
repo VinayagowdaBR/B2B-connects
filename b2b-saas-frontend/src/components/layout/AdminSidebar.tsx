@@ -8,7 +8,6 @@ import {
   CreditCard,
   Settings,
   ChevronLeft,
-  ChevronRight,
   LogOut,
   Shield,
   MapPin,
@@ -25,6 +24,7 @@ import {
   Images,
   Mail,
   Zap,
+  Globe,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -75,6 +75,7 @@ const AdminSidebar = () => {
     { name: 'Gallery', icon: Images, path: '/admin/gallery', category: 'Content' },
 
     // Settings
+    { name: 'Site Settings', icon: Globe, path: '/admin/site-settings', category: 'System' },
     { name: 'Settings', icon: Settings, path: '/admin/settings', category: 'System' },
   ];
 

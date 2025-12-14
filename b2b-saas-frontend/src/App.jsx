@@ -48,6 +48,7 @@ const CompanyTeamMembersManagement = lazy(() => import('@/pages/admin/CompanyTea
 const CompanyCareersManagement = lazy(() => import('@/pages/admin/CompanyCareersManagement'));
 const CompanyInquiriesManagement = lazy(() => import('@/pages/admin/CompanyInquiriesManagement'));
 const CompanyGalleryManagement = lazy(() => import('@/pages/admin/CompanyGalleryManagement'));
+const SiteSettingsManagement = lazy(() => import('@/pages/admin/SiteSettingsManagement'));
 
 // Customer Pages
 const CustomerDashboard = lazy(() => import('@/pages/customer/CustomerDashboard'));
@@ -106,6 +107,7 @@ function App() {
             <Route path="/admin/careers" element={<ProtectedRoute allowedRoles={['admin']}><CompanyCareersManagement /></ProtectedRoute>} />
             <Route path="/admin/inquiries" element={<ProtectedRoute allowedRoles={['admin']}><CompanyInquiriesManagement /></ProtectedRoute>} />
             <Route path="/admin/gallery" element={<ProtectedRoute allowedRoles={['admin']}><CompanyGalleryManagement /></ProtectedRoute>} />
+            <Route path="/admin/site-settings" element={<ProtectedRoute allowedRoles={['admin']}><SiteSettingsManagement /></ProtectedRoute>} />
 
             {/* Customer Routes */}
             <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={['customer']}><CustomerDashboard /></ProtectedRoute>} />
