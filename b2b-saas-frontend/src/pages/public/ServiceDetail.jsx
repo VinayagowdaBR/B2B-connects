@@ -100,7 +100,7 @@ const ServiceDetail = () => {
             <Navbar />
 
             {/* Hero Banner */}
-            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white py-16">
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white pt-44 pb-16">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex items-center gap-2 text-blue-200 text-sm mb-4">
                         <Link to="/" className="hover:text-white">Home</Link>
@@ -215,7 +215,7 @@ const ServiceDetail = () => {
                         )}
 
                         {/* Inquiry Form */}
-                        <div className="bg-white rounded-2xl p-6 border sticky top-20">
+                        <div className="bg-white rounded-2xl p-6 border sticky top-48">
                             <h3 className="font-semibold mb-4 flex items-center gap-2">
                                 <MessageCircle className="h-5 w-5 text-blue-600" />
                                 Request This Service

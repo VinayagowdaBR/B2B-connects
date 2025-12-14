@@ -128,7 +128,7 @@ const BusinessPortfolio = () => {
             <Navbar />
 
             {/* Hero Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white">
+            <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white pt-44">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <Link to="/" className="inline-flex items-center text-blue-200 hover:text-white mb-4 transition-colors">
                         <ArrowLeft className="h-4 w-4 mr-1" /> Back to Directory
@@ -200,7 +200,7 @@ const BusinessPortfolio = () => {
             </div>
 
             {/* Tabs */}
-            <div className="bg-white border-b border-gray-200 sticky top-16 z-40 shadow-sm">
+            <div className="bg-white border-b border-gray-200 sticky top-44 z-40 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex overflow-x-auto scrollbar-hide">
                         {tabs.map((tab) => {

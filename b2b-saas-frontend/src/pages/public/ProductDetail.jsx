@@ -106,7 +106,7 @@ const ProductDetail = () => {
             <Navbar />
 
             {/* Breadcrumb */}
-            <div className="bg-white border-b">
+            <div className="bg-white border-b pt-44">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                         <Link to="/" className="hover:text-blue-600">Home</Link>
@@ -264,7 +264,7 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Inquiry Form */}
-                    <div className="bg-white rounded-2xl p-6 border h-fit sticky top-20">
+                    <div className="bg-white rounded-2xl p-6 border h-fit sticky top-48">
                         <h3 className="font-semibold mb-4 flex items-center gap-2">
                             <MessageCircle className="h-5 w-5 text-blue-600" />
                             Get Best Quote
