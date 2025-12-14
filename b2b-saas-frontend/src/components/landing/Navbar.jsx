@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Menu, X, ChevronDown, User, Building2, Heart, Bell, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { publicApi } from '@/api/endpoints/publicApi';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
@@ -19,21 +21,35 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await publicApi.getCategories();
+        // Get first 6 categories for navbar display
+        setCategories((data || []).slice(0, 6));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Fallback to default categories
+        setCategories([
+          { id: 1, name: 'Building & Construction', slug: 'building-construction' },
+          { id: 2, name: 'Electronics & Electrical', slug: 'electronics-electrical' },
+          { id: 3, name: 'Industrial Machinery', slug: 'industrial-machinery' },
+          { id: 4, name: 'Food & Agriculture', slug: 'food-agriculture' },
+          { id: 5, name: 'Apparel & Garments', slug: 'apparel-garments' },
+          { id: 6, name: 'Healthcare & Medical', slug: 'healthcare-medical' },
+        ]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
-
-  const categories = [
-    'Building & Construction',
-    'Electronics & Electrical',
-    'Industrial Machinery',
-    'Food & Agriculture',
-    'Apparel & Garments',
-    'Healthcare & Medical',
-  ];
 
   return (
     <motion.nav
@@ -189,27 +205,27 @@ const Navbar = () => {
       </div>
 
       {/* Category Links - Desktop */}
-      <div className="hidden md:block border-t border-gray-100/50 bg-white/40 backdrop-blur-sm">
+      <div className="hidden md:block border-t border-gray-100/50 bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-3">
             {categories.map((category, index) => (
               <motion.div
-                key={category}
+                key={category.id || category.slug || index}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
                 <Link
-                  to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-white rounded-xl transition-all whitespace-nowrap"
+                  to={`/category/${category.slug}`}
+                  className="block px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-full hover:bg-gray-100 hover:border-gray-300 transition-all whitespace-nowrap"
                 >
-                  {category}
+                  {category.name}
                 </Link>
               </motion.div>
             ))}
-            <button className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-white rounded-xl transition-all">
+            <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all whitespace-nowrap">
               More
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -243,12 +259,12 @@ const Navbar = () => {
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">Categories</p>
                 {categories.map((category) => (
                   <Link
-                    key={category}
-                    to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                    key={category.id || category.slug}
+                    to={`/category/${category.slug}`}
                     onClick={() => setIsMenuOpen(false)}
                     className="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-all"
                   >
-                    {category}
+                    {category.name}
                   </Link>
                 ))}
               </div>

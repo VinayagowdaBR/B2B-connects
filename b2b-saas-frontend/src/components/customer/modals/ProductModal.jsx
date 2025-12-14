@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, ShoppingBag, Save, Image as ImageIcon } from 'lucide-react';
+import { X, ShoppingBag, Save, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { publicApi } from '@/api/endpoints/publicApi';
 
 const ProductModal = ({ isOpen, onClose, onSubmit, product }) => {
     const [formData, setFormData] = useState({
@@ -13,6 +14,28 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product }) => {
         is_active: true,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [loadingCategories, setLoadingCategories] = useState(false);
+
+    // Fetch categories from API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setLoadingCategories(true);
+                const data = await publicApi.getCategories();
+                setCategories(data || []);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                // Fallback to empty array
+                setCategories([]);
+            } finally {
+                setLoadingCategories(false);
+            }
+        };
+        if (isOpen) {
+            fetchCategories();
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (product) {
@@ -125,13 +148,14 @@ const ProductModal = ({ isOpen, onClose, onSubmit, product }) => {
                                     value={formData.category}
                                     onChange={handleChange}
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                                    disabled={loadingCategories}
                                 >
-                                    <option value="">Select</option>
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="Clothing">Clothing</option>
-                                    <option value="Home">Home</option>
-                                    <option value="Software">Software</option>
-                                    <option value="Other">Other</option>
+                                    <option value="">{loadingCategories ? 'Loading...' : 'Select Category'}</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat.id} value={cat.name}>
+                                            {cat.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

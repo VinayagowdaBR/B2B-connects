@@ -76,6 +76,7 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/category/:category" element={<SearchResults />} />
             <Route path="/business/:slug" element={<BusinessPortfolio />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/service/:id" element={<ServiceDetail />} />
