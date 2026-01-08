@@ -19,6 +19,7 @@ class CompanyInfo(Base):
 
     # Business details
     company_name = Column(String(255), nullable=False)
+    subdomain = Column(String(100), nullable=True, unique=True, index=True)  # e.g., "monkey-tech" for monkey-tech.b2bconnect.com
     address = Column(Text, nullable=True)
     city = Column(String(100), nullable=True)
     state = Column(String(100), nullable=True)

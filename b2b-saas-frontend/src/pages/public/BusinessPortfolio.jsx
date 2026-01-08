@@ -27,11 +27,11 @@ import {
 import { Navbar, Footer } from '@/components/landing';
 import { publicApi } from '@/api/endpoints/publicApi';
 
-const BusinessPortfolio = () => {
+const BusinessPortfolio = ({ preloadedData = null, isSubdomainView = false }) => {
     const { slug } = useParams();
     const [activeTab, setActiveTab] = useState('about');
-    const [business, setBusiness] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [business, setBusiness] = useState(preloadedData);
+    const [loading, setLoading] = useState(!preloadedData);
     const [error, setError] = useState(null);
     const [inquirySubmitting, setInquirySubmitting] = useState(false);
     const [inquirySuccess, setInquirySuccess] = useState(false);
@@ -43,6 +43,13 @@ const BusinessPortfolio = () => {
     });
 
     useEffect(() => {
+        // Skip fetching if we have preloaded data (subdomain view)
+        if (preloadedData) {
+            setBusiness(preloadedData);
+            setLoading(false);
+            return;
+        }
+
         const fetchBusiness = async () => {
             try {
                 setLoading(true);
@@ -60,7 +67,7 @@ const BusinessPortfolio = () => {
         if (slug) {
             fetchBusiness();
         }
-    }, [slug]);
+    }, [slug, preloadedData]);
 
     const tabs = [
         { id: 'about', label: 'About', icon: Building2 },

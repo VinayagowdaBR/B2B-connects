@@ -2,8 +2,10 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SubdomainProvider } from '@/contexts/SubdomainContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import ScrollToTop from '@/components/common/ScrollToTop';
+import SubdomainRouter from '@/components/common/SubdomainRouter';
 
 // Loading Component
 const PageLoader = () => (
@@ -70,68 +72,71 @@ const DemoPaymentPage = lazy(() => import('@/pages/customer/DemoPaymentPage'));
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/category/:category" element={<SearchResults />} />
-            <Route path="/business/:slug" element={<BusinessPortfolio />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/service/:id" element={<ServiceDetail />} />
+      <SubdomainProvider>
+        <Router>
+          <ScrollToTop />
+          <Suspense fallback={<PageLoader />}>
+            <SubdomainRouter BusinessPortfolioComponent={BusinessPortfolio}>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/category/:category" element={<SearchResults />} />
+                <Route path="/business/:slug" element={<BusinessPortfolio />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/service/:id" element={<ServiceDetail />} />
 
-            {/* Auth Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                {/* Auth Routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
-            <Route path="/admin/roles" element={<ProtectedRoute allowedRoles={['admin']}><RolesPermissions /></ProtectedRoute>} />
-            <Route path="/admin/locations" element={<ProtectedRoute allowedRoles={['admin']}><LocationsManagement /></ProtectedRoute>} />
-            <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['admin']}><CustomersManagement /></ProtectedRoute>} />
-            <Route path="/admin/customer-types" element={<ProtectedRoute allowedRoles={['admin']}><CustomerTypesManagement /></ProtectedRoute>} />
-            <Route path="/admin/companies" element={<ProtectedRoute allowedRoles={['admin']}><CompanyInfoManagement /></ProtectedRoute>} />
-            <Route path="/admin/categories" element={<ProtectedRoute allowedRoles={['admin']}><CategoriesManagement /></ProtectedRoute>} />
-            <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
-            <Route path="/admin/subscriptions" element={<ProtectedRoute allowedRoles={['admin']}><SubscriptionManagement /></ProtectedRoute>} />
-            <Route path="/admin/services" element={<ProtectedRoute allowedRoles={['admin']}><CompanyServicesManagement /></ProtectedRoute>} />
-            <Route path="/admin/products" element={<ProtectedRoute allowedRoles={['admin']}><CompanyProductsManagement /></ProtectedRoute>} />
-            <Route path="/admin/projects" element={<ProtectedRoute allowedRoles={['admin']}><CompanyProjectsManagement /></ProtectedRoute>} />
-            <Route path="/admin/testimonials" element={<ProtectedRoute allowedRoles={['admin']}><CompanyTestimonialsManagement /></ProtectedRoute>} />
-            <Route path="/admin/blog-posts" element={<ProtectedRoute allowedRoles={['admin']}><CompanyBlogPostsManagement /></ProtectedRoute>} />
-            <Route path="/admin/team-members" element={<ProtectedRoute allowedRoles={['admin']}><CompanyTeamMembersManagement /></ProtectedRoute>} />
-            <Route path="/admin/careers" element={<ProtectedRoute allowedRoles={['admin']}><CompanyCareersManagement /></ProtectedRoute>} />
-            <Route path="/admin/inquiries" element={<ProtectedRoute allowedRoles={['admin']}><CompanyInquiriesManagement /></ProtectedRoute>} />
-            <Route path="/admin/gallery" element={<ProtectedRoute allowedRoles={['admin']}><CompanyGalleryManagement /></ProtectedRoute>} />
-            <Route path="/admin/site-settings" element={<ProtectedRoute allowedRoles={['admin']}><SiteSettingsManagement /></ProtectedRoute>} />
+                {/* Admin Routes */}
+                <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
+                <Route path="/admin/roles" element={<ProtectedRoute allowedRoles={['admin']}><RolesPermissions /></ProtectedRoute>} />
+                <Route path="/admin/locations" element={<ProtectedRoute allowedRoles={['admin']}><LocationsManagement /></ProtectedRoute>} />
+                <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['admin']}><CustomersManagement /></ProtectedRoute>} />
+                <Route path="/admin/customer-types" element={<ProtectedRoute allowedRoles={['admin']}><CustomerTypesManagement /></ProtectedRoute>} />
+                <Route path="/admin/companies" element={<ProtectedRoute allowedRoles={['admin']}><CompanyInfoManagement /></ProtectedRoute>} />
+                <Route path="/admin/categories" element={<ProtectedRoute allowedRoles={['admin']}><CategoriesManagement /></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
+                <Route path="/admin/subscriptions" element={<ProtectedRoute allowedRoles={['admin']}><SubscriptionManagement /></ProtectedRoute>} />
+                <Route path="/admin/services" element={<ProtectedRoute allowedRoles={['admin']}><CompanyServicesManagement /></ProtectedRoute>} />
+                <Route path="/admin/products" element={<ProtectedRoute allowedRoles={['admin']}><CompanyProductsManagement /></ProtectedRoute>} />
+                <Route path="/admin/projects" element={<ProtectedRoute allowedRoles={['admin']}><CompanyProjectsManagement /></ProtectedRoute>} />
+                <Route path="/admin/testimonials" element={<ProtectedRoute allowedRoles={['admin']}><CompanyTestimonialsManagement /></ProtectedRoute>} />
+                <Route path="/admin/blog-posts" element={<ProtectedRoute allowedRoles={['admin']}><CompanyBlogPostsManagement /></ProtectedRoute>} />
+                <Route path="/admin/team-members" element={<ProtectedRoute allowedRoles={['admin']}><CompanyTeamMembersManagement /></ProtectedRoute>} />
+                <Route path="/admin/careers" element={<ProtectedRoute allowedRoles={['admin']}><CompanyCareersManagement /></ProtectedRoute>} />
+                <Route path="/admin/inquiries" element={<ProtectedRoute allowedRoles={['admin']}><CompanyInquiriesManagement /></ProtectedRoute>} />
+                <Route path="/admin/gallery" element={<ProtectedRoute allowedRoles={['admin']}><CompanyGalleryManagement /></ProtectedRoute>} />
+                <Route path="/admin/site-settings" element={<ProtectedRoute allowedRoles={['admin']}><SiteSettingsManagement /></ProtectedRoute>} />
 
-            {/* Customer Routes */}
-            <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={['customer']}><CustomerDashboard /></ProtectedRoute>} />
-            <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProfile /></ProtectedRoute>} />
-            <Route path="/customer/subscription" element={<ProtectedRoute allowedRoles={['customer']}><CustomerSubscription /></ProtectedRoute>} />
-            <Route path="/customer/company-info" element={<ProtectedRoute allowedRoles={['customer']}><CustomerCompanyInfo /></ProtectedRoute>} />
-            <Route path="/customer/services" element={<ProtectedRoute allowedRoles={['customer']}><CustomerServices /></ProtectedRoute>} />
-            <Route path="/customer/products" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProducts /></ProtectedRoute>} />
-            <Route path="/customer/projects" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProjects /></ProtectedRoute>} />
-            <Route path="/customer/testimonials" element={<ProtectedRoute allowedRoles={['customer']}><CustomerTestimonials /></ProtectedRoute>} />
-            <Route path="/customer/team-members" element={<ProtectedRoute allowedRoles={['customer']}><CustomerTeamMembers /></ProtectedRoute>} />
-            <Route path="/customer/blog-posts" element={<ProtectedRoute allowedRoles={['customer']}><CustomerBlogPosts /></ProtectedRoute>} />
-            <Route path="/customer/careers" element={<ProtectedRoute allowedRoles={['customer']}><CustomerCareers /></ProtectedRoute>} />
-            <Route path="/customer/inquiries" element={<ProtectedRoute allowedRoles={['customer']}><CustomerInquiries /></ProtectedRoute>} />
-            <Route path="/customer/gallery" element={<ProtectedRoute allowedRoles={['customer']}><CustomerGallery /></ProtectedRoute>} />
-            <Route path="/customer/settings" element={<ProtectedRoute allowedRoles={['customer']}><CustomerSettings /></ProtectedRoute>} />
-            <Route path="/subscription/demo-payment" element={<DemoPaymentPage />} />
+                {/* Customer Routes */}
+                <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={['customer']}><CustomerDashboard /></ProtectedRoute>} />
+                <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProfile /></ProtectedRoute>} />
+                <Route path="/customer/subscription" element={<ProtectedRoute allowedRoles={['customer']}><CustomerSubscription /></ProtectedRoute>} />
+                <Route path="/customer/company-info" element={<ProtectedRoute allowedRoles={['customer']}><CustomerCompanyInfo /></ProtectedRoute>} />
+                <Route path="/customer/services" element={<ProtectedRoute allowedRoles={['customer']}><CustomerServices /></ProtectedRoute>} />
+                <Route path="/customer/products" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProducts /></ProtectedRoute>} />
+                <Route path="/customer/projects" element={<ProtectedRoute allowedRoles={['customer']}><CustomerProjects /></ProtectedRoute>} />
+                <Route path="/customer/testimonials" element={<ProtectedRoute allowedRoles={['customer']}><CustomerTestimonials /></ProtectedRoute>} />
+                <Route path="/customer/team-members" element={<ProtectedRoute allowedRoles={['customer']}><CustomerTeamMembers /></ProtectedRoute>} />
+                <Route path="/customer/blog-posts" element={<ProtectedRoute allowedRoles={['customer']}><CustomerBlogPosts /></ProtectedRoute>} />
+                <Route path="/customer/careers" element={<ProtectedRoute allowedRoles={['customer']}><CustomerCareers /></ProtectedRoute>} />
+                <Route path="/customer/inquiries" element={<ProtectedRoute allowedRoles={['customer']}><CustomerInquiries /></ProtectedRoute>} />
+                <Route path="/customer/gallery" element={<ProtectedRoute allowedRoles={['customer']}><CustomerGallery /></ProtectedRoute>} />
+                <Route path="/customer/settings" element={<ProtectedRoute allowedRoles={['customer']}><CustomerSettings /></ProtectedRoute>} />
+                <Route path="/subscription/demo-payment" element={<DemoPaymentPage />} />
 
-            {/* Catch all */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </Suspense>
-      </Router>
-
+                {/* Catch all */}
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            </SubdomainRouter>
+          </Suspense>
+        </Router>
+      </SubdomainProvider>
       {/* Premium Toast Notifications */}
       <Toaster
         position="top-right"

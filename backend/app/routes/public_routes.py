@@ -291,21 +291,25 @@ def get_categories(db: Session = Depends(get_db)):
 @router.get("/business/{identifier}")
 def get_business_portfolio(identifier: str, db: Session = Depends(get_db)):
     """
-    Get full business portfolio by tenant_id or slug.
+    Get full business portfolio by tenant_id, subdomain, or slug.
     Returns comprehensive business info including products, services, team, testimonials, projects.
     """
-    # Try to find by tenant_id or slug
     company = None
     
-    # Check if identifier is numeric (tenant_id)
+    # 1. Check if identifier is numeric (tenant_id)
     if identifier.isdigit():
         company = db.query(CompanyInfo).filter(
             CompanyInfo.tenant_id == int(identifier)
         ).first()
     
-    # If not found, try to find by slug (company name slug)
+    # 2. Try to find by subdomain field (efficient indexed lookup)
     if not company:
-        # Create slug from company_name and search
+        company = db.query(CompanyInfo).filter(
+            CompanyInfo.subdomain == identifier.lower()
+        ).first()
+    
+    # 3. Fallback: generate slug from company_name and search
+    if not company:
         companies = db.query(CompanyInfo).all()
         for c in companies:
             if c.company_name:
