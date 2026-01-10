@@ -69,6 +69,9 @@ const CustomerGallery = lazy(() => import('@/pages/customer/CustomerGallery'));
 const CustomerSettings = lazy(() => import('@/pages/customer/CustomerSettings'));
 const DemoPaymentPage = lazy(() => import('@/pages/customer/DemoPaymentPage'));
 
+// Error Pages
+const NotFoundPage = lazy(() => import('@/pages/error/NotFoundPage'));
+
 function App() {
   return (
     <AuthProvider>
@@ -131,7 +134,7 @@ function App() {
                 <Route path="/subscription/demo-payment" element={<DemoPaymentPage />} />
 
                 {/* Catch all */}
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </SubdomainRouter>
           </Suspense>

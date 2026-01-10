@@ -204,32 +204,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Category Links - Desktop */}
-      <div className="hidden md:block border-t border-gray-100/50 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-3">
-            {categories.map((category, index) => (
-              <motion.div
-                key={category.id || category.slug || index}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Link
-                  to={`/category/${category.slug}`}
-                  className="block px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-full hover:bg-gray-100 hover:border-gray-300 transition-all whitespace-nowrap"
-                >
-                  {category.name}
-                </Link>
-              </motion.div>
-            ))}
-            <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-all whitespace-nowrap">
-              More
-              <ChevronDown className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-      </div>
+
 
       {/* Mobile Menu */}
       <AnimatePresence>

@@ -371,9 +371,5 @@ if __name__ == "__main__":
     print("\n⚠️  WARNING: This will modify your database!")
     print("Make sure you have a backup before proceeding.\n")
     
-    response = input("Do you want to continue? (yes/no): ")
-    
-    if response.lower() in ["yes", "y"]:
-        migrate()
-    else:
-        print("Migration cancelled.")
+    # Auto-run for automation
+    migrate()

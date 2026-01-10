@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_, and_
 from typing import List, Optional
+import json
 from pydantic import BaseModel, EmailStr
 from app.database.connection import get_db
 from app.services.public_portfolio_service import PublicPortfolioService
@@ -839,8 +840,8 @@ def get_product_detail(product_id: int, db: Session = Depends(get_db)):
         "short_description": product.short_description,
         "full_description": product.full_description,
         "category": product.category,
-        "features": product.features,
-        "specifications": product.specifications,
+        "features": json.loads(product.features) if isinstance(product.features, str) else (product.features or []),
+        "specifications": json.loads(product.specifications) if isinstance(product.specifications, str) else (product.specifications or {}),
         "main_image": product.main_image_url,
         "gallery": product.gallery_images,
         "business": {
