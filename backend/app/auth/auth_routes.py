@@ -52,6 +52,14 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             headers={"WWW-Authenticate": "Bearer"},
         )
     
+    # Check modification: Block unapproved users
+    if not user.is_approved and not user.is_superuser:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account pending approval. Please contact administrator.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     # Create token with email or phone as subject
     token_subject = user.email if user.email else user.phone_number
     access_token = create_access_token(data={"sub": token_subject})
@@ -122,7 +130,9 @@ def register(user_data: RegisterRequest, db: Session = Depends(get_db)):
         hashed_password=hashed_pw,
         user_type="customer",
         full_name=user_data.full_name if hasattr(user_data, 'full_name') else None,
-        customer_type_id=default_customer_type.id
+        customer_type_id=default_customer_type.id,
+        is_approved=False, # Explicitly set to False
+        is_active=True # Active but not approved
     )
     
     customer_role = db.query(Role).filter(Role.name == "customer").first()

@@ -51,6 +51,7 @@ const AdminSidebar = () => {
     // Core Admin
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard', category: 'Core' },
     { name: 'User Management', icon: Users, path: '/admin/users', category: 'Core' },
+    { name: 'Pending Approvals', icon: UserCheck, path: '/admin/approvals', category: 'Core' },
     { name: 'Customers', icon: Building2, path: '/admin/customers', category: 'Core' },
     { name: 'Subscriptions', icon: CreditCard, path: '/admin/subscriptions', category: 'Core' },
 

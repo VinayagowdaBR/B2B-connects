@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import AdminSidebar from '@/components/layout/AdminSidebar';
 import UserModal from './UserModal';
+import UserViewModal from './UserViewModal';
 import { usersApi } from '@/api/endpoints/users';
 import { rolesApi } from '@/api/endpoints/roles';
+import { adminCustomersApi } from '@/api/endpoints/adminCustomers';
 import {
   Users,
   Plus,
   Search,
   Edit,
   Trash2,
+  Eye,
   Shield,
   MoreVertical,
   UserCheck,
@@ -21,6 +24,8 @@ const UserManagement = () => {
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showActionsMenu, setShowActionsMenu] = useState(null);
@@ -240,6 +245,29 @@ const UserManagement = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end space-x-2">
                             <button
+                              onClick={async () => {
+                                setSelectedUser(user);
+                                setIsViewModalOpen(true);
+
+                                if (user.user_type === 'customer') {
+                                  try {
+                                    setIsLoadingDetails(true);
+                                    const details = await adminCustomersApi.getCustomer(user.id);
+                                    setSelectedUser(prev => ({ ...prev, ...details }));
+                                  } catch (e) {
+                                    console.error("Failed to fetch details", e);
+                                    toast.error("Failed to load extended profile details");
+                                  } finally {
+                                    setIsLoadingDetails(false);
+                                  }
+                                }
+                              }}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="View details"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
                               onClick={() => {
                                 setSelectedUser(user);
                                 setIsModalOpen(true);
@@ -278,6 +306,17 @@ const UserManagement = () => {
         onSubmit={selectedUser ? handleUpdateUser : handleCreateUser}
         user={selectedUser}
         roles={roles}
+      />
+
+      {/* View User Modal */}
+      <UserViewModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser}
+        isLoading={isLoadingDetails}
       />
     </div>
   );

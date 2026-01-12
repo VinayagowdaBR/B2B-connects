@@ -30,7 +30,12 @@ const LoginForm = () => {
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      setError(err.response?.data?.detail || 'Invalid credentials. Please try again.');
+      // Check for 403 specifically
+      if (err.response?.status === 403 && err.response?.data?.detail?.includes('approval')) {
+        setError('Your account is pending approval. Please wait for administrator verification.');
+      } else {
+        setError(err.response?.data?.detail || 'Invalid credentials. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -143,8 +148,8 @@ const LoginForm = () => {
                     className="sr-only"
                   />
                   <div className={`w-5 h-5 rounded-md border-2 transition-all ${rememberMe
-                      ? 'bg-violet-500 border-violet-500'
-                      : 'border-white/30 group-hover:border-white/50'
+                    ? 'bg-violet-500 border-violet-500'
+                    : 'border-white/30 group-hover:border-white/50'
                     }`}>
                     {rememberMe && (
                       <svg className="w-full h-full text-white p-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -36,4 +36,34 @@ export const usersApi = {
     const response = await apiClient.delete(`/admin/users/${userId}/roles/${roleName}`);
     return response.data;
   },
+
+  // Get filtered approvals (status: pending, approved, rejected)
+  getApprovals: async (status = 'pending', skip = 0, limit = 100) => {
+    const response = await apiClient.get(`/admin/approvals?status=${status}&skip=${skip}&limit=${limit}`);
+    return response.data;
+  },
+
+  // Get pending approvals (Legacy)
+  getPendingUsers: async (skip = 0, limit = 100) => {
+    const response = await apiClient.get(`/admin/approvals/pending?skip=${skip}&limit=${limit}`);
+    return response.data;
+  },
+
+  // Approve user
+  approveUser: async (userId) => {
+    const response = await apiClient.post(`/admin/approvals/${userId}/approve`);
+    return response.data;
+  },
+
+  // Reject user
+  rejectUser: async (userId) => {
+    const response = await apiClient.post(`/admin/approvals/${userId}/reject`);
+    return response.data;
+  },
+
+  // Reset user to pending
+  resetUser: async (userId) => {
+    const response = await apiClient.post(`/admin/approvals/${userId}/reset`);
+    return response.data;
+  },
 };

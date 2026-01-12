@@ -59,8 +59,16 @@ def get_customer(
             city=company.city,
             state=company.state,
             country=company.country,
+            postal_code=company.postal_code,
             website_url=company.website_url,
-            tagline=company.tagline
+            tagline=company.tagline,
+            about=company.about,
+            industry=company.industry,
+            company_size=company.company_size,
+            linkedin_url=company.linkedin_url,
+            instagram_url=company.instagram_url,
+            facebook_url=company.facebook_url,
+            created_at=company.created_at
         )
         
     if subscription:
@@ -69,6 +77,7 @@ def get_customer(
             status=subscription.status,
             start_date=subscription.start_date,
             end_date=subscription.end_date,
+            auto_renew=subscription.auto_renew,
             plan=SubscriptionPlanOut(
                 id=subscription.plan.id,
                 name=subscription.plan.name,

@@ -25,6 +25,7 @@ from app.admin.routes.admin_subscription_routes import router as admin_subscript
 from app.admin.routes.admin_customer_routes import router as admin_customer_router
 from app.admin.routes.category_routes import router as category_router
 from app.admin.routes.site_settings_routes import router as site_settings_router
+from app.admin.routes.admin_approval_routes import router as admin_approval_router
 
 # Payment Routes
 from app.payments.routes import router as payment_webhook_router
@@ -187,6 +188,7 @@ app.include_router(admin_subscription_router)
 app.include_router(admin_customer_router)
 app.include_router(category_router)
 app.include_router(site_settings_router)
+app.include_router(admin_approval_router) # New router
 
 # Customer Routes
 app.include_router(customer_router)

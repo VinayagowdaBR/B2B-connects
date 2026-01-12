@@ -48,7 +48,7 @@ class AdminCustomerService:
         # Fetch active subscription
         subscription = db.query(CustomerSubscription).filter(
             CustomerSubscription.tenant_id == customer.tenant_id,
-            CustomerSubscription.is_active == True
+            CustomerSubscription.status == "ACTIVE"
         ).first()
         
         # Attach to customer object (or return a dict/object that matches schema)

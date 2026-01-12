@@ -9,8 +9,17 @@ class CompanyInfoOut(BaseModel):
     city: Optional[str] = None
     state: Optional[str] = None
     country: Optional[str] = None
+    postal_code: Optional[str] = None
     website_url: Optional[str] = None
     tagline: Optional[str] = None
+    about: Optional[str] = None
+    industry: Optional[str] = None
+    company_size: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    facebook_url: Optional[str] = None
+    instagram_url: Optional[str] = None
+    created_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True
@@ -31,6 +40,7 @@ class CustomerSubscriptionOut(BaseModel):
     status: str
     start_date: datetime
     end_date: datetime
+    auto_renew: bool
     plan: SubscriptionPlanOut
     
     class Config:

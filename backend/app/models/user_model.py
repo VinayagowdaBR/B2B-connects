@@ -19,6 +19,8 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
+    is_approved = Column(Boolean, default=False) # Requires admin approval
+    approval_status = Column(String, default='pending') # pending, approved, rejected
     user_type = Column(String) # "admin" or "customer" - discriminator
     
     # Common fields across all user types

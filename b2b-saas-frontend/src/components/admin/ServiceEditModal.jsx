@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Loader2, Briefcase, FileText, Image, DollarSign, Tag } from 'lucide-react';
+import { categoriesApi } from '@/api/endpoints/categories';
 
 const ServiceEditModal = ({ isOpen, onClose, onSubmit, service }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,24 @@ const ServiceEditModal = ({ isOpen, onClose, onSubmit, service }) => {
     is_active: true,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      setIsLoadingCategories(true);
+      const data = await categoriesApi.getPublic();
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
 
   useEffect(() => {
     if (service) {
@@ -100,13 +119,19 @@ const ServiceEditModal = ({ isOpen, onClose, onSubmit, service }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <div className="relative">
                 <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
+                <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="e.g., IT Services"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                />
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 appearance-none bg-white"
+                  disabled={isLoadingCategories}
+                >
+                  <option value="">{isLoadingCategories ? 'Loading...' : 'Select Category'}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

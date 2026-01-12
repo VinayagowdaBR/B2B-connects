@@ -169,6 +169,155 @@ def seed_data():
                 logger.info(f"Product {p_data['name']} already exists.")
 
         db.commit()
+        logger.info("Seeding TechFlow products completed.")
+
+        # ==========================================
+        # SEED TATA GROUP DATA
+        # ==========================================
+        
+        # 1. Create Tata User
+        tata_email = "tata_admin@example.com"
+        tata_user = db.query(User).filter(User.email == tata_email).first()
+        
+        if tata_user:
+            logger.info(f"User {tata_email} already exists.")
+            tata_customer = db.query(CustomerUser).filter(CustomerUser.id == tata_user.id).first()
+        else:
+            logger.info(f"Creating customer {tata_email}...")
+            
+            # Find a valid temporary tenant_id (e.g. any existing user)
+            # If no users exist, we might have a chicken-egg problem, but usually admin exists (id=1).
+            # If integrity error persists, check if tenant_id is nullable.
+            temp_tenant_id = 1
+            first_user = db.query(User).first()
+            if first_user:
+                temp_tenant_id = first_user.id
+            
+            tata_customer = CustomerUser(
+                email=tata_email,
+                phone_number="9876543210", # Fixed phone for Tata
+                hashed_password=pwd_context.hash("password123"),
+                full_name="Ratan Tata",
+                is_active=True,
+                user_type="customer",
+                tenant_id=temp_tenant_id # Temporary ID
+            )
+            db.add(tata_customer)
+            db.commit()
+            db.refresh(tata_customer)
+            
+            # Update tenant_id to self
+            tata_customer.tenant_id = tata_customer.id
+            db.add(tata_customer)
+            db.commit()
+            logger.info(f"Created Tata user with ID: {tata_customer.id}")
+
+        # 2. Create Tata Company Info
+        tata_company = db.query(CompanyInfo).filter(CompanyInfo.tenant_id == tata_customer.id).first()
+        
+        if not tata_company:
+            logger.info("Creating Tata Group company info...")
+            try:
+                tata_company = CompanyInfo(
+                    tenant_id=tata_customer.id,
+                    company_name="Tata Group",
+                    subdomain="tata",
+                    tagline="Leadership with Trust",
+                    about="Founded in 1868, the Tata Group is a global enterprise.",
+                    industry="Conglomerate",
+                    company_size="10000+",
+                    email="contact@tata.com",
+                    city="Mumbai",
+                    country="India"
+                )
+                db.add(tata_company)
+                db.commit()
+                db.refresh(tata_company)
+                logger.info("Tata Company Info created successfully.")
+            except Exception as e:
+                logger.error(f"Failed to create Tata CompanyInfo: {e}")
+                # Try to inspect what kind of error
+                import traceback
+                traceback.print_exc()
+                db.rollback()
+        else:
+            logger.info("Tata Group company info already exists.")
+
+        # 3. Create Tata Products
+        tata_products = [
+            {
+                "name": "Tata Steel Sheets",
+                "slug": "tata-steel-sheets",
+                "price": 5000.00,
+                "category": "Manufacturing",
+                "short_description": "High quality steel sheets for construction.",
+                "stock_status": "in_stock",
+                "publish_to_portfolio": True
+            },
+            {
+                "name": "Tata Nexon EV",
+                "slug": "tata-nexon-ev",
+                "price": 1500000.00,
+                "category": "Automotive",
+                "short_description": "India's best selling electric SUV.",
+                "stock_status": "in_stock",
+                "publish_to_portfolio": True
+            },
+            {
+                "name": "TCS Cloud Solutions",
+                "slug": "tcs-cloud-solutions",
+                "price": 100000.00,
+                "category": "Technology",
+                "short_description": "Enterprise cloud transformation services by TCS.",
+                "stock_status": "in_stock",
+                "publish_to_portfolio": True
+            },
+            {
+                "name": "Tata Salt",
+                "slug": "tata-salt",
+                "price": 25.00,
+                "category": "FMCG",
+                "short_description": "Desh Ka Namak - Iodized vacuum evaporated salt.",
+                "stock_status": "in_stock",
+                "publish_to_portfolio": True
+            },
+            {
+                "name": "Titan Raga Watch",
+                "slug": "titan-raga",
+                "price": 8500.00,
+                "category": "Retail",
+                "short_description": "Elegant watches for women.",
+                "stock_status": "in_stock",
+                "publish_to_portfolio": True
+            }
+        ]
+
+        logger.info("Seeding Tata products...")
+        for p_data in tata_products:
+            exists = db.query(CompanyProduct).filter(
+                CompanyProduct.tenant_id == tata_customer.id,
+                CompanyProduct.slug == p_data["slug"]
+            ).first()
+            
+            if not exists:
+                product = CompanyProduct(
+                    tenant_id=tata_customer.id,
+                    name=p_data["name"],
+                    slug=p_data["slug"],
+                    price=p_data["price"],
+                    category=p_data["category"],
+                    short_description=p_data["short_description"],
+                    stock_status=p_data["stock_status"],
+                    publish_to_portfolio=p_data["publish_to_portfolio"],
+                    features=json.dumps(["Premium Quality", "Trusted Brand"]),
+                    specifications=json.dumps({"Brand": "Tata", "Origin": "India"})
+                )
+                db.add(product)
+                logger.info(f"Added product: {p_data['name']}")
+            else:
+                logger.info(f"Product {p_data['name']} already exists.")
+
+        db.commit()
         logger.info("Seeding completed successfully!")
 
     except Exception as e:

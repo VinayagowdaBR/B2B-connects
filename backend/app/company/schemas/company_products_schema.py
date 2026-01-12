@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
@@ -17,6 +17,37 @@ class CompanyProductBase(BaseModel):
     gallery_images: Optional[List[str]] = None
     stock_status: Optional[str] = "in_stock"
     publish_to_portfolio: Optional[bool] = False
+
+    @field_validator('features', mode='before')
+    @classmethod
+    def validate_features(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            return [v]
+        return None
+
+    @field_validator('specifications', mode='before')
+    @classmethod
+    def validate_specifications(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, dict):
+            return v
+        return None
+
+    @field_validator('gallery_images', mode='before')
+    @classmethod
+    def validate_gallery_images(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            return [v]
+        return None
 
 class CompanyProductCreate(CompanyProductBase):
     pass
