@@ -28,6 +28,15 @@ class SiteSettings(Base):
     stats_sellers = Column(Integer, default=10000)
     stats_products = Column(Integer, default=100000)
     stats_inquiries = Column(Integer, default=25000)
+
+    # SMTP Settings (Email Configuration)
+    smtp_host = Column(String(255), nullable=True)
+    smtp_port = Column(Integer, default=587)
+    smtp_username = Column(String(255), nullable=True)
+    smtp_password = Column(String(255), nullable=True)
+    smtp_encryption = Column(String(50), default="tls") # tls, ssl, none
+    smtp_from_email = Column(String(255), nullable=True)
+    smtp_from_name = Column(String(255), default="B2B Connect")
     
     # Footer Links (JSON arrays)
     quick_links = Column(JSON, default=lambda: [

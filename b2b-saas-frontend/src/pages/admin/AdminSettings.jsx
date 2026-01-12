@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AdminLayout from '@/components/layout/AdminLayout';
+import { siteSettingsApi } from '@/api/endpoints/siteSettings';
 import {
     Settings,
     Bell,
@@ -82,16 +83,132 @@ const AdminSettings = () => {
         trialDays: 14,
     });
 
+    // Email Settings
+    // Email Settings
+    const [emailSettings, setEmailSettings] = useState({
+        smtpHost: '',
+        smtpPort: 587,
+        smtpUsername: '',
+        smtpPassword: '',
+        smtpEncryption: 'tls',
+        smtpFromEmail: '',
+        smtpFromName: 'B2B Connect',
+    });
+
+    useEffect(() => {
+        loadSettings();
+    }, []);
+
+    const loadSettings = async () => {
+        try {
+            const data = await siteSettingsApi.getSiteSettings();
+            if (data) {
+                // Map backend data to state
+                setGeneralSettings(prev => ({
+                    ...prev,
+                    contactEmail: data.contact_email || '',
+                    contactPhone: data.contact_phone || '',
+                    contactAddress: data.contact_address || '',
+                    facebookUrl: data.facebook_url || '',
+                    twitterUrl: data.twitter_url || '',
+                    linkedinUrl: data.linkedin_url || '',
+                    instagramUrl: data.instagram_url || '',
+                    youtubeUrl: data.youtube_url || '',
+                }));
+
+                setEmailSettings({
+                    smtpHost: data.smtp_host || '',
+                    smtpPort: data.smtp_port || 587,
+                    smtpUsername: data.smtp_username || '',
+                    smtpPassword: data.smtp_password || '', // Usually empty from backend for security
+                    smtpEncryption: data.smtp_encryption || 'tls',
+                    smtpFromEmail: data.smtp_from_email || '',
+                    smtpFromName: data.smtp_from_name || 'B2B Connect',
+                });
+            }
+        } catch (error) {
+            console.error("Failed to load settings:", error);
+            // toast.error("Failed to load current settings");
+        }
+    };
+
     const handleSave = async () => {
         setIsSaving(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsSaving(false);
-        toast.success('Settings saved successfully!');
+        try {
+            // Prepare payload for backend (SiteSettingsUpdate schema)
+            const payload = {
+                contact_email: generalSettings.contactEmail,
+                contact_phone: generalSettings.contactPhone,
+                contact_address: generalSettings.contactAddress,
+                facebook_url: generalSettings.facebookUrl,
+                twitter_url: generalSettings.twitterUrl,
+                linkedin_url: generalSettings.linkedinUrl,
+                instagram_url: generalSettings.instagramUrl,
+                youtube_url: generalSettings.youtubeUrl,
+
+                // SMTP
+                smtp_host: emailSettings.smtpHost,
+                smtp_port: emailSettings.smtpPort,
+                smtp_username: emailSettings.smtpUsername,
+                smtp_password: emailSettings.smtpPassword,
+                smtp_encryption: emailSettings.smtpEncryption,
+                smtp_from_email: emailSettings.smtpFromEmail,
+                smtp_from_name: emailSettings.smtpFromName,
+            };
+
+            await siteSettingsApi.updateSiteSettings(payload);
+            toast.success('Settings saved successfully!');
+            await loadSettings(); // Reload to confirm
+        } catch (error) {
+            toast.error('Failed to save settings');
+            console.error(error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleTestConnection = async () => {
+        if (!emailSettings.smtpHost || !emailSettings.smtpPort) {
+            toast.error("Please enter SMTP Host and Port");
+            return;
+        }
+
+        setIsSaving(true); // Reuse loading state for button
+        try {
+            const payload = {
+                smtp_host: emailSettings.smtpHost,
+                smtp_port: emailSettings.smtpPort,
+                smtp_username: emailSettings.smtpUsername,
+                smtp_password: emailSettings.smtpPassword,
+                smtp_encryption: emailSettings.smtpEncryption,
+                smtp_from_email: emailSettings.smtpFromEmail,
+                smtp_from_name: emailSettings.smtpFromName,
+            };
+
+            console.log("=== TEST CONNECTION PAYLOAD ===");
+            console.log("Host:", payload.smtp_host);
+            console.log("Port:", payload.smtp_port);
+            console.log("Username:", payload.smtp_username);
+            console.log("Password:", payload.smtp_password ? "SET" : "EMPTY");
+            console.log("Encryption:", payload.smtp_encryption);
+            console.log("From Email:", payload.smtp_from_email);
+            console.log("From Name:", payload.smtp_from_name);
+            console.log("==============================");
+
+            const result = await siteSettingsApi.testEmail(payload);
+            console.log("Test Connection Result:", result);
+            toast.success(result.message || 'Connection test successful!');
+        } catch (error) {
+            console.error("Test Connection Error:", error);
+            toast.error(error.response?.data?.detail || 'Connection failed');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const tabs = [
         { id: 'general', label: 'General', icon: Settings },
+        { id: 'email', label: 'Email Config', icon: Mail },
         { id: 'notifications', label: 'Notifications', icon: Bell },
         { id: 'security', label: 'Security', icon: Shield },
         { id: 'storage', label: 'Storage', icon: HardDrive },
@@ -407,8 +524,8 @@ const AdminSettings = () => {
                                         key={provider}
                                         onClick={() => setStorageSettings({ ...storageSettings, storageProvider: provider })}
                                         className={`p-4 rounded-xl border-2 transition-all ${storageSettings.storageProvider === provider
-                                                ? 'border-indigo-500 bg-indigo-50'
-                                                : 'border-gray-200 hover:border-gray-300'
+                                            ? 'border-indigo-500 bg-indigo-50'
+                                            : 'border-gray-200 hover:border-gray-300'
                                             }`}
                                     >
                                         <p className="font-medium text-gray-900 capitalize">{provider === 'aws' ? 'AWS S3' : provider}</p>
@@ -518,6 +635,134 @@ const AdminSettings = () => {
                     </div>
                 );
 
+            case 'email':
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <Mail className="w-5 h-5 mr-2 text-indigo-500" />
+                                SMTP Configuration
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        SMTP Host
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g., smtp.gmail.com"
+                                        value={emailSettings.smtpHost}
+                                        onChange={(e) => setEmailSettings({ ...emailSettings, smtpHost: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        SMTP Port
+                                    </label>
+                                    <input
+                                        type="number"
+                                        placeholder="e.g., 587"
+                                        value={emailSettings.smtpPort}
+                                        onChange={(e) => {
+                                            const port = parseInt(e.target.value);
+                                            let encryption = emailSettings.smtpEncryption;
+                                            if (port === 465) encryption = 'ssl';
+                                            else if (port === 587) encryption = 'tls';
+                                            else if (port === 25) encryption = 'none';
+
+                                            setEmailSettings({ ...emailSettings, smtpPort: port, smtpEncryption: encryption });
+                                        }}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Encryption
+                                    </label>
+                                    <select
+                                        value={emailSettings.smtpEncryption}
+                                        onChange={(e) => setEmailSettings({ ...emailSettings, smtpEncryption: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    >
+                                        <option value="tls">TLS</option>
+                                        <option value="ssl">SSL</option>
+                                        <option value="none">None</option>
+                                    </select>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        SMTP Username
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="email@example.com"
+                                        value={emailSettings.smtpUsername}
+                                        onChange={(e) => setEmailSettings({ ...emailSettings, smtpUsername: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        SMTP Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        placeholder="••••••••••••"
+                                        value={emailSettings.smtpPassword}
+                                        onChange={(e) => setEmailSettings({ ...emailSettings, smtpPassword: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    />
+                                </div>
+                                <div className="md:col-span-2 border-t pt-6 mt-2">
+                                    <h4 className="text-sm font-medium text-gray-900 mb-4">Sender Information</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                From Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., B2B Connect"
+                                                value={emailSettings.smtpFromName}
+                                                onChange={(e) => setEmailSettings({ ...emailSettings, smtpFromName: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                From Email
+                                            </label>
+                                            <input
+                                                type="email"
+                                                placeholder="noreply@example.com"
+                                                value={emailSettings.smtpFromEmail}
+                                                onChange={(e) => setEmailSettings({ ...emailSettings, smtpFromEmail: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 flex justify-end">
+                                        <button
+                                            onClick={handleTestConnection}
+                                            disabled={isSaving}
+                                            className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                                        >
+                                            {isSaving ? (
+                                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                            ) : (
+                                                <Zap className="w-4 h-4 mr-2" />
+                                            )}
+                                            Test Connection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+
             default:
                 return null;
         }
@@ -535,8 +780,8 @@ const AdminSettings = () => {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === tab.id
-                                            ? 'bg-indigo-50 text-indigo-700 font-medium'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        ? 'bg-indigo-50 text-indigo-700 font-medium'
+                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                         }`}
                                 >
                                     <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-indigo-600' : 'text-gray-400'}`} />

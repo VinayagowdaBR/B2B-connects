@@ -18,6 +18,14 @@ export const siteSettingsApi = {
     updateSiteSettings: async (data) => {
         const response = await apiClient.put('/admin/site-settings/', data);
         return response.data;
+    },
+
+    /**
+     * Test SMTP connection (admin)
+     */
+    testEmail: async (data) => {
+        const response = await apiClient.post('/admin/site-settings/test-email', data);
+        return response.data;
     }
 };
 

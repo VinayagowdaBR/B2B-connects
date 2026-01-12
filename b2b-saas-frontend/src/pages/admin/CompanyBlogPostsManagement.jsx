@@ -131,21 +131,19 @@ const CompanyBlogPostsManagement = () => {
               <div className="flex items-center bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'grid'
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'grid'
                       ? 'bg-white text-indigo-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode('table')}
-                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'table'
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === 'table'
                       ? 'bg-white text-indigo-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   Table
                 </button>
@@ -338,11 +336,10 @@ const CompanyBlogPostsManagement = () => {
                         {/* Status Badge */}
                         <div className="absolute top-3 right-3">
                           <span
-                            className={`px-2 py-1 text-xs font-semibold rounded ${
-                              post.is_published
+                            className={`px-2 py-1 text-xs font-semibold rounded ${post.is_published
                                 ? 'bg-green-500 text-white'
                                 : 'bg-orange-500 text-white'
-                            }`}
+                              }`}
                           >
                             {post.is_published ? 'Published' : 'Draft'}
                           </span>
@@ -405,23 +402,33 @@ const CompanyBlogPostsManagement = () => {
                         </div>
 
                         {/* Tags */}
-                        {post.tags && post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 pt-3 border-t border-gray-100 mt-3">
-                            {post.tags.slice(0, 3).map((tag, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                            {post.tags.length > 3 && (
-                              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                                +{post.tags.length - 3}
-                              </span>
-                            )}
-                          </div>
-                        )}
+                        {(() => {
+                          const tagsArray = Array.isArray(post.tags)
+                            ? post.tags
+                            : typeof post.tags === 'string'
+                              ? post.tags.split(',').map(t => t.trim()).filter(Boolean)
+                              : [];
+
+                          if (tagsArray.length === 0) return null;
+
+                          return (
+                            <div className="flex flex-wrap gap-1 pt-3 border-t border-gray-100 mt-3">
+                              {tagsArray.slice(0, 3).map((tag, idx) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
+                                >
+                                  #{tag}
+                                </span>
+                              ))}
+                              {tagsArray.length > 3 && (
+                                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                  +{tagsArray.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                   ))}
