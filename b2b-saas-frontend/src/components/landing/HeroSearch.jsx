@@ -168,26 +168,28 @@ const HeroSearch = () => {
               />
 
               {/* Glassmorphism search bar */}
-              <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 flex items-center gap-2 border border-white/20">
-                <div className="flex-1 flex items-center gap-3 px-4">
-                  <Search className="w-6 h-6 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search for products, services, or suppliers..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 py-4 text-lg outline-none text-gray-800 placeholder-gray-400 bg-transparent"
-                  />
+              <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 border border-white/20">
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <div className="flex-1 flex items-center gap-3 px-4 w-full">
+                    <Search className="w-6 h-6 text-gray-400 flex-shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Search for products, services, or suppliers..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full py-4 text-lg outline-none text-gray-800 placeholder-gray-400 bg-transparent"
+                    />
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="w-full sm:w-auto flex-shrink-0 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
+                  >
+                    Search
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.button>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="submit"
-                  className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
-                >
-                  Search
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
               </div>
             </div>
           </motion.form>

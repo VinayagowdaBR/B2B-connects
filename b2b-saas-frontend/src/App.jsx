@@ -27,6 +27,10 @@ const ServiceDetail = lazy(() => import('@/pages/public/ServiceDetail'));
 const CategoriesPage = lazy(() => import('@/pages/public/CategoriesPage'));
 const BusinessesPage = lazy(() => import('@/pages/public/BusinessesPage'));
 const ProductsPage = lazy(() => import('@/pages/public/ProductsPage'));
+const HelpPage = lazy(() => import('@/pages/public/HelpPage'));
+const BecomeSellerPage = lazy(() => import('@/pages/public/BecomeSellerPage'));
+const WishlistPage = lazy(() => import('@/pages/public/WishlistPage'));
+const NotificationsPage = lazy(() => import('@/pages/public/NotificationsPage'));
 
 // Auth Pages
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
@@ -95,6 +99,10 @@ function App() {
                 <Route path="/categories" element={<CategoriesPage />} />
                 <Route path="/businesses" element={<BusinessesPage />} />
                 <Route path="/products" element={<ProductsPage />} />
+                <Route path="/help" element={<HelpPage />} />
+                <Route path="/become-seller" element={<BecomeSellerPage />} />
+                <Route path="/wishlist" element={<WishlistPage />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />

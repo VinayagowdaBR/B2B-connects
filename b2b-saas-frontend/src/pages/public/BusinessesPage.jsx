@@ -91,7 +91,7 @@ const BusinessesPage = () => {
             <Navbar />
 
             {/* Hero Header */}
-            <div className="relative pt-32 pb-16 overflow-hidden">
+            <div className="relative pt-40 pb-16 overflow-hidden">
                 {/* Background Gradients */}
                 <div className="absolute inset-0 bg-white">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 opacity-70" />

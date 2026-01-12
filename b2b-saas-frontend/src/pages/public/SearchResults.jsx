@@ -118,8 +118,8 @@ const SearchResults = () => {
         <div className="min-h-screen bg-gray-50 font-sans">
             <Navbar />
 
-            {/* Gradient Hero Search Header */}
-            <div className="relative pt-32 pb-16 overflow-hidden">
+            {/* Gradient Hero Search Hero Header */}
+            <div className="relative pt-40 pb-16 overflow-hidden">
                 {/* Background Gradients */}
                 <div className="absolute inset-0 bg-white">
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 opacity-70" />
@@ -345,8 +345,8 @@ const SearchResults = () => {
                                         {/* Type Badge */}
                                         <div className="absolute top-4 left-4">
                                             <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm backdrop-blur-md ${item.type === 'business' ? 'bg-white/90 text-indigo-700' :
-                                                    item.type === 'product' ? 'bg-white/90 text-blue-700' :
-                                                        'bg-white/90 text-green-700'
+                                                item.type === 'product' ? 'bg-white/90 text-blue-700' :
+                                                    'bg-white/90 text-green-700'
                                                 }`}>
                                                 {item.type}
                                             </span>

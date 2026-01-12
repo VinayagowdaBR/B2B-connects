@@ -91,7 +91,7 @@ const ProductsPage = () => {
             <Navbar />
 
             {/* Hero Header - Matching Home Page Theme */}
-            <div className="relative pt-32 pb-16 overflow-hidden">
+            <div className="relative pt-40 pb-16 overflow-hidden">
                 {/* Background Gradients - Indigo/Purple theme like home page */}
                 <div className="absolute inset-0 bg-white">
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 opacity-70" />

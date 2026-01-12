@@ -1,17 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, User, Building2, Heart, Bell, Zap } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, User, Building2, Heart, Bell, Zap, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { publicApi } from '@/api/endpoints/publicApi';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
+  const notificationRef = useRef(null);
+
+  // Mock Notifications State
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Welcome to B2BConnect!', time: 'Just now', unread: true },
+    { id: 2, title: 'Your profile is 80% complete', time: '2 hours ago', unread: true },
+    { id: 3, title: 'New inquiry received', time: '1 day ago', unread: false },
+    { id: 4, title: 'Subscription active', time: '2 days ago', unread: false }
+  ]);
+
+  const unreadCount = notifications.filter(n => n.unread).length;
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -135,7 +164,7 @@ const Navbar = () => {
                   placeholder="Search for products, services, or suppliers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 outline-none text-sm bg-transparent text-gray-800 placeholder-gray-400"
+                  className="w-full pl-12 pr-32 py-3.5 outline-none text-sm bg-transparent text-gray-800 placeholder-gray-400"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                 <motion.button
@@ -152,27 +181,92 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
-            >
-              <Heart className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </motion.button>
+            <Link to="/wishlist">
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+                className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+              >
+                <Heart className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+              </motion.button>
+            </Link>
 
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.9 }}
-              className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
-            >
-              <Bell className="w-5 h-5" />
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"
-              />
-            </motion.button>
+            <div className="relative" ref={notificationRef}>
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: -5 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white"
+                  >
+                    {unreadCount}
+                  </motion.span>
+                )}
+              </motion.button>
+
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 overflow-hidden z-50"
+                  >
+                    <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 last:border-0 ${notification.unread ? 'bg-indigo-50/30' : ''}`}
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <span className={`text-sm ${notification.unread ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
+                                {notification.title}
+                              </span>
+                              {notification.unread && <span className="w-2 h-2 bg-indigo-500 rounded-full mt-1.5 flex-shrink-0"></span>}
+                            </div>
+                            <span className="text-xs text-gray-500">{notification.time}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                          No notifications
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-4 py-3 border-t border-gray-100 text-center bg-gray-50/50">
+                      <Link
+                        to="/notifications"
+                        onClick={() => setShowNotifications(false)}
+                        className="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors inline-flex items-center gap-1"
+                      >
+                        View All Activity
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             <Link
               to="/login"
