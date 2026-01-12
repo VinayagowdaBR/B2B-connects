@@ -24,6 +24,9 @@ const BusinessPortfolio = lazy(() => import('@/pages/public/BusinessPortfolio'))
 const SearchResults = lazy(() => import('@/pages/public/SearchResults'));
 const ProductDetail = lazy(() => import('@/pages/public/ProductDetail'));
 const ServiceDetail = lazy(() => import('@/pages/public/ServiceDetail'));
+const CategoriesPage = lazy(() => import('@/pages/public/CategoriesPage'));
+const BusinessesPage = lazy(() => import('@/pages/public/BusinessesPage'));
+const ProductsPage = lazy(() => import('@/pages/public/ProductsPage'));
 
 // Auth Pages
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
@@ -89,6 +92,9 @@ function App() {
                 <Route path="/business/:slug" element={<BusinessPortfolio />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/service/:id" element={<ServiceDetail />} />
+                <Route path="/categories" element={<CategoriesPage />} />
+                <Route path="/businesses" element={<BusinessesPage />} />
+                <Route path="/products" element={<ProductsPage />} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />
