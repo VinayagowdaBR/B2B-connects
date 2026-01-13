@@ -70,7 +70,7 @@ const HowItWorks = () => {
 
           {steps.map((step, index) => {
             const IconComponent = step.icon;
-            
+
             return (
               <motion.div
                 key={index}
@@ -102,7 +102,7 @@ const HowItWorks = () => {
                   >
                     {/* Glow effect */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${step.gradient} rounded-2xl blur-xl opacity-50`} />
-                    
+
                     {/* Icon container */}
                     <div className={`relative inline-flex p-5 bg-gradient-to-br ${step.gradient} rounded-2xl shadow-lg`}>
                       <IconComponent className="w-8 h-8 text-white" />

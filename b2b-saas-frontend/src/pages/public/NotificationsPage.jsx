@@ -1,23 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Bell, Check, Trash2, Clock, MessageCircle,
     AlertCircle, CheckCircle, Info, Filter
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/landing';
+import { notificationsApi } from '@/api/endpoints/notifications';
+import { AuthContext } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const NotificationsPage = () => {
-    const [notifications, setNotifications] = useState([
-        { id: 1, type: 'info', title: 'Welcome to B2BConnect!', message: 'Thank you for joining our platform. Complete your profile to get started.', time: 'Just now', unread: true },
-        { id: 2, type: 'success', title: 'Profile 80% Complete', message: 'Great job! Add your business location to reach 100%.', time: '2 hours ago', unread: true },
-        { id: 3, type: 'message', title: 'New Inquiry Received', message: 'TechFlow Solutions sent an inquiry for "Industrial Steel Pipes".', time: '1 day ago', unread: false },
-        { id: 4, type: 'success', title: 'Subscription Active', message: 'Your Professional Plan subscription has been successfully activated.', time: '2 days ago', unread: false },
-        { id: 5, type: 'warning', title: 'Password Update Reminder', message: 'It has been 90 days since your last password change. We recommend updating it.', time: '3 days ago', unread: false },
-        { id: 6, type: 'info', title: 'New Features Available', message: 'Check out our new Analytics Dashboard to track your business performance.', time: '4 days ago', unread: false },
-        { id: 7, type: 'message', title: 'Response from Supplier', message: 'GreenHarvest Agro replied to your bulk order request.', time: '1 week ago', unread: false }
-    ]);
-
+    const { isAuthenticated, user } = useContext(AuthContext);
+    const [notifications, setNotifications] = useState([]);
     const [filter, setFilter] = useState('all'); // all, unread
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            if (isAuthenticated) {
+                try {
+                    const data = await notificationsApi.getAll();
+                    setNotifications(data);
+                } catch (error) {
+                    console.error("Failed to fetch notifications", error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+
+        fetchNotifications();
+    }, [isAuthenticated]);
 
     const getIcon = (type) => {
         switch (type) {
@@ -29,23 +44,56 @@ const NotificationsPage = () => {
         }
     };
 
-    const markAsRead = (id) => {
-        setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
+    const markAsRead = async (id) => {
+        try {
+            await notificationsApi.markRead(id);
+            setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+        } catch (error) {
+            console.error("Failed to mark read", error);
+        }
     };
 
-    const markAllRead = () => {
-        setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    const markAllRead = async () => {
+        try {
+            await notificationsApi.markAllRead();
+            setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+        } catch (error) {
+            console.error("Failed to mark all read", error);
+        }
     };
 
-    const deleteNotification = (id) => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
+    const deleteNotification = async (id) => {
+        try {
+            await notificationsApi.delete(id);
+            setNotifications(prev => prev.filter(n => n.id !== id));
+        } catch (error) {
+            console.error("Failed to delete", error);
+        }
     };
 
     const filteredNotifications = filter === 'all'
         ? notifications
-        : notifications.filter(n => n.unread);
+        : notifications.filter(n => !n.is_read);
 
-    const unreadCount = notifications.filter(n => n.unread).length;
+    const unreadCount = notifications.filter(n => !n.is_read).length;
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen bg-gray-50 text-center pt-40">
+                <Navbar />
+                <h2 className="text-2xl font-bold">Please login to view notifications</h2>
+                <Link to="/login" className="text-indigo-600 hover:underline mt-4 block">Login here</Link>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
@@ -113,26 +161,26 @@ const NotificationsPage = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, x: -100 }}
-                                        className={`group relative bg-white rounded-2xl p-5 border transition-all hover:shadow-md ${notification.unread
+                                        className={`group relative bg-white rounded-2xl p-5 border transition-all hover:shadow-md ${!notification.is_read
                                                 ? 'border-indigo-100 bg-indigo-50/30'
                                                 : 'border-gray-100'
                                             }`}
                                     >
                                         <div className="flex items-start gap-4">
-                                            <div className={`flex-shrink-0 p-3 rounded-full ${notification.unread ? 'bg-white shadow-sm' : 'bg-gray-50'
+                                            <div className={`flex-shrink-0 p-3 rounded-full ${!notification.is_read ? 'bg-white shadow-sm' : 'bg-gray-50'
                                                 }`}>
                                                 {getIcon(notification.type)}
                                             </div>
 
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between items-start mb-1">
-                                                    <h3 className={`text-base font-semibold ${notification.unread ? 'text-gray-900' : 'text-gray-700'
+                                                    <h3 className={`text-base font-semibold ${!notification.is_read ? 'text-gray-900' : 'text-gray-700'
                                                         }`}>
                                                         {notification.title}
                                                     </h3>
                                                     <span className="text-xs text-gray-500 flex-shrink-0 flex items-center gap-1">
                                                         <Clock className="w-3 h-3" />
-                                                        {notification.time}
+                                                        {new Date(notification.created_at).toLocaleDateString()}
                                                     </span>
                                                 </div>
                                                 <p className="text-gray-600 text-sm leading-relaxed mb-3">
@@ -140,7 +188,7 @@ const NotificationsPage = () => {
                                                 </p>
 
                                                 <div className="flex items-center gap-4">
-                                                    {notification.unread && (
+                                                    {!notification.is_read && (
                                                         <button
                                                             onClick={() => markAsRead(notification.id)}
                                                             className="text-xs font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
@@ -158,7 +206,7 @@ const NotificationsPage = () => {
                                                 </div>
                                             </div>
 
-                                            {notification.unread && (
+                                            {!notification.is_read && (
                                                 <div className="absolute top-6 right-6 w-2.5 h-2.5 bg-indigo-600 rounded-full shadow-sm ring-4 ring-indigo-50" />
                                             )}
                                         </div>

@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Menu, X, ChevronDown, User, Building2, Heart, Bell, Zap, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { publicApi } from '@/api/endpoints/publicApi';
+import { notificationsApi } from '@/api/endpoints/notifications';
+import { AuthContext } from '@/contexts/AuthContext';
 
 const Navbar = () => {
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,18 +18,39 @@ const Navbar = () => {
   const isLandingPage = location.pathname === '/';
   const notificationRef = useRef(null);
 
-  // Mock Notifications State
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'Welcome to B2BConnect!', time: 'Just now', unread: true },
-    { id: 2, title: 'Your profile is 80% complete', time: '2 hours ago', unread: true },
-    { id: 3, title: 'New inquiry received', time: '1 day ago', unread: false },
-    { id: 4, title: 'Subscription active', time: '2 days ago', unread: false }
-  ]);
+  // Dynamic Notifications State
+  const [notifications, setNotifications] = useState([]);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (isAuthenticated) {
+        try {
+          const data = await notificationsApi.getAll({ limit: 5 });
+          setNotifications(data);
+        } catch (error) {
+          console.error("Failed to fetch notifications", error);
+        }
+      } else {
+        setNotifications([]);
+      }
+    };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    fetchNotifications();
+    // Optional: Poll every 60 seconds
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const markAllAsRead = async () => {
+    try {
+      await notificationsApi.markAllRead();
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    } catch (error) {
+      console.error("Failed to mark all as read", error);
+    }
   };
 
   useEffect(() => {
@@ -236,20 +260,20 @@ const Navbar = () => {
                         notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 last:border-0 ${notification.unread ? 'bg-indigo-50/30' : ''}`}
+                            className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 last:border-0 ${!notification.is_read ? 'bg-indigo-50/30' : ''}`}
                           >
                             <div className="flex justify-between items-start mb-1">
-                              <span className={`text-sm ${notification.unread ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
+                              <span className={`text-sm ${!notification.is_read ? 'font-semibold text-gray-900' : 'font-medium text-gray-700'}`}>
                                 {notification.title}
                               </span>
-                              {notification.unread && <span className="w-2 h-2 bg-indigo-500 rounded-full mt-1.5 flex-shrink-0"></span>}
+                              {!notification.is_read && <span className="w-2 h-2 bg-indigo-500 rounded-full mt-1.5 flex-shrink-0"></span>}
                             </div>
-                            <span className="text-xs text-gray-500">{notification.time}</span>
+                            <span className="text-xs text-gray-500">{new Date(notification.created_at).toLocaleDateString()}</span>
                           </div>
                         ))
                       ) : (
                         <div className="px-4 py-6 text-center text-gray-500 text-sm">
-                          No notifications
+                          {!isAuthenticated ? 'Login to view notifications' : 'No notifications'}
                         </div>
                       )}
                     </div>

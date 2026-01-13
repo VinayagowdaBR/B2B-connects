@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 from app.database.connection import get_db
 from app.auth.dependencies import has_role
@@ -41,6 +41,7 @@ class SiteSettingsUpdate(BaseModel):
 
     quick_links: Optional[List[FooterLink]] = None
     support_links: Optional[List[FooterLink]] = None
+    about_us_content: Optional[Dict[str, Any]] = None
 
 
 class SiteSettingsResponse(BaseModel):
@@ -69,6 +70,7 @@ class SiteSettingsResponse(BaseModel):
 
     quick_links: List[FooterLink]
     support_links: List[FooterLink]
+    about_us_content: Optional[Dict[str, Any]] = None
     
     class Config:
         from_attributes = True

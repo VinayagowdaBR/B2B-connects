@@ -29,6 +29,10 @@ class User(Base):
     
     roles = relationship("Role", secondary=user_roles, backref="users")
     
+    # Dynamic Relationships
+    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    wishlist_items = relationship("Wishlist", back_populates="user", cascade="all, delete-orphan")
+    
     __mapper_args__ = {
         "polymorphic_identity": "user",
         "polymorphic_on": user_type,

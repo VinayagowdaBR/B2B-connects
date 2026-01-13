@@ -797,7 +797,9 @@ def get_public_careers(
             "requirements": job.requirements,
             "benefits": job.benefits,
             "business": company.company_name if company else "Unknown",
-            "business_id": job.tenant_id,
+
+
+
             "logo": company.logo_url if company else None,
             "created_at": job.created_at
         })
@@ -960,3 +962,26 @@ def get_public_site_settings(db: Session = Depends(get_db)):
         "quick_links": settings.quick_links or [],
         "support_links": settings.support_links or []
     }
+
+
+# ============ ABOUT US ============
+
+@router.get("/about")
+def get_about_page(db: Session = Depends(get_db)):
+    """
+    Get content for the About Us page.
+    """
+    settings = db.query(SiteSettings).first()
+    if not settings or not settings.about_us_content:
+        # Return default structure if no settings exist
+        return {
+            "title": "About Us",
+            "description": "Welcome to our B2B Platform.",
+            "mission": "Our mission is to connect businesses.",
+            "vision": "To be the leading B2B marketplace.",
+            "values": [],
+            "hero_image_url": "",
+            "team_image_url": ""
+        }
+    
+    return settings.about_us_content

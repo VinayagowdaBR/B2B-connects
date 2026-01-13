@@ -31,6 +31,9 @@ const HelpPage = lazy(() => import('@/pages/public/HelpPage'));
 const BecomeSellerPage = lazy(() => import('@/pages/public/BecomeSellerPage'));
 const WishlistPage = lazy(() => import('@/pages/public/WishlistPage'));
 const NotificationsPage = lazy(() => import('@/pages/public/NotificationsPage'));
+const AboutPage = lazy(() => import('@/pages/public/AboutPage'));
+const ContactPage = lazy(() => import('@/pages/public/ContactPage'));
+const TermsPage = lazy(() => import('@/pages/public/TermsPage'));
 
 // Auth Pages
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
@@ -103,6 +106,9 @@ function App() {
                 <Route path="/become-seller" element={<BecomeSellerPage />} />
                 <Route path="/wishlist" element={<WishlistPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/terms" element={<TermsPage />} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />

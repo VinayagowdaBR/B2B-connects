@@ -79,6 +79,8 @@ from app.company.models.company_careers_model import CompanyCareer
 from app.company.models.company_inquiries_model import CompanyInquiry
 from app.company.models.company_gallery_images_model import CompanyGalleryImage
 from app.models.site_settings_model import SiteSettings
+from app.models.notification_model import Notification
+from app.models.wishlist_model import Wishlist
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -176,6 +178,13 @@ app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 # Public Routes
 from app.routes.public_routes import router as public_router
 app.include_router(public_router)
+
+# Dynamic Features Routes
+from app.routes.notification_routes import router as notification_router
+from app.routes.wishlist_routes import router as wishlist_router
+
+app.include_router(notification_router)
+app.include_router(wishlist_router)
 
 # Admin Routes
 app.include_router(admin_dashboard_router)

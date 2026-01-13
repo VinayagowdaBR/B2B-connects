@@ -3,7 +3,7 @@ import AdminLayout from '@/components/layout/AdminLayout';
 import {
     Settings, Phone, Mail, MapPin, Save, Plus, Trash2, Loader2,
     Facebook, Twitter, Linkedin, Instagram, Youtube,
-    BarChart3, Link as LinkIcon
+    BarChart3, Link as LinkIcon, Info, Users
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -40,11 +40,21 @@ const SiteSettingsManagement = () => {
             { name: 'Terms of Service', href: '/terms' },
             { name: 'Privacy Policy', href: '/privacy' },
             { name: 'Refund Policy', href: '/refund-policy' }
-        ]
+        ],
+        about_us_content: {
+            title: '',
+            description: '',
+            mission: '',
+            vision: '',
+            values: [],
+            hero_image_url: '',
+            team_image_url: ''
+        }
     });
 
     const tabs = [
         { id: 'stats', label: 'Stats Counter', icon: BarChart3 },
+        { id: 'about', label: 'About Us', icon: Info },
         { id: 'contact', label: 'Contact Info', icon: Phone },
         { id: 'social', label: 'Social Links', icon: Facebook },
         { id: 'links', label: 'Footer Links', icon: LinkIcon },
@@ -82,6 +92,22 @@ const SiteSettingsManagement = () => {
 
     const updateField = (field, value) => {
         setSettings(prev => ({ ...prev, [field]: value }));
+    };
+
+    const updateAboutField = (field, value) => {
+        setSettings(prev => ({
+            ...prev,
+            about_us_content: {
+                ...prev.about_us_content,
+                [field]: value
+            }
+        }));
+    };
+
+    const updateAboutValues = (value) => {
+        // value is a comma-separated string
+        const valuesArray = value.split(',').map(v => v.trim()).filter(Boolean);
+        updateAboutField('values', valuesArray);
     };
 
     const addLink = (type) => {
@@ -208,6 +234,90 @@ const SiteSettingsManagement = () => {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                         />
                                         <p className="text-sm text-gray-500 mt-1">Displays as: {(settings.stats_inquiries / 1000).toFixed(0)}K+</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* About Us Tab */}
+                        {activeTab === 'about' && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                                        <input
+                                            type="text"
+                                            value={settings.about_us_content?.title || ''}
+                                            onChange={(e) => updateAboutField('title', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="e.g., About Us"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Main Description</label>
+                                        <textarea
+                                            rows="4"
+                                            value={settings.about_us_content?.description || ''}
+                                            onChange={(e) => updateAboutField('description', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="Enter main description..."
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Mission</label>
+                                            <textarea
+                                                rows="3"
+                                                value={settings.about_us_content?.mission || ''}
+                                                onChange={(e) => updateAboutField('mission', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Our mission is..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Vision</label>
+                                            <textarea
+                                                rows="3"
+                                                value={settings.about_us_content?.vision || ''}
+                                                onChange={(e) => updateAboutField('vision', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="Our vision is..."
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Values (Comma separated)</label>
+                                        <input
+                                            type="text"
+                                            value={(settings.about_us_content?.values || []).join(', ')}
+                                            onChange={(e) => updateAboutValues(e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="Integrity, Innovation, Growth"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Hero Image URL</label>
+                                            <input
+                                                type="url"
+                                                value={settings.about_us_content?.hero_image_url || ''}
+                                                onChange={(e) => updateAboutField('hero_image_url', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="https://..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Team Image URL</label>
+                                            <input
+                                                type="url"
+                                                value={settings.about_us_content?.team_image_url || ''}
+                                                onChange={(e) => updateAboutField('team_image_url', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="https://..."
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

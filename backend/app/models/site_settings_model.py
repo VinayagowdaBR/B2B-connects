@@ -56,6 +56,17 @@ class SiteSettings(Base):
         {"name": "Refund Policy", "href": "/refund-policy"}
     ])
     
+    # About Us Page (JSON content)
+    about_us_content = Column(JSON, default=lambda: {
+        "title": "About Us",
+        "description": "Welcome to our B2B Platform.",
+        "mission": "Our mission is to connect businesses.",
+        "vision": "To be the leading B2B marketplace.",
+        "values": ["Integrity", "Innovation", "Customer Success"],
+        "hero_image_url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80",
+        "team_image_url": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80"
+    })
+
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
