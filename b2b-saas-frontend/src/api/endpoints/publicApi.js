@@ -145,9 +145,9 @@ export const publicApi = {
         return response.data;
     },
 
-    // Get site settings for Stats Counter and Footer
+    // Get site settings (Hero, About, Contact, Footer)
     getSiteSettings: async () => {
-        const response = await apiClient.get('/public/site-settings');
+        const response = await apiClient.get('/public/settings');
         return response.data;
     }
 };

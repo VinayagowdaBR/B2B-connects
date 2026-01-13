@@ -42,6 +42,7 @@ class SiteSettingsUpdate(BaseModel):
     quick_links: Optional[List[FooterLink]] = None
     support_links: Optional[List[FooterLink]] = None
     about_us_content: Optional[Dict[str, Any]] = None
+    hero_content: Optional[Dict[str, Any]] = None
 
 
 class SiteSettingsResponse(BaseModel):
@@ -71,6 +72,7 @@ class SiteSettingsResponse(BaseModel):
     quick_links: List[FooterLink]
     support_links: List[FooterLink]
     about_us_content: Optional[Dict[str, Any]] = None
+    hero_content: Optional[Dict[str, Any]] = None
     
     class Config:
         from_attributes = True

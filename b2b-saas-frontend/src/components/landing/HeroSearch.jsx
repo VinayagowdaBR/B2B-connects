@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, TrendingUp, BadgeCheck, Clock, HeadphonesIcon, Sparkles, ArrowRight, Zap } from 'lucide-react';
+import { Search, TrendingUp, BadgeCheck, Clock, HeadphonesIcon, Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { publicApi } from '@/api/endpoints/publicApi';
 
@@ -9,15 +9,40 @@ const HeroSearch = () => {
   const [popularSearches, setPopularSearches] = useState([]);
   const navigate = useNavigate();
 
+  const [heroContent, setHeroContent] = useState(null);
+
   useEffect(() => {
-    setPopularSearches([
-      'Industrial Machinery',
-      'Steel Products',
-      'Medical Equipment',
-      'Electronics Components',
-      'Building Materials'
-    ]);
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const settings = await publicApi.getSiteSettings();
+      if (settings && settings.hero_content) {
+        setHeroContent(settings.hero_content);
+        if (settings.hero_content.popular_searches) {
+          setPopularSearches(settings.hero_content.popular_searches);
+        }
+      } else {
+        // Fallback default content
+        setHeroContent({
+          badge_text: "India's Most Trusted B2B Platform",
+          title_prefix: "Discover Thousands of",
+          title_highlight: "Trusted Suppliers",
+          subtitle: "Connect with verified manufacturers, wholesalers, and service providers across India",
+          popular_searches: ['Industrial Machinery', 'Steel Products', 'Medical Equipment', 'Electronics Components', 'Building Materials'],
+          features: [
+            { title: "Verified Sellers", desc: "100% Trusted & Verified" },
+            { title: "Quick Response", desc: "Within 24 Hours" },
+            { title: "24/7 Support", desc: "Always Available" }
+          ]
+        });
+        setPopularSearches(['Industrial Machinery', 'Steel Products', 'Medical Equipment', 'Electronics Components', 'Building Materials']);
+      }
+    } catch (err) {
+      console.error("Failed to fetch hero settings", err);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -28,6 +53,19 @@ const HeroSearch = () => {
 
   const handlePopularSearch = (term) => {
     navigate(`/search?q=${encodeURIComponent(term)}`);
+  };
+
+  const features = heroContent?.features || [
+    { title: 'Verified Sellers', desc: '100% Trusted & Verified' },
+    { title: 'Quick Response', desc: 'Within 24 Hours' },
+    { title: '24/7 Support', desc: 'Always Available' },
+  ];
+
+  // Helper to map index to icon/gradient
+  const getFeatureIcon = (index) => {
+    const icons = [BadgeCheck, Clock, HeadphonesIcon];
+    const gradients = ['from-green-400 to-emerald-600', 'from-orange-400 to-red-600', 'from-purple-400 to-pink-600'];
+    return { Icon: icons[index] || BadgeCheck, gradient: gradients[index] || 'from-blue-400 to-blue-600' };
   };
 
   return (
@@ -114,7 +152,7 @@ const HeroSearch = () => {
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8"
           >
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span className="text-white text-sm font-medium">India's Most Trusted B2B Platform</span>
+            <span className="text-white text-sm font-medium">{heroContent?.badge_text || "India's Most Trusted B2B Platform"}</span>
           </motion.div>
 
           {/* Main Heading */}
@@ -124,14 +162,14 @@ const HeroSearch = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
           >
-            Discover Thousands of
+            {heroContent?.title_prefix || "Discover Thousands of"}
             <motion.span
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
               className="block mt-2 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent"
             >
-              Trusted Suppliers
+              {heroContent?.title_highlight || "Trusted Suppliers"}
             </motion.span>
           </motion.h1>
 
@@ -141,7 +179,7 @@ const HeroSearch = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl text-indigo-100 mb-12 max-w-3xl mx-auto"
           >
-            Connect with verified manufacturers, wholesalers, and service providers across India
+            {heroContent?.subtitle || "Connect with verified manufacturers, wholesalers, and service providers across India"}
           </motion.p>
 
           {/* Search Form with Glassmorphism */}
@@ -225,26 +263,25 @@ const HeroSearch = () => {
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            {[
-              { icon: BadgeCheck, title: 'Verified Sellers', desc: '100% Trusted & Verified', gradient: 'from-green-400 to-emerald-600' },
-              { icon: Clock, title: 'Quick Response', desc: 'Within 24 Hours', gradient: 'from-orange-400 to-red-600' },
-              { icon: HeadphonesIcon, title: '24/7 Support', desc: 'Always Available', gradient: 'from-purple-400 to-pink-600' },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group flex flex-col items-center gap-3 p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/15 transition-all cursor-pointer"
-              >
-                <div className={`p-3 bg-gradient-to-br ${feature.gradient} rounded-xl group-hover:scale-110 transition-transform shadow-lg`}>
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-white font-bold text-lg">{feature.title}</h3>
-                <p className="text-indigo-100 text-sm">{feature.desc}</p>
-              </motion.div>
-            ))}
+            {features.map((feature, index) => {
+              const { Icon, gradient } = getFeatureIcon(index);
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="group flex flex-col items-center gap-3 p-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/15 transition-all cursor-pointer"
+                >
+                  <div className={`p-3 bg-gradient-to-br ${gradient} rounded-xl group-hover:scale-110 transition-transform shadow-lg`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-white font-bold text-lg">{feature.title}</h3>
+                  <p className="text-indigo-100 text-sm">{feature.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

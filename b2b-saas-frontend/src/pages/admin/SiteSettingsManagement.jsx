@@ -3,7 +3,7 @@ import AdminLayout from '@/components/layout/AdminLayout';
 import {
     Settings, Phone, Mail, MapPin, Save, Plus, Trash2, Loader2,
     Facebook, Twitter, Linkedin, Instagram, Youtube,
-    BarChart3, Link as LinkIcon, Info, Users
+    BarChart3, Link as LinkIcon, Info, Users, LayoutTemplate
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -49,11 +49,24 @@ const SiteSettingsManagement = () => {
             values: [],
             hero_image_url: '',
             team_image_url: ''
+        },
+        hero_content: {
+            badge_text: '',
+            title_prefix: '',
+            title_highlight: '',
+            subtitle: '',
+            popular_searches: [],
+            features: [
+                { title: '', desc: '' },
+                { title: '', desc: '' },
+                { title: '', desc: '' }
+            ]
         }
     });
 
     const tabs = [
         { id: 'stats', label: 'Stats Counter', icon: BarChart3 },
+        { id: 'hero', label: 'Hero Section', icon: LayoutTemplate },
         { id: 'about', label: 'About Us', icon: Info },
         { id: 'contact', label: 'Contact Info', icon: Phone },
         { id: 'social', label: 'Social Links', icon: Facebook },
@@ -133,6 +146,33 @@ const SiteSettingsManagement = () => {
             [field]: (prev[field] || []).map((link, i) =>
                 i === index ? { ...link, [key]: value } : link
             )
+        }));
+    };
+
+    const updateHeroField = (field, value) => {
+        setSettings(prev => ({
+            ...prev,
+            hero_content: {
+                ...prev.hero_content,
+                [field]: value
+            }
+        }));
+    };
+
+    const updateHeroPopularSearches = (value) => {
+        const valuesArray = value.split(',').map(v => v.trim()).filter(Boolean);
+        updateHeroField('popular_searches', valuesArray);
+    };
+
+    const updateHeroFeature = (index, key, value) => {
+        setSettings(prev => ({
+            ...prev,
+            hero_content: {
+                ...prev.hero_content,
+                features: (prev.hero_content?.features || []).map((feat, i) =>
+                    i === index ? { ...feat, [key]: value } : feat
+                )
+            }
         }));
     };
 
@@ -234,6 +274,98 @@ const SiteSettingsManagement = () => {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                         />
                                         <p className="text-sm text-gray-500 mt-1">Displays as: {(settings.stats_inquiries / 1000).toFixed(0)}K+</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Hero Section Tab */}
+                        {activeTab === 'hero' && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Badge Text</label>
+                                            <input
+                                                type="text"
+                                                value={settings.hero_content?.badge_text || ''}
+                                                onChange={(e) => updateHeroField('badge_text', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="e.g., India's Most Trusted B2B Platform"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Popular Searches (Comma separated)</label>
+                                            <input
+                                                type="text"
+                                                value={(settings.hero_content?.popular_searches || []).join(', ')}
+                                                onChange={(e) => updateHeroPopularSearches(e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="e.g., Steel, Cement, Machinery"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Title Prefix</label>
+                                            <input
+                                                type="text"
+                                                value={settings.hero_content?.title_prefix || ''}
+                                                onChange={(e) => updateHeroField('title_prefix', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="e.g., Discover Thousands of"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Title Highlight</label>
+                                            <input
+                                                type="text"
+                                                value={settings.hero_content?.title_highlight || ''}
+                                                onChange={(e) => updateHeroField('title_highlight', e.target.value)}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                                placeholder="e.g., Trusted Suppliers"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                        <textarea
+                                            rows="2"
+                                            value={settings.hero_content?.subtitle || ''}
+                                            onChange={(e) => updateHeroField('subtitle', e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="e.g., Connect with..."
+                                        />
+                                    </div>
+
+                                    <div className="border-t pt-6">
+                                        <h3 className="text-lg font-medium text-gray-900 mb-4">Key Features</h3>
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {(settings.hero_content?.features || []).map((feature, index) => (
+                                                <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-gray-500 mb-1">Feature {index + 1} Title</label>
+                                                        <input
+                                                            type="text"
+                                                            value={feature.title}
+                                                            onChange={(e) => updateHeroFeature(index, 'title', e.target.value)}
+                                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                                        <input
+                                                            type="text"
+                                                            value={feature.desc}
+                                                            onChange={(e) => updateHeroFeature(index, 'desc', e.target.value)}
+                                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

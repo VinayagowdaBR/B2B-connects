@@ -67,6 +67,23 @@ class SiteSettings(Base):
         "team_image_url": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80"
     })
 
+    # Hero Section Content
+    hero_content = Column(JSON, default=lambda: {
+        "badge_text": "India's Most Trusted B2B Platform",
+        "title_prefix": "Discover Thousands of",
+        "title_highlight": "Trusted Suppliers",
+        "subtitle": "Connect with verified manufacturers, wholesalers, and service providers across India",
+        "popular_searches": [
+            "Industrial Machinery", "Steel Products", "Medical Equipment", 
+            "Electronics Components", "Building Materials"
+        ],
+        "features": [
+            {"title": "Verified Sellers", "desc": "100% Trusted & Verified"},
+            {"title": "Quick Response", "desc": "Within 24 Hours"},
+            {"title": "24/7 Support", "desc": "Always Available"}
+        ]
+    })
+
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

@@ -248,6 +248,35 @@ def get_platform_stats(db: Session = Depends(get_db)):
     }
 
 
+@router.get("/settings")
+def get_public_settings(db: Session = Depends(get_db)):
+    """
+    Get public site settings (hero, about, contact, footer).
+    """
+    settings = db.query(SiteSettings).first()
+    if not settings:
+        return {}
+    
+    return {
+        "contact_email": settings.contact_email,
+        "contact_phone": settings.contact_phone,
+        "contact_address": settings.contact_address,
+        "facebook_url": settings.facebook_url,
+        "twitter_url": settings.twitter_url,
+        "linkedin_url": settings.linkedin_url,
+        "instagram_url": settings.instagram_url,
+        "youtube_url": settings.youtube_url,
+        "quick_links": settings.quick_links,
+        "support_links": settings.support_links,
+        "about_us_content": settings.about_us_content,
+        "hero_content": settings.hero_content,
+        "stats_buyers": settings.stats_buyers,
+        "stats_sellers": settings.stats_sellers,
+        "stats_products": settings.stats_products,
+        "stats_inquiries": settings.stats_inquiries
+    }
+
+
 @router.get("/categories")
 def get_categories(db: Session = Depends(get_db)):
     """
