@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -8,140 +8,67 @@ import {
     Users, Package, Briefcase, Globe, AlertCircle, CheckCircle
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/landing';
+import { siteSettingsApi } from '@/api/endpoints/siteSettings';
+import * as Icons from 'lucide-react';
 
-const faqCategories = [
-    {
-        id: 'getting-started',
-        name: 'Getting Started',
-        icon: Sparkles,
-        color: 'from-indigo-500 to-purple-500',
-        faqs: [
-            {
-                question: 'How do I create an account?',
-                answer: 'Click on the "Register" button in the top navigation. Fill in your business details, email, and password. Verify your email address to complete registration. You can then set up your company profile and start listing products.'
-            },
-            {
-                question: 'Is registration free?',
-                answer: 'Yes! Basic registration is completely free. You can create your business profile, list products, and receive inquiries at no cost. We also offer premium plans with additional features like priority listing and advanced analytics.'
-            },
-            {
-                question: 'How do I verify my business?',
-                answer: 'After registration, go to your dashboard and click on "Get Verified". Upload your business documents (GST certificate, business license, etc.). Our team will review and verify your business within 24-48 hours.'
-            },
-            {
-                question: 'What documents are needed for verification?',
-                answer: 'Required documents include: GST Registration Certificate, Business PAN Card, Address Proof (utility bill or bank statement), and optionally, Trade License or Shop Act License for enhanced trust.'
-            }
-        ]
-    },
-    {
-        id: 'products-services',
-        name: 'Products & Services',
-        icon: Package,
-        color: 'from-orange-500 to-red-500',
-        faqs: [
-            {
-                question: 'How do I list my products?',
-                answer: 'Go to Dashboard > Products > Add New Product. Fill in the product details including name, description, price, category, and upload high-quality images. Click "Publish" to make it live on the platform.'
-            },
-            {
-                question: 'How many products can I list?',
-                answer: 'Free accounts can list up to 20 products. Premium plans offer unlimited listings along with featured placement and priority in search results.'
-            },
-            {
-                question: 'Can I offer both products and services?',
-                answer: 'Absolutely! You can list both products and services from your dashboard. Each has its own section with relevant fields optimized for that type of offering.'
-            },
-            {
-                question: 'How do I update my product prices?',
-                answer: 'Navigate to Dashboard > Products, find the product you want to update, click Edit, modify the price, and save changes. The update will reflect immediately on your public profile.'
-            }
-        ]
-    },
-    {
-        id: 'inquiries',
-        name: 'Inquiries & Orders',
-        icon: MessageCircle,
-        color: 'from-green-500 to-emerald-500',
-        faqs: [
-            {
-                question: 'How do I receive inquiries?',
-                answer: 'When buyers are interested in your products, they submit an inquiry through your business profile. You\'ll receive notifications via email and in your dashboard. Respond promptly to convert leads!'
-            },
-            {
-                question: 'How quickly should I respond to inquiries?',
-                answer: 'We recommend responding within 24 hours. Businesses with faster response times rank higher in search results and receive a "Quick Response" badge on their profile.'
-            },
-            {
-                question: 'Can I filter and manage inquiries?',
-                answer: 'Yes! Your dashboard has a complete inquiry management system. Filter by status (new, responded, converted), date range, product, and more. You can also add notes and track follow-ups.'
-            }
-        ]
-    },
-    {
-        id: 'account-billing',
-        name: 'Account & Billing',
-        icon: CreditCard,
-        color: 'from-blue-500 to-cyan-500',
-        faqs: [
-            {
-                question: 'How do I upgrade to a premium plan?',
-                answer: 'Go to Dashboard > Subscription > Upgrade. Choose your preferred plan and complete the payment. Premium features are activated instantly after successful payment.'
-            },
-            {
-                question: 'What payment methods are accepted?',
-                answer: 'We accept all major credit/debit cards, UPI, net banking, and popular wallets like Paytm and PhonePe. For enterprise plans, we also offer invoice-based payments.'
-            },
-            {
-                question: 'Can I cancel my subscription?',
-                answer: 'Yes, you can cancel anytime from Dashboard > Subscription > Manage. Your premium features will remain active until the end of your billing period.'
-            },
-            {
-                question: 'How do I update my business information?',
-                answer: 'Go to Dashboard > Company Info to update your business details, address, contact information, and company description. Changes are reflected immediately.'
-            }
-        ]
-    },
-    {
-        id: 'security',
-        name: 'Security & Privacy',
-        icon: Shield,
-        color: 'from-purple-500 to-pink-500',
-        faqs: [
-            {
-                question: 'Is my business information secure?',
-                answer: 'Yes! We use industry-standard encryption (SSL/TLS) for all data transmission. Your sensitive information is stored securely and never shared with third parties without consent.'
-            },
-            {
-                question: 'How do I reset my password?',
-                answer: 'Click "Forgot Password" on the login page, enter your registered email, and follow the instructions sent to your inbox. The reset link is valid for 24 hours.'
-            },
-            {
-                question: 'Who can see my contact information?',
-                answer: 'Only registered users can view your contact details after submitting an inquiry. This protects you from spam while ensuring genuine buyers can reach you.'
-            }
-        ]
-    }
-];
+// Helper to get icon component dynamically
+const getIcon = (iconName) => {
+    const Icon = Icons[iconName] || HelpCircle;
+    return Icon;
+};
 
 const HelpPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeCategory, setActiveCategory] = useState('getting-started');
+    const [activeCategory, setActiveCategory] = useState('');
     const [openFaqs, setOpenFaqs] = useState({});
+    const [content, setContent] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                const settings = await siteSettingsApi.getPublicSettings();
+                if (settings && settings.help_center_content) {
+                    setContent(settings.help_center_content);
+                    // Set first category as active by default if exists
+                    if (settings.help_center_content.categories?.length > 0) {
+                        setActiveCategory(0); // Use index as ID for simplicity or add IDs
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch help content:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchContent();
+    }, []);
 
     const toggleFaq = (categoryId, faqIndex) => {
         const key = `${categoryId}-${faqIndex}`;
         setOpenFaqs(prev => ({ ...prev, [key]: !prev[key] }));
     };
 
-    const currentCategory = faqCategories.find(cat => cat.id === activeCategory);
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
+    if (!content) return null; // Or some fallback state
+
+    const currentCategory = content.categories?.[activeCategory];
+
+    // Filter logic
     const filteredFaqs = searchQuery
-        ? faqCategories.flatMap(cat =>
-            cat.faqs.filter(faq =>
+        ? content.categories.flatMap((cat, catIndex) =>
+            (cat.faqs || []).filter(faq =>
                 faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-            ).map(faq => ({ ...faq, category: cat.name, categoryId: cat.id }))
+            ).map(faq => ({ ...faq, category: cat.name, categoryId: catIndex }))
         )
         : [];
 
@@ -171,11 +98,11 @@ const HelpPage = () => {
                         </div>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-                                How Can We Help?
+                                {content.title || "How Can We Help?"}
                             </span>
                         </h1>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Find answers to common questions or reach out to our support team for assistance.
+                            {content.subtitle || "Find answers to common questions or reach out to our support team."}
                         </p>
                     </motion.div>
 
@@ -190,7 +117,7 @@ const HelpPage = () => {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search for help articles..."
+                                placeholder={content.search_placeholder || "Search for help articles..."}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 font-medium shadow-lg shadow-gray-100/50 transition-all hover:shadow-xl"
@@ -212,7 +139,7 @@ const HelpPage = () => {
                                                 onClick={() => {
                                                     setActiveCategory(faq.categoryId);
                                                     setSearchQuery('');
-                                                    toggleFaq(faq.categoryId, index);
+                                                    toggleFaq(faq.categoryId, index); // Note: index logic might need adjustment if relying on original index in cat
                                                 }}
                                                 className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                                             >
@@ -232,7 +159,7 @@ const HelpPage = () => {
                 </div>
             </div>
 
-            {/* Quick Links */}
+            {/* Quick Links Categories */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -240,24 +167,27 @@ const HelpPage = () => {
                     transition={{ duration: 0.6, delay: 0.3 }}
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
                 >
-                    {faqCategories.map((category) => (
-                        <button
-                            key={category.id}
-                            onClick={() => setActiveCategory(category.id)}
-                            className={`flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${activeCategory === category.id
-                                ? 'border-indigo-500 bg-indigo-50'
-                                : 'border-gray-200 bg-white hover:border-indigo-200 hover:shadow-md'
-                                }`}
-                        >
-                            <div className={`p-3 bg-gradient-to-br ${category.color} rounded-xl text-white`}>
-                                <category.icon className="w-6 h-6" />
-                            </div>
-                            <span className={`text-sm font-semibold text-center ${activeCategory === category.id ? 'text-indigo-600' : 'text-gray-700'
-                                }`}>
-                                {category.name}
-                            </span>
-                        </button>
-                    ))}
+                    {(content.categories || []).map((category, index) => {
+                        const IconComponent = getIcon(category.icon);
+                        return (
+                            <button
+                                key={index}
+                                onClick={() => setActiveCategory(index)}
+                                className={`flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 ${activeCategory === index
+                                    ? 'border-indigo-500 bg-indigo-50'
+                                    : 'border-gray-200 bg-white hover:border-indigo-200 hover:shadow-md'
+                                    }`}
+                            >
+                                <div className={`p-3 bg-gradient-to-br ${category.color} rounded-xl text-white`}>
+                                    <IconComponent className="w-6 h-6" />
+                                </div>
+                                <span className={`text-sm font-semibold text-center ${activeCategory === index ? 'text-indigo-600' : 'text-gray-700'
+                                    }`}>
+                                    {category.name}
+                                </span>
+                            </button>
+                        );
+                    })}
                 </motion.div>
             </div>
 
@@ -273,7 +203,10 @@ const HelpPage = () => {
                         {currentCategory && (
                             <>
                                 <div className={`p-2 bg-gradient-to-br ${currentCategory.color} rounded-lg text-white`}>
-                                    <currentCategory.icon className="w-5 h-5" />
+                                    {(() => {
+                                        const Icon = getIcon(currentCategory.icon);
+                                        return <Icon className="w-5 h-5" />;
+                                    })()}
                                 </div>
                                 {currentCategory.name}
                             </>
@@ -281,7 +214,7 @@ const HelpPage = () => {
                     </h2>
 
                     <div className="space-y-4">
-                        {currentCategory?.faqs.map((faq, index) => {
+                        {currentCategory?.faqs?.map((faq, index) => {
                             const isOpen = openFaqs[`${activeCategory}-${index}`];
                             return (
                                 <motion.div
@@ -332,53 +265,31 @@ const HelpPage = () => {
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            {
-                                icon: Mail,
-                                title: 'Email Support',
-                                description: 'Send us an email and we\'ll respond within 24 hours.',
-                                action: 'support@b2bconnect.com',
-                                link: 'mailto:support@b2bconnect.com',
-                                color: 'from-indigo-500 to-purple-500'
-                            },
-                            {
-                                icon: Phone,
-                                title: 'Phone Support',
-                                description: 'Speak directly with our support team.',
-                                action: '+91 1800-XXX-XXXX',
-                                link: 'tel:+911800XXXXXXX',
-                                color: 'from-green-500 to-emerald-500'
-                            },
-                            {
-                                icon: MessageCircle,
-                                title: 'Live Chat',
-                                description: 'Chat with us in real-time for instant help.',
-                                action: 'Start Chat',
-                                link: '#',
-                                color: 'from-orange-500 to-red-500'
-                            }
-                        ].map((contact, index) => (
-                            <motion.a
-                                key={index}
-                                href={contact.link}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                viewport={{ once: true }}
-                                whileHover={{ y: -5 }}
-                                className="group bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:border-indigo-200 hover:shadow-lg transition-all"
-                            >
-                                <div className={`inline-flex p-3 bg-gradient-to-br ${contact.color} rounded-xl text-white mb-4 group-hover:scale-110 transition-transform`}>
-                                    <contact.icon className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-2">{contact.title}</h3>
-                                <p className="text-gray-600 text-sm mb-4">{contact.description}</p>
-                                <span className="inline-flex items-center gap-2 text-indigo-600 font-semibold group-hover:gap-3 transition-all">
-                                    {contact.action}
-                                    <ArrowRight className="w-4 h-4" />
-                                </span>
-                            </motion.a>
-                        ))}
+                        {(content.support_options || []).map((contact, index) => {
+                            const IconComponent = getIcon(contact.icon);
+                            return (
+                                <motion.a
+                                    key={index}
+                                    href={contact.link}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ y: -5 }}
+                                    className="group bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:border-indigo-200 hover:shadow-lg transition-all"
+                                >
+                                    <div className={`inline-flex p-3 bg-gradient-to-br ${contact.color || 'from-gray-500 to-slate-500'} rounded-xl text-white mb-4 group-hover:scale-110 transition-transform`}>
+                                        <IconComponent className="w-6 h-6" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 mb-2">{contact.title}</h3>
+                                    <p className="text-gray-600 text-sm mb-4">{contact.description}</p>
+                                    <span className="inline-flex items-center gap-2 text-indigo-600 font-semibold group-hover:gap-3 transition-all">
+                                        {contact.action}
+                                        <ArrowRight className="w-4 h-4" />
+                                    </span>
+                                </motion.a>
+                            );
+                        })}
                     </div>
 
                     {/* Business Hours */}

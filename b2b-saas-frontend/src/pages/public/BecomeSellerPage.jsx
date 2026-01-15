@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { siteSettingsApi } from '@/api/endpoints/siteSettings';
 import { motion } from 'framer-motion';
 import {
     Store, ArrowRight, CheckCircle, TrendingUp, Users, Globe,
@@ -7,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/landing';
 
-const benefits = [
+const defaultBenefits = [
     {
         icon: Globe,
         title: 'Nationwide Reach',
@@ -46,7 +48,7 @@ const benefits = [
     }
 ];
 
-const steps = [
+const defaultSteps = [
     {
         number: '01',
         title: 'Create Your Account',
@@ -73,7 +75,7 @@ const steps = [
     }
 ];
 
-const plans = [
+const defaultPlans = [
     {
         name: 'Starter',
         price: 'Free',
@@ -125,7 +127,7 @@ const plans = [
     }
 ];
 
-const testimonials = [
+const defaultTestimonials = [
     {
         name: 'Rajesh Kumar',
         company: 'Steel Industries Pvt Ltd',
@@ -150,6 +152,44 @@ const testimonials = [
 ];
 
 const BecomeSellerPage = () => {
+    const [settings, setSettings] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchSettings();
+    }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const data = await siteSettingsApi.getPublicSettings();
+            setSettings(data);
+        } catch (error) {
+            console.error('Error fetching settings:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const content = settings?.become_seller_content;
+    const hero = content?.hero || {
+        badge: 'Join 10,000+ Sellers',
+        title_line1: 'Grow Your Business',
+        title_highlight: 'With Us',
+        subtitle: 'Reach millions of buyers across India. List your products for free and start receiving genuine business inquiries today.',
+        cta_primary: 'Start Selling Free',
+        cta_secondary: 'View Success Stories'
+    };
+
+    // Icon mapping helper
+    const getIcon = (iconName) => {
+        const icons = {
+            Store, ArrowRight, CheckCircle, TrendingUp, Users, Globe,
+            Shield, Zap, BarChart3, Headphones, Package, Star,
+            BadgeCheck, Clock, CreditCard, Sparkles, Target, Award
+        };
+        return icons[iconName] || Star;
+    };
+
     return (
         <div className="min-h-screen bg-white font-sans">
             <Navbar />
@@ -180,7 +220,7 @@ const BecomeSellerPage = () => {
                             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8"
                         >
                             <Sparkles className="w-4 h-4 text-yellow-300" />
-                            <span className="text-white text-sm font-medium">Join 10,000+ Sellers</span>
+                            <span className="text-white text-sm font-medium">{hero.badge}</span>
                         </motion.div>
 
                         <motion.h1
@@ -189,14 +229,14 @@ const BecomeSellerPage = () => {
                             transition={{ duration: 0.8, delay: 0.1 }}
                             className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
                         >
-                            Grow Your Business
+                            {hero.title_line1}
                             <motion.span
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.8, delay: 0.3 }}
                                 className="block mt-2 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent"
                             >
-                                With Us
+                                {hero.title_highlight}
                             </motion.span>
                         </motion.h1>
 
@@ -206,7 +246,7 @@ const BecomeSellerPage = () => {
                             transition={{ duration: 0.8, delay: 0.4 }}
                             className="text-xl md:text-2xl text-indigo-100 mb-12 max-w-3xl mx-auto"
                         >
-                            Reach millions of buyers across India. List your products for free and start receiving genuine business inquiries today.
+                            {hero.subtitle}
                         </motion.p>
 
                         <motion.div
@@ -219,14 +259,14 @@ const BecomeSellerPage = () => {
                                 to="/register"
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
                             >
-                                Start Selling Free
+                                {hero.cta_primary}
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
                             <Link
                                 to="/businesses"
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300"
                             >
-                                View Success Stories
+                                {hero.cta_secondary}
                             </Link>
                         </motion.div>
 
@@ -237,11 +277,11 @@ const BecomeSellerPage = () => {
                             transition={{ duration: 0.8, delay: 0.7 }}
                             className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto"
                         >
-                            {[
+                            {(content?.stats || [
                                 { value: '10K+', label: 'Active Sellers' },
                                 { value: '50K+', label: 'Monthly Inquiries' },
                                 { value: '500+', label: 'Cities Covered' }
-                            ].map((stat, index) => (
+                            ]).map((stat, index) => (
                                 <div key={index} className="text-center">
                                     <div className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
                                     <div className="text-indigo-200 text-sm">{stat.label}</div>
@@ -274,31 +314,34 @@ const BecomeSellerPage = () => {
                             <span className="text-indigo-600 text-sm font-semibold">Why Sell With Us</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Everything You Need to Succeed
+                            {content?.benefits?.title || 'Everything You Need to Succeed'}
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            We provide all the tools and support you need to grow your B2B business online.
+                            {content?.benefits?.subtitle || 'We provide all the tools and support you need to grow your B2B business online.'}
                         </p>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {benefits.map((benefit, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                viewport={{ once: true }}
-                                whileHover={{ y: -8 }}
-                                className="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:shadow-xl transition-all duration-300"
-                            >
-                                <div className={`inline-flex p-3 bg-gradient-to-br ${benefit.color} rounded-xl text-white mb-4`}>
-                                    <benefit.icon className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
-                                <p className="text-gray-600">{benefit.description}</p>
-                            </motion.div>
-                        ))}
+                        {(content?.benefits?.items || defaultBenefits).map((benefit, index) => {
+                            const Icon = typeof benefit.icon === 'string' ? getIcon(benefit.icon) : benefit.icon;
+                            return (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ y: -8 }}
+                                    className="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:shadow-xl transition-all duration-300"
+                                >
+                                    <div className={`inline-flex p-3 bg-gradient-to-br ${benefit.color || 'from-indigo-500 to-purple-500'} rounded-xl text-white mb-4`}>
+                                        <Icon className="w-6 h-6" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
+                                    <p className="text-gray-600">{benefit.description || benefit.desc}</p>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -318,38 +361,41 @@ const BecomeSellerPage = () => {
                             <span className="text-purple-600 text-sm font-semibold">Simple Process</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Get Started in 4 Easy Steps
+                            {content?.steps?.title || 'Get Started in 4 Easy Steps'}
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Start selling within minutes. No technical skills required.
+                            {content?.steps?.subtitle || 'Start selling within minutes. No technical skills required.'}
                         </p>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {steps.map((step, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.15 }}
-                                viewport={{ once: true }}
-                                className="relative"
-                            >
-                                {index < steps.length - 1 && (
-                                    <div className="hidden lg:block absolute top-12 left-[60%] w-full h-0.5 bg-gradient-to-r from-indigo-300 to-transparent" />
-                                )}
-                                <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg transition-shadow relative z-10">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold">
-                                            {step.number}
+                        {(content?.steps?.items || defaultSteps).map((step, index) => {
+                            const Icon = typeof step.icon === 'string' ? getIcon(step.icon) : step.icon;
+                            return (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.15 }}
+                                    viewport={{ once: true }}
+                                    className="relative"
+                                >
+                                    {index < (content?.steps?.items || defaultSteps).length - 1 && (
+                                        <div className="hidden lg:block absolute top-12 left-[60%] w-full h-0.5 bg-gradient-to-r from-indigo-300 to-transparent" />
+                                    )}
+                                    <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg transition-shadow relative z-10">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold">
+                                                {step.number}
+                                            </div>
+                                            <Icon className="w-8 h-8 text-indigo-600" />
                                         </div>
-                                        <step.icon className="w-8 h-8 text-indigo-600" />
+                                        <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
+                                        <p className="text-gray-600 text-sm">{step.description || step.desc}</p>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
-                                    <p className="text-gray-600 text-sm">{step.description}</p>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -369,15 +415,15 @@ const BecomeSellerPage = () => {
                             <span className="text-green-600 text-sm font-semibold">Pricing Plans</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Choose Your Plan
+                            {content?.pricing?.title || 'Choose Your Plan'}
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Start free and upgrade as you grow. No hidden fees.
+                            {content?.pricing?.subtitle || 'Start free and upgrade as you grow. No hidden fees.'}
                         </p>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                        {plans.map((plan, index) => (
+                        {(content?.pricing?.plans || defaultPlans).map((plan, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
@@ -407,11 +453,11 @@ const BecomeSellerPage = () => {
                                         </span>
                                     </div>
                                     <p className={`mt-2 text-sm ${plan.popular ? 'text-indigo-200' : 'text-gray-500'}`}>
-                                        {plan.description}
+                                        {plan.description || plan.desc}
                                     </p>
                                 </div>
                                 <ul className="space-y-3 mb-8">
-                                    {plan.features.map((feature, fIndex) => (
+                                    {(plan.features || []).map((feature, fIndex) => (
                                         <li key={fIndex} className="flex items-center gap-2">
                                             <CheckCircle className={`w-5 h-5 ${plan.popular ? 'text-green-300' : 'text-green-500'}`} />
                                             <span className={plan.popular ? 'text-indigo-100' : 'text-gray-600'}>
@@ -450,12 +496,12 @@ const BecomeSellerPage = () => {
                             <span className="text-orange-600 text-sm font-semibold">Success Stories</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Trusted by Businesses Like Yours
+                            {content?.testimonials?.title || 'Trusted by Businesses Like Yours'}
                         </h2>
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {testimonials.map((testimonial, index) => (
+                        {(content?.testimonials?.items || defaultTestimonials).map((testimonial, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
@@ -465,14 +511,14 @@ const BecomeSellerPage = () => {
                                 className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-lg transition-shadow"
                             >
                                 <div className="flex items-center gap-1 mb-4">
-                                    {[...Array(testimonial.rating)].map((_, i) => (
+                                    {[...Array(testimonial.rating || 5)].map((_, i) => (
                                         <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                                     ))}
                                 </div>
                                 <p className="text-gray-600 mb-6">"{testimonial.quote}"</p>
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                                        {testimonial.name.charAt(0)}
+                                        {testimonial.name?.charAt(0) || 'U'}
                                     </div>
                                     <div>
                                         <div className="font-semibold text-gray-900">{testimonial.name}</div>
@@ -495,21 +541,23 @@ const BecomeSellerPage = () => {
                         viewport={{ once: true }}
                     >
                         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                            Ready to Grow Your Business?
+                            {content?.cta_bottom?.title || 'Ready to Grow Your Business?'}
                         </h2>
                         <p className="text-white/80 text-xl mb-8 max-w-2xl mx-auto">
-                            Join thousands of successful sellers. Start for free today – no credit card required.
+                            {content?.cta_bottom?.subtitle || 'Join thousands of successful sellers. Start for free today – no credit card required.'}
                         </p>
                         <Link
                             to="/register"
                             className="inline-flex items-center gap-3 px-10 py-5 bg-white text-indigo-600 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-xl hover:scale-105 transition-all duration-300"
                         >
                             <Store className="w-6 h-6" />
-                            Start Selling Now – It's Free
+                            {content?.cta_bottom?.button_text || "Start Selling Now – It's Free"}
                             <ArrowRight className="w-6 h-6" />
                         </Link>
-                        <p className="text-white/60 text-sm mt-6">
-                            ✓ Free forever plan available &nbsp;&nbsp; ✓ No credit card required &nbsp;&nbsp; ✓ Setup in 2 minutes
+                        <p className="text-white/60 text-sm mt-6 flex justify-center gap-4 flex-wrap">
+                            {(content?.cta_bottom?.features || ['Free forever plan available', 'No credit card required', 'Setup in 2 minutes']).map((feature, i) => (
+                                <span key={i}>✓ {feature}</span>
+                            ))}
                         </p>
                     </motion.div>
                 </div>

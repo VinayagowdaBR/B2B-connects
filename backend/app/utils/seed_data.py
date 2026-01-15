@@ -7,12 +7,20 @@ from app.models.permission_model import Permission
 from app.core.security import get_password_hash
 
 def seed_data(db: Session):
-    # Permissions
-    permissions = ["MANAGE_USERS", "MANAGE_ROLES", "MANAGE_PERMISSIONS"]
-    for perm_name in permissions:
-        if not db.query(Permission).filter(Permission.name == perm_name).first():
-            db.add(Permission(name=perm_name, description=f"Permission to {perm_name.lower().replace('_', ' ')}"))
-    db.commit()
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Permissions
+        permissions = ["MANAGE_USERS", "MANAGE_ROLES", "MANAGE_PERMISSIONS"]
+        for perm_name in permissions:
+            if not db.query(Permission).filter(Permission.name == perm_name).first():
+                db.add(Permission(name=perm_name, description=f"Permission to {perm_name.lower().replace('_', ' ')}"))
+        db.commit()
+        logger.info("Permissions seeded successfully")
+    except Exception as e:
+        logger.error(f"Error seeding permissions: {str(e)}")
+        db.rollback()
 
     # Roles
     roles = ["admin", "customer"]

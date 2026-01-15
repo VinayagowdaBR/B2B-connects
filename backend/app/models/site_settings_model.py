@@ -83,6 +83,122 @@ class SiteSettings(Base):
             {"title": "24/7 Support", "desc": "Always Available"}
         ]
     })
+    
+    # Help Center Content
+    help_center_content = Column(JSON, default=lambda: {
+        "title": "How Can We Help?",
+        "subtitle": "Find answers to common questions or reach out to our support team.",
+        "search_placeholder": "Search for help articles...",
+        "support_options": [
+            {
+                "title": "Email Support",
+                "description": "Send us an email and we'll respond within 24 hours.",
+                "action": "support@b2bconnect.com",
+                "link": "mailto:support@b2bconnect.com",
+                "icon": "Mail",
+                "color": "from-indigo-500 to-purple-500"
+            },
+            {
+                "title": "Phone Support",
+                "description": "Speak directly with our support team.",
+                "action": "+91 1800-XXX-XXXX",
+                "link": "tel:+911800XXXXXXX",
+                "icon": "Phone",
+                "color": "from-green-500 to-emerald-500"
+            },
+             {
+                "title": "Live Chat",
+                "description": "Chat with us in real-time for instant help.",
+                "action": "Start Chat",
+                "link": "#",
+                "icon": "MessageCircle",
+                "color": "from-orange-500 to-red-500"
+            }
+        ],
+        "categories": [
+             {
+                "id": "getting-started",
+                "name": "Getting Started",
+                "icon": "Sparkles",
+                "color": "from-indigo-500 to-purple-500",
+                "faqs": [
+                    { "question": "How do I create an account?", "answer": "Click on the 'Register' button..." },
+                    { "question": "Is registration free?", "answer": "Yes! Basic registration is completely free." }
+                ]
+            },
+             {
+                "id": "products-services",
+                "name": "Products & Services",
+                "icon": "Package",
+                "color": "from-orange-500 to-red-500",
+                "faqs": [
+                    { "question": "How do I list my products?", "answer": "Go to Dashboard > Products > Add New Product." }
+                ]
+            }
+        ]
+    })
+
+    # Become Seller Page Content
+    become_seller_content = Column(JSON, default=lambda: {
+        "hero": {
+            "badge": "Join 10,000+ Sellers",
+            "title_line1": "Grow Your Business",
+            "title_highlight": "With Us",
+            "subtitle": "Reach millions of buyers across India. List your products for free and start receiving genuine business inquiries today.",
+            "cta_primary": "Start Selling Free",
+            "cta_secondary": "View Success Stories"
+        },
+        "stats": [
+            { "value": "10K+", "label": "Active Sellers" },
+            { "value": "50K+", "label": "Monthly Inquiries" },
+            { "value": "500+", "label": "Cities Covered" }
+        ],
+        "benefits": {
+            "title": "Everything You Need to Succeed",
+            "subtitle": "We provide all the tools and support you need to grow your B2B business online.",
+            "items": [
+                { "title": "Nationwide Reach", "desc": "Connect with buyers across India...", "icon": "Globe", "color": "from-indigo-500 to-purple-500" },
+                { "title": "Trust & Credibility", "desc": "Get verified badge...", "icon": "BadgeCheck", "color": "from-green-500 to-emerald-500" },
+                { "title": "Grow Your Sales", "desc": "Access thousands of buyers...", "icon": "TrendingUp", "color": "from-orange-500 to-red-500" }
+            ]
+        },
+        "steps": {
+            "title": "Get Started in 4 Easy Steps",
+            "subtitle": "Start selling within minutes. No technical skills required.",
+            "items": [
+                { "number": "01", "title": "Create Your Account", "desc": "Sign up for free...", "icon": "Store" },
+                { "number": "02", "title": "Set Up Your Profile", "desc": "Add company info...", "icon": "Users" },
+                { "number": "03", "title": "List Your Products", "desc": "Upload products...", "icon": "Package" },
+                { "number": "04", "title": "Start Receiving Inquiries", "desc": "Get buyer inquiries...", "icon": "Target" }
+            ]
+        },
+        "pricing": {
+            "title": "Choose Your Plan",
+            "subtitle": "Start free and upgrade as you grow.",
+            "plans": [
+                {
+                    "name": "Starter", "price": "Free", "period": "Forever", "desc": "Perfect for small businesses", 
+                    "features": ["Up to 20 products", "Basic profile"], "cta": "Get Started Free", "popular": False
+                },
+                {
+                    "name": "Professional", "price": "₹999", "period": "/month", "desc": "For growing businesses", 
+                    "features": ["Unlimited listings", "Verified badge", "Priority search"], "cta": "Start Free Trial", "popular": True
+                }
+            ]
+        },
+        "testimonials": {
+            "title": "Trusted by Businesses Like Yours",
+            "items": [
+                { "name": "Rajesh Kumar", "company": "Steel Industries", "location": "Mumbai", "quote": "Business inquiries increased by 300%.", "rating": 5 }
+            ]
+        },
+        "cta_bottom": {
+            "title": "Ready to Grow Your Business?",
+            "subtitle": "Join thousands of successful sellers.",
+            "button_text": "Start Selling Now – It's Free",
+            "features": ["Free forever plan available", "No credit card required", "Setup in 2 minutes"]
+        }
+    })
 
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -273,7 +273,9 @@ def get_public_settings(db: Session = Depends(get_db)):
         "stats_buyers": settings.stats_buyers,
         "stats_sellers": settings.stats_sellers,
         "stats_products": settings.stats_products,
-        "stats_inquiries": settings.stats_inquiries
+        "stats_inquiries": settings.stats_inquiries,
+        "help_center_content": settings.help_center_content,
+        "become_seller_content": settings.become_seller_content
     }
 
 

@@ -26,6 +26,14 @@ export const siteSettingsApi = {
     testEmail: async (data) => {
         const response = await apiClient.post('/admin/site-settings/test-email', data);
         return response.data;
+    },
+
+    /**
+     * Get public site settings (no auth required)
+     */
+    getPublicSettings: async () => {
+        const response = await apiClient.get('/public/settings');
+        return response.data;
     }
 };
 

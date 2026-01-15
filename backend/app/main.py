@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import json
 from app.core.config import settings
 from app.database.connection import engine, SessionLocal
 from app.database.base import Base
@@ -143,9 +144,22 @@ from fastapi.middleware.cors import CORSMiddleware
 # ============ Add Middleware ============
 
 # CORS Middleware (Must be first to handle preflight requests)
+# Parse CORS origins from environment (comma-separated or JSON list)
+cors_origins = settings.BACKEND_CORS_ORIGINS
+if cors_origins.startswith("["):
+    # If it's a JSON list (from docker-compose), parse it
+    import json
+    try:
+        allowed_origins = json.loads(cors_origins)
+    except json.JSONDecodeError:
+        allowed_origins = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost", "http://127.0.0.1"]
+else:
+    # If it's comma-separated
+    allowed_origins = [origin.strip() for origin in cors_origins.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://localhost", "http://127.0.0.1"], # Add your frontend origins
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -230,11 +244,23 @@ app.include_router(company_gallery_images_routes.admin_router)
 # ============ Startup Event ============
 
 @app.on_event("startup")
-def startup_event():
+async def startup_event():
     """Seed initial data on startup"""
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Wait a bit for database to be ready
+    import asyncio
+    await asyncio.sleep(2)
+    
     db = SessionLocal()
     try:
         seed_data(db)
+        logger.info("Database seeding completed successfully")
+    except Exception as e:
+        logger.error(f"Database seeding failed: {str(e)}")
+        logger.warning("Application will continue without seeded data")
+        # Don't crash the app if seeding fails
     finally:
         db.close()
 
