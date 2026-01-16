@@ -1,9 +1,9 @@
 services:
+  # Backend API - Connects to Supabase Cloud
   backend:
     build: ./backend
     container_name: b2b-backend
     environment:
-      # Use Supabase Cloud Database
       - DATABASE_URL=${DATABASE_URL}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
@@ -12,10 +12,14 @@ services:
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-http://localhost}
     ports:
       - "8000:8000"
-    restart: unless-stopped
     networks:
       - b2b-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
 
+  # Frontend
   frontend:
     build: ./b2b-saas-frontend
     container_name: b2b-frontend
@@ -23,32 +27,9 @@ services:
       - "80:80"
     depends_on:
       - backend
-    # Frontend still uses bridge network, will access backend via localhost
     networks:
       - b2b-network
-  # Commented out - using host machine's PostgreSQL database instead
-  # db:
-  #   image: postgres:15-alpine
-  #   container_name: b2b-db
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres
-  #     - POSTGRES_DB=b2b_database
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-  #   healthcheck:
-  #     test: [ "CMD-SHELL", "pg_isready -U postgres -d b2b_database" ]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
-  #   networks:
-  #     - b2b-network
-
-volumes:
-  postgres_data:
-
+    restart: unless-stopped
 
 networks:
   b2b-network:
